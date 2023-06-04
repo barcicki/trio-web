@@ -26,7 +26,7 @@ describe('game', () => {
         'baaa', 'baab',
         'baba', 'babb',
         'bbaa', 'bbab',
-        'bbba', 'bbbb',
+        'bbba', 'bbbb'
       ]);
     });
 
@@ -41,6 +41,6 @@ describe('game', () => {
       expect(() => createDeck({
         noOfFeatureValues: 27
       })).toThrowError();
-    })
+    });
   });
 });
