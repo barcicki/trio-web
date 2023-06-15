@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import { Home } from './home/Home.jsx';
+import { Timer } from './components/Timer.jsx';
+import { useState } from 'react';
+import { createGame, toggleTile, getMatches } from '@/game/game.js';
+import { Tile } from '@/components/Tile.jsx';
 
 function App() {
-  const [count, setCount] = useState(23)
+  const [game, setGame] = useState(null);
+  const [start, setStart] = useState(null);
+
+  const tiles = game?.table.map((tile) => [tile, game.selected.includes(tile)]) || [];
+  const matches = getMatches(game?.table);
 
   return (
     <>
+      <Timer startTime={start} />
+      <Home />
+
+      <button onClick={() => {
+        setGame(createGame());
+        setStart(Date.now());
+      }}>Start</button>
+
+      <main>
+        {tiles.map(([tile, isSelected]) => <Tile key={tile} tile={tile} isSelected={isSelected} onClick={() => handleTile(tile)}/>)}
+      </main>
+
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        Seed: {game?.seed}<br/>
+        Deck: {game?.deck?.length}<br/>
+        Table: {game?.table?.length}<br/>
+        Matches: {matches.length}<br/>
+        {getMatches(game?.table).map((set) => set.join(',')).join(' | ')}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
+
+  function handleTile(tile) {
+    setGame(toggleTile(game, tile));
+  }
 }
 
-export default App
+export default App;
