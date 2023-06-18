@@ -2,8 +2,9 @@ import './App.css';
 import { Home } from './home/Home.jsx';
 import { Timer } from './components/Timer.jsx';
 import { useState } from 'react';
-import { createGame, toggleTile, getMatches, toStyleArray } from '@/game/game.js';
+import { createGame, toggleTile, getMatches } from '@/game/game.js';
 import { ShieldTile } from '@/components/ShieldTile.jsx';
+import { AnimatePresence } from 'framer-motion';
 
 function App() {
   const [game, setGame] = useState(null);
@@ -23,7 +24,9 @@ function App() {
       }}>Start</button>
 
       <main className="tiles">
-        {tiles.map(([tile, isSelected]) => <ShieldTile key={tile} styles={toStyleArray(tile)} isSelected={isSelected} onClick={() => handleTile(tile)}/>)}
+        <AnimatePresence>
+          {tiles.map(([tile, isSelected], index) => <ShieldTile key={index} tile={tile} isSelected={isSelected} onClick={() => handleTile(tile)}/>)}
+        </AnimatePresence>
       </main>
 
       <div>
