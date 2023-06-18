@@ -1,7 +1,7 @@
 import { createCore } from '@/game/core.js';
 import { generateId, shuffle } from '@/game/utils.js';
 
-const { createDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray } = createCore({
+const { createDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray, getMatchError } = createCore({
   values: ['a', 'b', 'c'],
   totalFeatures: 4
 });
@@ -17,7 +17,8 @@ export function createGame(seed = generateId()) {
     deck,
     table,
     selected: [],
-    found: []
+    found: [],
+    missed: []
   };
 }
 
@@ -50,7 +51,11 @@ export function toggleTile(state, target) {
   if (!isMatch(newSelected)) {
     return {
       ...state,
-      selected: []
+      selected: [],
+      missed: [
+        ...state.missed,
+        newSelected
+      ]
     };
   }
 
@@ -61,7 +66,10 @@ export function toggleTile(state, target) {
     deck: newDeck,
     table: newTable,
     selected: [],
-    found: state.found.concat(newSelected)
+    found: [
+      ...state.found,
+      newSelected
+    ]
   };
 }
 
@@ -109,5 +117,6 @@ export {
   getMatches,
   getMatchingTile,
   isMatch,
-  toStyleArray
+  toStyleArray,
+  getMatchError
 };

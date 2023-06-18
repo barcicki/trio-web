@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import { motion, useAnimate } from 'framer-motion';
 import classNames from 'classnames';
 import { toStyleArray } from '@/game/game.js';
@@ -28,10 +28,24 @@ const CREST_COLORS = [
   '#FFD700'
 ];
 
-export function ShieldTile({ tile, isSelected, onClick }) {
+export const ShieldTile = forwardRef(function ShieldTile({ tile, isSelected, onClick }, ref) {
   const isFirstRender = useIsFirstRender();
   const [content, setContent] = useState();
   const [scope, animate] = useAnimate();
+
+  useImperativeHandle(ref, () => {
+    return {
+      async shake() {
+        await animate([
+          [scope.current, { rotateY: 60 }],
+          [scope.current, { rotateY: -60 }],
+          [scope.current, { rotateY: 60 }],
+          [scope.current, { rotateY: -60 }],
+          [scope.current, { rotateY: 0 }]
+        ], { duration: 0.5});
+      }
+    };
+  });
 
   useMemo(() => {
     if (isFirstRender) {
@@ -72,4 +86,4 @@ export function ShieldTile({ tile, isSelected, onClick }) {
       {content}
     </motion.svg>
   );
-}
+});

@@ -1,14 +1,15 @@
 import './App.css';
 import { Home } from './home/Home.jsx';
 import { Timer } from './components/Timer.jsx';
-import { useState } from 'react';
-import { createGame, toggleTile, getMatches } from '@/game/game.js';
+import { useRef, useState } from 'react';
+import { createGame, toggleTile, getMatches, getMatchError } from '@/game/game.js';
 import { ShieldTile } from '@/components/ShieldTile.jsx';
 import { AnimatePresence } from 'framer-motion';
 
 function App() {
   const [game, setGame] = useState(null);
   const [start, setStart] = useState(null);
+  const tilesEls = useRef([]);
 
   const tiles = game?.table.map((tile) => [tile, game.selected.includes(tile)]) || [];
   const matches = getMatches(game?.table);
@@ -25,7 +26,7 @@ function App() {
 
       <main className="tiles">
         <AnimatePresence>
-          {tiles.map(([tile, isSelected], index) => <ShieldTile key={index} tile={tile} isSelected={isSelected} onClick={() => handleTile(tile)}/>)}
+          {tiles.map(([tile, isSelected], index) => <ShieldTile key={index} tile={tile} isSelected={isSelected} onClick={() => handleTile(tile)} ref={(el) => tilesEls.current[index] = el}/>)}
         </AnimatePresence>
       </main>
 
@@ -40,7 +41,22 @@ function App() {
   );
 
   function handleTile(tile) {
-    setGame(toggleTile(game, tile));
+    const next = toggleTile(game, tile);
+
+    if (next.missed.length > game.missed.length) {
+      const miss = next.missed[next.missed.length - 1];
+      const errors = getMatchError(miss);
+
+      tiles.forEach(([tile], index) => {
+        if (miss.includes(tile)) {
+          tilesEls.current[index].shake();
+        }
+      });
+
+      console.log('Errors', errors);
+    }
+
+    setGame(next);
   }
 }
 
