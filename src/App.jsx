@@ -2,8 +2,8 @@ import './App.css';
 import { Home } from './home/Home.jsx';
 import { Timer } from './components/Timer.jsx';
 import { useState } from 'react';
-import { createGame, toggleTile, getMatches } from '@/game/game.js';
-import { Tile } from '@/components/Tile.jsx';
+import { createGame, toggleTile, getMatches, toStyleArray } from '@/game/game.js';
+import { ShieldTile } from '@/components/ShieldTile.jsx';
 
 function App() {
   const [game, setGame] = useState(null);
@@ -22,8 +22,8 @@ function App() {
         setStart(Date.now());
       }}>Start</button>
 
-      <main>
-        {tiles.map(([tile, isSelected]) => <Tile key={tile} tile={tile} isSelected={isSelected} onClick={() => handleTile(tile)}/>)}
+      <main className="tiles">
+        {tiles.map(([tile, isSelected]) => <ShieldTile key={tile} styles={toStyleArray(tile)} isSelected={isSelected} onClick={() => handleTile(tile)}/>)}
       </main>
 
       <div>

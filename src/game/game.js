@@ -1,7 +1,7 @@
 import { createCore } from '@/game/core.js';
 import { generateId, shuffle } from '@/game/utils.js';
 
-const { createDeck, isMatch, hasMatch, getMatches, getMatchingTile } = createCore({
+const { createDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray } = createCore({
   values: ['a', 'b', 'c'],
   totalFeatures: 4
 });
@@ -108,5 +108,6 @@ export {
   hasMatch,
   getMatches,
   getMatchingTile,
-  isMatch
+  isMatch,
+  toStyleArray
 };

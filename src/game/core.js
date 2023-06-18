@@ -25,7 +25,8 @@ export function createCore({
     getMatches,
     getMatchingTile,
     getMatchError,
-    countMatches
+    countMatches,
+    toStyleArray
   };
 
   function generateDeck() {
@@ -202,5 +203,9 @@ export function createCore({
     }
 
     return result;
+  }
+
+  function toStyleArray(tile) {
+    return tile.split('').map((char) => values.indexOf(char));
   }
 }
