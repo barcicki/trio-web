@@ -6,8 +6,6 @@ const { createDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray
   totalFeatures: 4
 });
 
-window.cc = createCore;
-
 export function createGame(seed = generateId()) {
   const initialDeck = shuffle(createDeck(), seed);
   const [table, deck] = pickTable(initialDeck);
