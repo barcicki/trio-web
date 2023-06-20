@@ -73,7 +73,7 @@ export function Game({ onExit }) {
         }}>Start</button>}
         <AnimatePresence>
           {tiles.map(([tile, isSelected], index) => <Tile key={index} tile={tile} isSelected={isSelected}
-                                                          theme={theme.id} onClick={() => handleTile(tile)}
+                                                          theme={theme.id} onSelect={() => handleTile(tile)}
                                                           ref={(el) => tilesEls.current[index] = el} />)}
         </AnimatePresence>
       </div>

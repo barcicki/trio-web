@@ -22,7 +22,7 @@ export function Home({ onSelect }) {
         <h1>TRIO</h1>
         <div className="tiles">
           <AnimatePresence>
-            {tiles.map((tile, index) => <Tile key={index} {...tile} onClick={() => changeTile(index)}/>)}
+            {tiles.map((tile, index) => <Tile key={index} {...tile} onSelect={() => changeTile(index)}/>)}
           </AnimatePresence>
         </div>
       </div>

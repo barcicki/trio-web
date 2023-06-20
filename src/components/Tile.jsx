@@ -12,7 +12,7 @@ const RENDERERS = {
   'idle': IdleTileContent
 };
 
-export const Tile = forwardRef(function Tile({ tile, isSelected, onClick, theme }, ref) {
+export const Tile = forwardRef(function Tile({ tile, isSelected, onSelect, theme }, ref) {
   const isFirstRender = useIsFirstRender();
   const [content, setContent] = useState();
   const [scope, animate] = useAnimate();
@@ -53,7 +53,7 @@ export const Tile = forwardRef(function Tile({ tile, isSelected, onClick, theme 
   };
 
   return (
-    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true})} onClick={onClick} viewBox="0 0 200 200" ref={scope} color="#000">
+    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true})} onPointerDown={onSelect} viewBox="0 0 200 200" ref={scope} color="#000">
       {content}
     </motion.svg>
   );
