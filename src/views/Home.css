@@ -48,3 +48,15 @@
   margin: .5em 0;
 }
 
+@media (min-aspect-ratio: 2/1) {
+  .home .tiles {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+  }
+}
+
+@media (min-width: 1000px) and (min-height: 600px) {
+  .home .tiles {
+    grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+  }
+}

@@ -37,7 +37,7 @@ body {
   flex-direction: column-reverse;
 }
 
-@media (min-width: 850px) and (min-height: 600px) {
+@media (min-width: 1000px) and (min-height: 600px) {
   #root {
     flex-direction: row-reverse;
     max-width: 1000px;
