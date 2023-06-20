@@ -62,7 +62,6 @@
 
 .game .tile {
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
   max-width: 100%;
   max-height: 100%;
 }

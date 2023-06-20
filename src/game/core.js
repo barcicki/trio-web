@@ -18,7 +18,7 @@ export function createCore({
   const matches = generateMatches();
 
   return {
-    createDeck,
+    getDeck,
     isMatch,
     canMatch,
     hasMatch,
@@ -62,7 +62,7 @@ export function createCore({
 
     return set;
   }
-  function createDeck() {
+  function getDeck() {
     return deck.slice();
   }
 

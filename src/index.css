@@ -68,3 +68,7 @@ button:focus,
 button:focus-visible {
   outline: 4px auto var(--highlight-color);
 }
+
+.tile {
+  -webkit-tap-highlight-color: transparent;
+}

@@ -1,13 +1,13 @@
 import { createCore } from '@/game/core.js';
 import { generateId, shuffle } from '@/game/utils.js';
 
-const { createDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray, getMatchError } = createCore({
+const { getDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray, getMatchError } = createCore({
   values: ['a', 'b', 'c'],
   totalFeatures: 4
 });
 
 export function createGame(seed = generateId()) {
-  const initialDeck = shuffle(createDeck(), seed);
+  const initialDeck = shuffle(getDeck(), seed);
   const [table, deck] = pickTable(initialDeck);
 
   return {
@@ -104,6 +104,10 @@ export function getHint(state) {
   return {
     ...state
   };
+}
+
+export function getRandomTile() {
+  return shuffle(getDeck())[0];
 }
 
 function pickTable(deck, minTiles = 12, maxTiles = 20) {
