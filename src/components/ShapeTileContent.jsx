@@ -82,7 +82,7 @@ export function ShapeTileContent({ tile }) {
         <line x1="0" y="0" x2="0" y2="1" stroke={props.stroke} strokeWidth=".2" />
       </pattern>)}
 
-      <rect className="tile-bg" fill="#fff" stroke="#000" strokeWidth="5" rx="20" ry="20" x="5" y="5" width="190" height="190"></rect>
+      <rect className="tile-bg" fill="#fff" stroke="currentColor" strokeWidth="5" rx="20" ry="20" x="5" y="5" width="190" height="190"></rect>
       {content.map((size, index) => (<Renderer key={index} {...size} {...props} />))}
     </>
   );

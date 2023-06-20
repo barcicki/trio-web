@@ -4,10 +4,12 @@ import classNames from 'classnames';
 import { useIsFirstRender } from '@/hooks/useIsFirstRender.js';
 import { ShieldTileContent } from '@/components/ShieldTileContent.jsx';
 import { ShapeTileContent } from '@/components/ShapeTileContent.jsx';
+import { IdleTileContent } from '@/components/IdleTileContent.jsx';
 
 const RENDERERS = {
   'shields': ShieldTileContent,
-  'shapes': ShapeTileContent
+  'shapes': ShapeTileContent,
+  'idle': IdleTileContent
 };
 
 export const Tile = forwardRef(function Tile({ tile, isSelected, onClick, theme }, ref) {
@@ -51,7 +53,7 @@ export const Tile = forwardRef(function Tile({ tile, isSelected, onClick, theme 
   };
 
   return (
-    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true})} onClick={onClick} viewBox="0 0 200 200" ref={scope}>
+    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true})} onClick={onClick} viewBox="0 0 200 200" ref={scope} color="#000">
       {content}
     </motion.svg>
   );

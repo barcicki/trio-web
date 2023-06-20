@@ -1,0 +1,79 @@
+.game {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.game-controls {
+  margin: .5em;
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  flex: 0;
+  place-items: center;
+}
+
+.game-cards {
+  display: inline-block;
+  border: 3px solid #000;
+  padding: .5em 1em;
+  background: #000;
+  color: #fff;
+  border-radius: .5em;
+}
+
+.game-controls-left,
+.game-controls-right {
+  margin-bottom: 0.3em;
+}
+
+.game-controls-left > *{
+  margin-right: .5em;
+}
+
+.game-controls-right {
+  margin-left: auto;
+  text-align: right;
+}
+
+.game-controls-right > *{
+  font-size: 0.8em;
+  margin-left: .5em;
+}
+
+.game-tiles {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  grid-gap: 1em;
+  grid-template-columns: repeat(3, 1fr);
+  overflow: hidden;
+  padding: 0.5em;
+}
+
+.game-tiles button {
+  grid-column: 1 / 5;
+  grid-row: 1 / 5;
+  font-size: 4em;
+}
+
+.game .tile {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.game .tile.selected {
+  color: var(--highlight-color);
+  filter: drop-shadow(0px 0px .3em var(--highlight-color));
+}
+
+@media (min-width: 850px) and (min-height: 600px) {
+  .game-tiles {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

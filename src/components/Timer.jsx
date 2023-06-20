@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { format } from '@/utils/time.js';
 
-export function Timer({ startTime, stopTime, direction = 1 }) {
+export function Timer({ startTime, stopTime, direction = 1, ...props }) {
   const el = useRef(null);
   const handle = useRef(null);
 
@@ -14,7 +14,7 @@ export function Timer({ startTime, stopTime, direction = 1 }) {
   }
 
   return (
-    <span ref={el}>{format(calcDiff())}</span>
+    <span ref={el} {...props}>{format(calcDiff())}</span>
   );
 
   function calcDiff() {

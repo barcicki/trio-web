@@ -33,7 +33,7 @@ export function ShieldTileContent({ tile }) {
 
   return (
     <>
-      <path className="shield" d={shield} fill={shieldColor} stroke="#000000" strokeWidth="5" />
+      <path className="shield" d={shield} fill={shieldColor} stroke="currentColor" strokeWidth="5" />
       <path className="crest" d={crest} fill={crestColor} />
     </>
   );

@@ -71,6 +71,41 @@ export function toggleTile(state, target) {
   };
 }
 
+export function shuffleTable(state) {
+  return {
+    ...state,
+    table: shuffle(state.table)
+  };
+}
+
+export function getHint(state) {
+  const { selected, table } = state;
+
+  if (selected.length === 0) {
+    const [firstMatch] = getMatches(table);
+
+    return toggleTile(state, firstMatch[0]);
+  }
+
+  if (selected.length === 1) {
+    const selectedTile = selected[0];
+    const matchWithSelectedTile = getMatches(table).find((match) => match.includes(selectedTile));
+
+    if (matchWithSelectedTile) {
+      const nextTileToSelect = matchWithSelectedTile.find((tile) => tile !== selectedTile);
+
+      return toggleTile(state, nextTileToSelect);
+    } else {
+      return getHint(toggleTile(state, selectedTile));
+    }
+  }
+
+
+  return {
+    ...state
+  };
+}
+
 function pickTable(deck, minTiles = 12, maxTiles = 20) {
   const newDeck = deck.slice();
   const newTable = [];
