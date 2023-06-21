@@ -89,7 +89,8 @@ export function GameProvider({ children, name }) {
   }, [name]);
 
   const [game, dispatch] = useReducer(reducer, null);
-  const savedGame = name && load(name) || null;
+  const snapshot = name && load(name);
+  const savedGame = snapshot && !snapshot.ended ? snapshot : null;
 
   useEffect(() => {
     if (!name || !game) {
