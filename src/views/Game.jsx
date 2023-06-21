@@ -38,6 +38,10 @@ export function Game() {
     type: GameActions.START
   }), [dispatcher]);
 
+  const onNew = useCallback(() => dispatcher({
+    type: GameActions.CREATE
+  }), [dispatcher]);
+
   const onSelect = useCallback((tile) => dispatcher({
     type: GameActions.TOGGLE_TILE,
     tile,
@@ -84,8 +88,9 @@ export function Game() {
           {game.started && <span className="game-trios-visible">Trios: <b>{matches.length}</b></span>}
         </div>
       </div>
+      {game.ended && <h2 className="game-end">Well done!</h2>}
       <div className="game-tiles">
-        {!game.started && <button onClick={onStart}>Start</button>}
+        {!game.started && <button onClick={game.ended ? onNew : onStart}>{game.ended ? 'New game?' : 'Start' }</button>}
         {game.started && <AnimatePresence>
           {tiles.map(([tile, isSelected], index) => <Tile key={index} tile={tile} isSelected={isSelected}
                                                           theme={theme.id} onSelect={onSelect}

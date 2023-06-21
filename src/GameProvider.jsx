@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useReducer } from 'react';
-import { createGame, getHint, shuffleTable, toggleTile } from '@/game/game.js';
+import { createGame, getHint, hasMatch, shuffleTable, toggleTile } from '@/game/game.js';
 
 export const GameActions = {
   CREATE: 'create',
@@ -72,6 +72,15 @@ export function GameProvider({ children, name }) {
           const miss = newState.missed[newState.missed.length - 1];
 
           payload.onMiss(miss);
+        }
+
+        if (!hasMatch(newState.table)) {
+          return {
+            ...newState,
+            started: false,
+            ended: true,
+            duration: Date.now() - newState.started
+          };
         }
 
         return newState;
