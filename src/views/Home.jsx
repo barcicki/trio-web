@@ -1,11 +1,15 @@
-import { Tile } from '@/components/Tile.jsx';
+import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { Tile } from '@/components/Tile.jsx';
+import { getRandomTile } from '@/game/game.js';
+import { GameActions, useGameDispatcher, useSavedGame } from '@/GameProvider.jsx';
 
 import './Home.css';
-import { useState } from 'react';
-import { getRandomTile } from '@/game/game.js';
 
-export function Home({ onSelect }) {
+export function Home() {
+  const savedGame = useSavedGame();
+  const dispatcher = useGameDispatcher();
+
   const [tiles, setTiles] = useState([
     { theme: 'shapes', tile: 'cbac' },
     { theme: 'shields', tile: 'cbac' },
@@ -16,7 +20,13 @@ export function Home({ onSelect }) {
   return (
     <>
       <div className="section menu">
-        <button onClick={() => onSelect?.('newGame')}>New game</button>
+        {savedGame && <button onClick={() => dispatcher({
+          type: GameActions.LOAD,
+          game: savedGame
+        })}>Continue</button>}
+        <button onClick={() => dispatcher({
+          type: GameActions.CREATE
+        })}>New game</button>
       </div>
       <div className="section home">
         <h1>TRIO</h1>
