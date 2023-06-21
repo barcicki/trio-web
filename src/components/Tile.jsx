@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import { useIsFirstRender } from '@/hooks/useIsFirstRender.js';
 import { RENDERERS, THEMES } from './TileThemes/themes.js';
 
+const DURATION = 0.2;
+
 export {
   THEMES
 };
@@ -22,10 +24,8 @@ export const Tile = forwardRef(function Tile({ tile, isSelected, onSelect, theme
         await animate([
           [scope.current, { rotateY: 60 }],
           [scope.current, { rotateY: -60 }],
-          [scope.current, { rotateY: 60 }],
-          [scope.current, { rotateY: -60 }],
           [scope.current, { rotateY: 0 }]
-        ], { duration: 0.5});
+        ], { duration: DURATION});
       }
     };
   });
@@ -36,10 +36,10 @@ export const Tile = forwardRef(function Tile({ tile, isSelected, onSelect, theme
       return;
     }
 
-    animate(scope.current, { rotateY: 90 }, { ease: 'easeIn' })
+    animate(scope.current, { rotateY: 90 }, { ease: 'easeIn', duration: DURATION / 2 })
       .then(() => {
         setContent(<Renderer tile={tile}/>);
-        animate(scope.current, { rotateY: 0 }, { ease: 'easeOut' });
+        animate(scope.current, { rotateY: 0 }, { ease: 'easeOut', duration: DURATION / 2 });
       });
 
   }, [tile, theme]);
