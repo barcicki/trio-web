@@ -1,26 +1,16 @@
 import { Timer } from '../components/Timer.jsx';
-import { useRef, useState } from 'react';
-import { createGame, toggleTile, getMatches, shuffleTable, getHint } from '@/game/game.js';
-import { Tile } from '@/components/Tile.jsx';
+import { useCallback, useRef, useState } from 'react';
+import { createGame, toggleTile, getMatches, shuffleTable, getHint, getMatchError } from '@/game/game.js';
+import { Tile, THEMES } from '@/components/Tile.jsx';
 import { AnimatePresence } from 'framer-motion';
 import './game.css';
+import toast from 'react-hot-toast';
 
 const GameStatus = {
   IDLE: 'idle',
   PLAYING: 'playing',
   PAUSED: 'paused'
 };
-
-const THEMES = [
-  {
-    label: 'Shapes',
-    id: 'shapes'
-  },
-  {
-    label: 'Shields',
-    id: 'shields'
-  },
-];
 
 export function Game({ onExit }) {
   const [themeIndex, setThemeIndex] = useState(0);
@@ -35,52 +25,17 @@ export function Game({ onExit }) {
   const tiles = game?.table.map((tile) => [tile, game.selected.includes(tile)]) || [];
   const matches = getMatches(game?.table);
 
-  let leftControls = '';
-  let rightControls = '';
+  const onHint = useCallback(() => setGame(getHint(game)), [game]);
+  const onReload = useCallback(() => setGame(shuffleTable(game)), [game]);
+  const onThemeChange = useCallback(() => setThemeIndex(themeIndex + 1), [themeIndex]);
 
-  if (game) {
-    leftControls = (
-      <>
-        <Timer className="game-timer" startTime={start}/>
-        <span className="game-deck-left">Cards: <b>{game.deck.length}</b></span>
-        <span className="game-trios-found">Trios: <b>{game.found.length}</b></span>
-      </>
-    );
+  const onStart = useCallback(() => {
+    setGame(createGame());
+    setStart(Date.now());
+    setStatus(GameStatus.PLAYING);
+  }, []);
 
-    rightControls = (
-      <>
-        <button onClick={() => setGame(getHint(game))}>Hint</button>
-        <button onClick={() => setGame(shuffleTable(game))}>Reorder</button>
-        <button onClick={() => setThemeIndex(themeIndex + 1)}>{nextTheme.label}</button>
-        <button onClick={() => onExit()}>Exit</button>
-      </>
-    );
-  } else {
-    rightControls = <button onClick={() => onExit()}>Exit</button>;
-  }
-
-  return (
-    <main className="game">
-      <div className="game-controls">
-        <div className="game-controls-right">{rightControls}</div>
-        <div className="game-controls-left">{leftControls}</div>
-      </div>
-      <div className="game-tiles">
-        {status === GameStatus.IDLE && <button onClick={() => {
-          setGame(createGame());
-          setStart(Date.now());
-          setStatus(GameStatus.PLAYING);
-        }}>Start</button>}
-        <AnimatePresence>
-          {tiles.map(([tile, isSelected], index) => <Tile key={index} tile={tile} isSelected={isSelected}
-                                                          theme={theme.id} onSelect={() => handleTile(tile)}
-                                                          ref={(el) => tilesEls.current[index] = el} />)}
-        </AnimatePresence>
-      </div>
-    </main>
-  );
-
-  function handleTile(tile) {
+  const onSelect = useCallback((tile) => {
     const next = toggleTile(game, tile);
 
     if (next.missed.length > game.missed.length) {
@@ -91,8 +46,57 @@ export function Game({ onExit }) {
           tilesEls.current[index].shake();
         }
       });
+
+      const error = getMatchError(miss)
+        .map((val, index) => val ? theme.features[index] : null)
+        .filter(Boolean);
+
+      toast.remove();
+      toast(`Wrong ${error.join(', ')}`);
     }
 
     setGame(next);
+  }, [game, theme]);
+
+  let leftControls = '';
+  let rightControls = '';
+
+  if (game) {
+    leftControls = (
+      <>
+        <Timer className="game-timer" startTime={start}/>
+        <span className="game-deck-left">Cards: <b>{game.deck.length}</b></span>
+        <span className="game-trios-found">Points: <b>{game.found.length}</b></span>
+        <span className="game-trios-visible">Trios: <b>{matches.length}</b></span>
+      </>
+    );
+
+    rightControls = (
+      <>
+        <button onClick={onHint}>Hint</button>
+        <button onClick={onReload}>Reorder</button>
+        <button onClick={onThemeChange}>{nextTheme.label}</button>
+        <button onClick={onExit}>Exit</button>
+      </>
+    );
+  } else {
+    rightControls = <button onClick={onExit}>Exit</button>;
   }
+
+  return (
+    <main className="game">
+      <div className="game-controls">
+        <div className="game-controls-right">{rightControls}</div>
+        <div className="game-controls-left">{leftControls}</div>
+      </div>
+      <div className="game-tiles">
+        {status === GameStatus.IDLE && <button onClick={onStart}>Start</button>}
+        <AnimatePresence>
+          {tiles.map(([tile, isSelected], index) => <Tile key={index} tile={tile} isSelected={isSelected}
+                                                          theme={theme.id} onSelect={onSelect}
+                                                          ref={(el) => tilesEls.current[index] = el} />)}
+        </AnimatePresence>
+      </div>
+    </main>
+  );
 }

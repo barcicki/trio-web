@@ -1,22 +1,20 @@
-import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { motion, useAnimate } from 'framer-motion';
 import classNames from 'classnames';
 import { useIsFirstRender } from '@/hooks/useIsFirstRender.js';
-import { ShieldTileContent } from '@/components/ShieldTileContent.jsx';
-import { ShapeTileContent } from '@/components/ShapeTileContent.jsx';
-import { IdleTileContent } from '@/components/IdleTileContent.jsx';
+import { RENDERERS, THEMES } from './TileThemes/themes.js';
 
-const RENDERERS = {
-  'shields': ShieldTileContent,
-  'shapes': ShapeTileContent,
-  'idle': IdleTileContent
+export {
+  THEMES
 };
 
 export const Tile = forwardRef(function Tile({ tile, isSelected, onSelect, theme }, ref) {
   const isFirstRender = useIsFirstRender();
   const [content, setContent] = useState();
   const [scope, animate] = useAnimate();
-  const Renderer = RENDERERS[theme] || RENDERERS.shapes;
+  const Renderer = RENDERERS[theme] || THEMES[0].renderer;
+
+  const onSelectTile = useCallback((event) => onSelect(tile, event), [onSelect, tile]);
 
   useImperativeHandle(ref, () => {
     return {
@@ -53,7 +51,7 @@ export const Tile = forwardRef(function Tile({ tile, isSelected, onSelect, theme
   };
 
   return (
-    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true})} onPointerDown={onSelect} viewBox="0 0 200 200" ref={scope} color="#000">
+    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true})} onPointerDown={onSelectTile} viewBox="0 0 200 200" ref={scope} color="#000">
       {content}
     </motion.svg>
   );
