@@ -28,6 +28,7 @@
     "eslint-plugin-react-refresh": "^0.4.1",
     "react-hot-toast": "^2.4.1",
     "vite": "^4.3.9",
-    "vitest": "^0.32.2"
+    "vitest": "^0.32.2",
+    "vite-plugin-pwa": "^0.16.4"
   }
 }
