@@ -3,6 +3,7 @@ import { Error } from '@/views/Error.jsx';
 import { Home } from '@/views/Home.jsx';
 import { Game } from '@/views/Game.jsx';
 import { GameIntro } from '@/views/GameIntro.jsx';
+import { PuzzleIntro } from '@/views/PuzzleIntro.jsx';
 import { generateId } from '@/game/utils.js';
 import { createGame, loadGame, startGame } from '@/game/game.js';
 
@@ -64,19 +65,41 @@ export const routes = [
     children: [
       {
         path: '',
-        element: <div>Puzzle</div>
+        element: <PuzzleIntro/>,
+        loader() {
+          return loadGame('puzzle');
+        }
       },
       {
         path: 'new',
-        element: <div>Redirect to new puzzle</div>
+        loader() {
+          return redirect(`../${generateId()}`);
+        }
       },
       {
         path: 'continue',
-        element: <div>Redirect to saved puzzle</div>
+        loader() {
+          const savedGame = loadGame('puzzle');
+
+          if (!savedGame) {
+            return redirect('../new');
+          }
+
+          return redirect(`../${savedGame.seed}`);
+        }
       },
       {
         path: ':seed',
-        element: <div>Seeded puzzle</div>
+        loader({ params }) {
+          const savedGame = loadGame('game');
+
+          if (savedGame?.seed === params.seed) {
+            return startGame(savedGame);
+          }
+
+          return startGame(createGame(params.seed));
+        },
+        element: <div>Puzzle</div>
       }
     ]
   },
