@@ -1,50 +1,28 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLoaderData } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 import { Timer } from '@/components/Timer.jsx';
 import { Tile, THEMES } from '@/components/Tile.jsx';
-import { getMatchError, getMatches } from '@/game/game.js';
-import { GameActions, useGame, useGameDispatcher } from '@/GameProvider.jsx';
+import { getHint, getMatchError, getMatches, saveGame, shuffleTable, toggleTile } from '@/game/game.js';
 
 import './game.css';
 
 export function Game() {
-  const game = useGame();
-  const dispatcher = useGameDispatcher();
-  const [themeIndex, setThemeIndex] = useState(0);
+  const savedGame = useLoaderData();
+  const [game, setGame] = useState(savedGame);
   const tilesEls = useRef([]);
 
-  const theme = THEMES[themeIndex % THEMES.length];
-  const nextTheme = THEMES[(themeIndex + 1) % THEMES.length];
+  const theme = getTheme(game);
+  const nextTheme = getNextTheme(game);
   const tiles = useMemo(() => game.table.map((tile) => [tile, game.selected.includes(tile)]) || [], [game]);
   const matches = getMatches(game.table);
 
-  const onThemeChange = useCallback(() => setThemeIndex(themeIndex + 1), [themeIndex]);
-
-  const onExit = useCallback(() => dispatcher({
-    type: GameActions.STOP
-  }), [dispatcher]);
-
-  const onHint = useCallback(() => dispatcher({
-    type: GameActions.HINT
-  }), [dispatcher]);
-
-  const onReorder = useCallback(() => dispatcher({
-    type: GameActions.REORDER_TABLE
-  }), [dispatcher]);
-
-  const onStart = useCallback(() => dispatcher({
-    type: GameActions.START
-  }), [dispatcher]);
-
-  const onNew = useCallback(() => dispatcher({
-    type: GameActions.CREATE
-  }), [dispatcher]);
-
-  const onSelect = useCallback((tile) => dispatcher({
-    type: GameActions.TOGGLE_TILE,
-    tile,
+  const onThemeChange = useCallback(() => setGame({ ...game, theme: nextTheme.id }), [game, nextTheme]);
+  const onHint = useCallback(() => setGame(getHint(game)), [game]);
+  const onReorder = useCallback(() => setGame(shuffleTable(game)), [game]);
+  const onSelect = useCallback((tile) => setGame(toggleTile(game, tile, {
     onMiss(miss) {
       tiles.forEach(([tile], index) => {
         if (miss.includes(tile)) {
@@ -56,46 +34,46 @@ export function Game() {
         .map((val, index) => val ? theme.features[index] : null)
         .filter(Boolean);
 
+      console.log(invalidFeatures);
+
       toast.remove();
       toast(`Wrong ${invalidFeatures.join(', ')}`);
     }
-  }), [dispatcher, tiles, theme]);
+  })), [game, tiles, tilesEls, theme]);
 
-  let rightControls = '';
+  const save = useCallback(() => saveGame('game', game), [game]);
 
-  if (game.started) {
-    rightControls = (
-      <>
-        <button onClick={onHint}>Hint</button>
-        <button onClick={onReorder}>Reorder</button>
-        <button onClick={onThemeChange}>{nextTheme.label}</button>
-        <button onClick={onExit}>Exit</button>
-      </>
-    );
-  } else {
-    rightControls = <button onClick={onExit}>Exit</button>;
-  }
+  useEffect(save, [save]);
 
+  useEffect(() => {
+    const intervalId = setInterval(save, 1000);
+
+    return () => clearInterval(intervalId);
+  });
 
   return (
-    <main className="game">
+    <main className="game limited">
       <div className="game-controls">
-        <div className="game-controls-right">{rightControls}</div>
+        <div className="game-controls-right">
+          <button onClick={onHint}>Hint</button>
+          <button onClick={onReorder}>Reorder</button>
+          <button onClick={onThemeChange}>{nextTheme.label}</button>
+          <Link className="button" to="/">Exit</Link>
+        </div>
         <div className="game-controls-left">
           <Timer className="game-timer" {...getTimerProps(game)}/>
           <span className="game-deck-left">Deck: <b>{game.deck.length}</b></span>
           <span className="game-trios-found">Points: <b>{game.found.length}</b></span>
-          {game.started && <span className="game-trios-visible">Trios: <b>{matches.length}</b></span>}
+          <span className="game-trios-visible">Trios: <b>{matches.length}</b></span>
         </div>
       </div>
       {game.ended && <h2 className="game-end">Well done!</h2>}
       <div className="game-tiles">
-        {!game.started && <button onClick={game.ended ? onNew : onStart}>{game.ended ? 'New game?' : 'Start' }</button>}
-        {game.started && <AnimatePresence>
+        <AnimatePresence>
           {tiles.map(([tile, isSelected], index) => <Tile key={index} tile={tile} isSelected={isSelected}
                                                           theme={theme.id} onSelect={onSelect}
                                                           ref={(el) => tilesEls.current[index] = el} />)}
-        </AnimatePresence>}
+        </AnimatePresence>
       </div>
     </main>
   );
@@ -118,4 +96,20 @@ function getTimerProps(game) {
   }
 
   return {};
+}
+
+function getTheme(game) {
+  const theme = THEMES.find((t) => t.id === game.theme);
+
+  return theme || THEMES[0];
+}
+
+function getNextTheme(game) {
+  const index = THEMES.findIndex((t) => t.id === game.theme);
+
+  if (index < 0) {
+    return THEMES[1]; // assuming it exists :)
+  }
+
+  return THEMES[(index + 1) % THEMES.length];
 }

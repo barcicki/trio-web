@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { GameProvider } from '@/GameProvider.jsx';
-import { App } from '@/App.jsx';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ToastPlaceholder } from '@/components/ToastPlaceholder.jsx';
+import { routes } from '@/routes.jsx';
 
 import './index.css';
 
+const router = createBrowserRouter(routes);
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <GameProvider name="game">
-      <App />
-    </GameProvider>
+    <RouterProvider router={router}/>
+    <ToastPlaceholder/>
   </React.StrictMode>
 );

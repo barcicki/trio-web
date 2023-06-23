@@ -1,5 +1,4 @@
 .game {
-  flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -35,7 +34,7 @@
   margin-bottom: 0.3em;
 }
 
-.game-controls-left > *{
+.game-controls-left * {
   margin-right: .5em;
 }
 
@@ -44,7 +43,8 @@
   text-align: right;
 }
 
-.game-controls-right > *{
+.game-controls-right button,
+.game-controls-right .button {
   font-size: 0.8em;
   margin-left: .5em;
 }
@@ -57,12 +57,6 @@
   grid-template-columns: repeat(3, 1fr);
   overflow: hidden;
   padding: 0.5em;
-}
-
-.game-tiles button {
-  grid-column: 1 / 10;
-  grid-row: 1 / 10;
-  font-size: 4em;
 }
 
 .game .tile {

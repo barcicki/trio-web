@@ -16,12 +16,44 @@ export function createGame(seed = generateId()) {
     table,
     selected: [],
     found: [],
-    missed: []
+    missed: [],
+    started: false,
+    ended: false,
+    duration: 0
   };
 }
 
-export function toggleTile(state, target) {
+export function startGame(state) {
+  return {
+    ...state,
+    started: Date.now() - (state.duration ?? 0)
+  };
+}
+
+export function stopGame(state) {
+  return {
+    ...state,
+    started: false,
+    duration: getDuration(state)
+  };
+}
+
+export function loadGame(key) {
+  const result = localStorage.getItem(key);
+
+  return result && JSON.parse(result);
+}
+
+export function saveGame(key, game) {
+  return localStorage.setItem(key, JSON.stringify(stopGame(game)));
+}
+
+export function toggleTile(state, target, options) {
   const { table, selected } = state;
+
+  const onFind = options?.onFind;
+  const onMiss = options?.onMiss;
+  const onEnd = options?.onEnd;
 
   if (!table.includes(target)) {
     return state;
@@ -47,6 +79,8 @@ export function toggleTile(state, target) {
 
   // not a trio, reset selected
   if (!isMatch(newSelected)) {
+    onMiss?.(newSelected);
+
     return {
       ...state,
       selected: [],
@@ -59,7 +93,9 @@ export function toggleTile(state, target) {
 
   const [newTable, newDeck] = replaceTable(state.deck, table, newSelected);
 
-  return {
+  onFind?.(newSelected);
+
+  const newState = {
     ...state,
     deck: newDeck,
     table: newTable,
@@ -69,6 +105,16 @@ export function toggleTile(state, target) {
       newSelected
     ]
   };
+
+  if (!hasMatch(newTable)) {
+    newState.duration = Date.now() - newState.started;
+    newState.started = false;
+    newState.ended = true;
+
+    onEnd?.(newState);
+  }
+
+  return newState;
 }
 
 export function shuffleTable(state) {
@@ -147,6 +193,10 @@ function replaceTable(deck, table, selected, minTiles = 12, maxTiles = 20) {
   }
 
   return [newTable, newDeck];
+}
+
+export function getDuration(state) {
+  return state.started ? Date.now() - state.started : (state.duration ?? 0);
 }
 
 export {
