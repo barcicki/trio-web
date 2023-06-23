@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
+import { useCallback, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
-import { Timer } from '@/components/Timer.jsx';
-import { Tile, THEMES } from '@/components/Tile.jsx';
-import { getHint, getMatchError, getMatches, saveGame, shuffleTable, toggleTile } from '@/game/game.js';
+import { THEMES } from '@/components/Tile.jsx';
+import { GameTimer } from '@/components/GameTimer.jsx';
+import { TilesTable } from '@/components/TilesTable.jsx';
+import { useSavedGame } from '@/hooks/useSavedGame.js';
+import { getHint, getMatches,  shuffleTable, toggleTile } from '@/game/game.js';
+import { toastErrors } from '@/utils/toast.js';
 
 import './game.css';
 
 export function Game() {
-  const savedGame = useLoaderData();
-  const [game, setGame] = useState(savedGame);
-  const tilesEls = useRef([]);
+  const [game, setGame] = useSavedGame('game');
+  const tableEl = useRef(null);
 
   const theme = getTheme(game);
   const nextTheme = getNextTheme(game);
@@ -24,32 +24,10 @@ export function Game() {
   const onReorder = useCallback(() => setGame(shuffleTable(game)), [game]);
   const onSelect = useCallback((tile) => setGame(toggleTile(game, tile, {
     onMiss(miss) {
-      tiles.forEach(([tile], index) => {
-        if (miss.includes(tile)) {
-          tilesEls.current[index].shake();
-        }
-      });
-
-      const invalidFeatures = getMatchError(miss)
-        .map((val, index) => val ? theme.features[index] : null)
-        .filter(Boolean);
-
-      console.log(invalidFeatures);
-
-      toast.remove();
-      toast(`Wrong ${invalidFeatures.join(', ')}`);
+      tableEl.current.shakeTiles(miss);
+      toastErrors(miss, theme);
     }
-  })), [game, tiles, tilesEls, theme]);
-
-  const save = useCallback(() => saveGame('game', game), [game]);
-
-  useEffect(save, [save]);
-
-  useEffect(() => {
-    const intervalId = setInterval(save, 1000);
-
-    return () => clearInterval(intervalId);
-  });
+  })), [game, tiles, theme]);
 
   return (
     <main className="game limited">
@@ -61,41 +39,16 @@ export function Game() {
           <Link className="button" to="/">Exit</Link>
         </div>
         <div className="game-controls-left">
-          <Timer className="game-timer" {...getTimerProps(game)}/>
+          <GameTimer game={game}/>
           <span className="game-deck-left">Deck: <b>{game.deck.length}</b></span>
           <span className="game-trios-found">Points: <b>{game.found.length}</b></span>
           <span className="game-trios-visible">Trios: <b>{matches.length}</b></span>
         </div>
       </div>
       {game.ended && <h2 className="game-end">Well done!</h2>}
-      <div className="game-tiles">
-        <AnimatePresence>
-          {tiles.map(([tile, isSelected], index) => <Tile key={index} tile={tile} isSelected={isSelected}
-                                                          theme={theme.id} onSelect={onSelect}
-                                                          ref={(el) => tilesEls.current[index] = el} />)}
-        </AnimatePresence>
-      </div>
+      <TilesTable theme={theme.id} tiles={game.table} selected={game.selected} onSelect={onSelect} ref={tableEl}/>
     </main>
   );
-}
-
-function getTimerProps(game) {
-  if (game.started) {
-    return {
-      startTime: game.started
-    };
-  }
-
-  if (game.duration) {
-    const now = Date.now();
-
-    return {
-      startTime: now - game.duration,
-      stopTime: now
-    };
-  }
-
-  return {};
 }
 
 function getTheme(game) {

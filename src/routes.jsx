@@ -3,6 +3,7 @@ import { Error } from '@/views/Error.jsx';
 import { Home } from '@/views/Home.jsx';
 import { Game } from '@/views/Game.jsx';
 import { GameIntro } from '@/views/GameIntro.jsx';
+import { Puzzle } from '@/views/Puzzle.jsx';
 import { PuzzleIntro } from '@/views/PuzzleIntro.jsx';
 import { generateId } from '@/game/utils.js';
 import { createGame, loadGame, startGame } from '@/game/game.js';
@@ -91,7 +92,7 @@ export const routes = [
       {
         path: ':seed',
         loader({ params }) {
-          const savedGame = loadGame('game');
+          const savedGame = loadGame('puzzle');
 
           if (savedGame?.seed === params.seed) {
             return startGame(savedGame);
@@ -99,7 +100,7 @@ export const routes = [
 
           return startGame(createGame(params.seed));
         },
-        element: <div>Puzzle</div>
+        element: <Puzzle/>
       }
     ]
   },
