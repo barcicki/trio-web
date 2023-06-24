@@ -12,7 +12,7 @@
 .intro-options {
   display: grid;
   grid-gap: 1em;
-  grid-auto-flow: column;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   overflow: hidden;
   max-width: 100%;
 }
@@ -27,6 +27,12 @@
   flex-direction: column;
   place-content: end;
   place-items: center;
+}
+
+.intro-footer {
+  margin-top: .5em;
+  display: flex;
+  place-content: center;
 }
 
 @media (max-aspect-ratio: 1/1) {
