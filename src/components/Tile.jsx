@@ -18,7 +18,7 @@ export const Tile = forwardRef(function Tile({ className, tile, isSelected, onSe
   const [scope, animate] = useAnimate();
   const Renderer = RENDERERS[theme] || THEMES[0].renderer;
 
-  const onSelectTile = useCallback((event) => onSelect(tile, event), [onSelect, tile]);
+  const onSelectTile = useCallback((event) => onSelect?.(tile, event), [onSelect, tile]);
 
   useImperativeHandle(ref, () => {
     return {

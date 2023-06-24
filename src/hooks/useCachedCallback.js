@@ -9,9 +9,12 @@ import { useCallback, useRef } from 'react';
  */
 export function useCachedCallback(fn) {
   const ref = useRef();
-  const callback = useCallback(() => ref.current(), []);
 
+  // always update reference
   ref.current = fn;
+
+  // always same instance due to empty deps, that calls frequently-updated `ref` instance
+  const callback = useCallback((...args) => ref.current(...args), []);
 
   return callback;
 }
