@@ -1,9 +1,11 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { TbArrowsShuffle, TbBulb } from 'react-icons/tb';
 
-import { THEMES } from '@/components/Tile.jsx';
-import { GameTimer } from '@/components/GameTimer.jsx';
+import { ThemeButton } from '@/components/ThemeButton.jsx';
 import { TilesTable } from '@/components/TilesTable.jsx';
+import { GameHeader } from '@/components/GameHeader.jsx';
+import { Details } from '@/components/Details.jsx';
+import { THEMES } from '@/components/Tile.jsx';
 import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { getHint, getMatches,  shuffleTable, toggleTile } from '@/game/game.js';
 import { toastErrors } from '@/utils/toast.js';
@@ -31,20 +33,16 @@ export function Game() {
 
   return (
     <main className="game limited">
-      <div className="game-controls">
-        <div className="game-controls-right">
-          <button onClick={onHint}>Hint</button>
-          <button onClick={onReorder}>Reorder</button>
-          <button onClick={onThemeChange}>{nextTheme.label}</button>
-          <Link className="button" to="/">Exit</Link>
-        </div>
-        <div className="game-controls-left">
-          <GameTimer game={game}/>
-          <span className="game-deck-left">Deck: <b>{game.deck.length}</b></span>
-          <span className="game-trios-found">Points: <b>{game.found.length}</b></span>
-          <span className="game-trios-visible">Trios: <b>{matches.length}</b></span>
-        </div>
-      </div>
+      <GameHeader game={game}>
+        <button onClick={onHint} title="Show hint"><TbBulb/></button>
+        <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
+        <ThemeButton onClick={onThemeChange} theme={nextTheme.id} title="Switch theme"/>
+      </GameHeader>
+      <Details horizontal={true} details={{
+        Deck: game.deck.length,
+        Visible: matches.length,
+        Found: game.found.length
+      }}/>
       {game.ended && <h2 className="game-end">Well done!</h2>}
       <TilesTable theme={theme.id} tiles={game.table} selected={game.selected} onSelect={onSelect} ref={tableEl}/>
     </main>

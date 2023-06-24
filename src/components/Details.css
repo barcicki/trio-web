@@ -1,5 +1,10 @@
-.intro-details {
+.details {
   text-align: center;
   list-style-type: none;
   margin-bottom: 0.5em;
+}
+
+.details.horizontal {
+  display: flex;
+  gap: 1em;
 }

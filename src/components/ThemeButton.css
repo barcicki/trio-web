@@ -1,0 +1,10 @@
+.theme-button {
+  display: flex;
+  place-content: center;
+  place-items: center;
+}
+
+.tile.theme-tile {
+  width: 1em;
+  height: 1em;
+}

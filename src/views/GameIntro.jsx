@@ -3,7 +3,7 @@ import { IntroTile } from '@/components/IntroTile.jsx';
 import { GameGoal } from '@/components/GameGoal.jsx';
 import { Intro } from '@/components/Intro.jsx';
 import { format } from '@/utils/time.js';
-import { IntroDetails } from '@/components/IntroDetails.jsx';
+import { Details } from '@/components/Details.jsx';
 
 export function GameIntro() {
   const savedGame = useLoaderData();
@@ -11,7 +11,7 @@ export function GameIntro() {
   return (
     <Intro goal={<GameGoal/>}>
       {savedGame && <IntroTile>
-        <IntroDetails details={{
+        <Details details={{
           'Trios found': savedGame.found.length,
           'Tiles in deck': savedGame.deck.length,
           'Time spent': format(savedGame.duration)

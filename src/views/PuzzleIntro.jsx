@@ -3,7 +3,7 @@ import { PuzzleGoal } from '@/components/PuzzleGoal.jsx';
 import { IntroTile } from '@/components/IntroTile.jsx';
 import { Intro } from '@/components/Intro.jsx';
 import { format } from '@/utils/time.js';
-import { IntroDetails } from '@/components/IntroDetails.jsx';
+import { Details } from '@/components/Details.jsx';
 
 export function PuzzleIntro() {
   const savedPuzzle = useLoaderData();
@@ -11,7 +11,7 @@ export function PuzzleIntro() {
   return (
     <Intro goal={<PuzzleGoal/>}>
       {savedPuzzle && <IntroTile>
-        <IntroDetails details={{
+        <Details details={{
           'Time spent': format(savedPuzzle.duration),
           'Trios to find': 3
         }}/>

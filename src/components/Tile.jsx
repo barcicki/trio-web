@@ -4,13 +4,15 @@ import classNames from 'classnames';
 import { useIsFirstRender } from '@/hooks/useIsFirstRender.js';
 import { RENDERERS, THEMES } from './TileThemes/themes.js';
 
+import './Tile.css';
+
 const DURATION = 0.2;
 
 export {
   THEMES
 };
 
-export const Tile = forwardRef(function Tile({ tile, isSelected, onSelect, theme }, ref) {
+export const Tile = forwardRef(function Tile({ className, tile, isSelected, onSelect, theme }, ref) {
   const isFirstRender = useIsFirstRender();
   const [content, setContent] = useState();
   const [scope, animate] = useAnimate();
@@ -51,7 +53,7 @@ export const Tile = forwardRef(function Tile({ tile, isSelected, onSelect, theme
   };
 
   return (
-    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true})} onPointerDown={onSelectTile} viewBox="0 0 200 200" ref={scope} color="#000">
+    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true, [className]: !!className})} onPointerDown={onSelectTile} viewBox="0 0 200 200" ref={scope} color="#000">
       {content}
     </motion.svg>
   );
