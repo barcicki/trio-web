@@ -13,7 +13,7 @@ export function PuzzleIntro() {
       {savedPuzzle && !savedPuzzle.ended && <IntroTile>
         <Details details={{
           'Time spent': format(savedPuzzle.duration),
-          'Trios to find': savedPuzzle.matches.length - savedPuzzle.found.length
+          'Trios to find': savedPuzzle.matches?.length - savedPuzzle.found?.length
         }}/>
         <Link className="button" to="continue">Continue</Link>
       </IntroTile>}
