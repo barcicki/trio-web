@@ -14,7 +14,5 @@ export function useCachedCallback(fn) {
   ref.current = fn;
 
   // always same instance due to empty deps, that calls frequently-updated `ref` instance
-  const callback = useCallback((...args) => ref.current(...args), []);
-
-  return callback;
+  return useCallback((...args) => ref.current(...args), []);
 }

@@ -10,7 +10,7 @@ export function GameIntro() {
 
   return (
     <Intro goal={<GameGoal/>}>
-      {savedGame && <IntroTile>
+      {savedGame && !savedGame.ended && <IntroTile>
         <Details details={{
           'Trios found': savedGame.found.length,
           'Tiles in deck': savedGame.deck.length,

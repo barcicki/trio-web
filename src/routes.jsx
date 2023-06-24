@@ -6,7 +6,7 @@ import { GameIntro } from '@/views/GameIntro.jsx';
 import { Puzzle } from '@/views/Puzzle.jsx';
 import { PuzzleIntro } from '@/views/PuzzleIntro.jsx';
 import { generateId } from '@/game/utils.js';
-import { createGame, loadGame, startGame } from '@/game/game.js';
+import { createGame, createPuzzle, loadGame, startGame } from '@/game/game.js';
 
 export const routes = [
   {
@@ -39,7 +39,7 @@ export const routes = [
         loader() {
           const savedGame = loadGame('game');
 
-          if (!savedGame) {
+          if (!savedGame || savedGame.ended) {
             return redirect('../new');
           }
 
@@ -82,7 +82,7 @@ export const routes = [
         loader() {
           const savedGame = loadGame('puzzle');
 
-          if (!savedGame) {
+          if (!savedGame || savedGame.ended) {
             return redirect('../new');
           }
 
@@ -98,7 +98,7 @@ export const routes = [
             return startGame(savedGame);
           }
 
-          return startGame(createGame(params.seed));
+          return startGame(createPuzzle(params.seed));
         },
         element: <Puzzle/>
       }

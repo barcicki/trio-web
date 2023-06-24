@@ -1,16 +1,23 @@
 import createSeededRandom from 'seedrandom';
 
+export function getSeededRandom(seed) {
+  return createSeededRandom(seed).quick;
+}
+
 export function generateId() {
   return Math.random().toString(36).slice(2, 8);
 }
 
 export function shuffle(array, seed = generateId()) {
-  const random = createSeededRandom(seed);
+  return shuffleWithRandom(array, getSeededRandom(seed));
+}
+
+export function shuffleWithRandom(array, random) {
   const result = array.slice();
   let index = result.length;
 
   while (index > 0) {
-    const other = Math.floor(random.quick() * index--);
+    const other = Math.floor(random() * index--);
 
     swap(result, index, other);
   }

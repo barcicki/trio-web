@@ -1,6 +1,6 @@
 import { ShapeTileContent } from './ShapeTileContent.jsx';
 import { ShieldTileContent } from './ShieldTileContent.jsx';
-import { IdleTileContent } from './IdleTileContent.jsx';
+import { UnknownTileContent } from './UnknownTileContent.jsx';
 
 export const THEMES = [
   {
@@ -32,5 +32,5 @@ export const RENDERERS = THEMES.reduce((map, theme) => {
 
   return map;
 }, {
-  idle: IdleTileContent // extra Idle renderer
+  unknown: UnknownTileContent // extra Idle renderer
 });

@@ -10,10 +10,10 @@ export function PuzzleIntro() {
 
   return (
     <Intro goal={<PuzzleGoal/>}>
-      {savedPuzzle && <IntroTile>
+      {savedPuzzle && !savedPuzzle.ended && <IntroTile>
         <Details details={{
           'Time spent': format(savedPuzzle.duration),
-          'Trios to find': 3
+          'Trios to find': savedPuzzle.matches.length - savedPuzzle.found.length
         }}/>
         <Link className="button" to="continue">Continue</Link>
       </IntroTile>}

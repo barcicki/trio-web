@@ -4,13 +4,14 @@ import { TbArrowsShuffle } from 'react-icons/tb';
 import { ThemeButton } from '@/components/ThemeButton.jsx';
 import { GameHeader } from '@/components/GameHeader.jsx';
 import { TilesTable } from '@/components/TilesTable.jsx';
+import { TilesList } from '@/components/TilesList.jsx';
 import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
-import { shuffleTable } from '@/game/game.js';
+import { shuffleTable, togglePuzzleTile } from '@/game/game.js';
 import { getNextTheme, getTheme, setTheme } from '@/utils/theme.js';
+import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
 
 import './Puzzle.css';
-import toast from 'react-hot-toast';
 
 export function Puzzle() {
   const [puzzle, setPuzzle] = useSavedGame('puzzle');
@@ -19,9 +20,18 @@ export function Puzzle() {
   const theme = getTheme(puzzle);
   const nextTheme = getNextTheme(puzzle);
 
-  const onSelect = useCachedCallback(() => toast('Not working yet'));
   const onReorder = useCachedCallback(() => setPuzzle(shuffleTable(puzzle)));
   const onThemeChange = useCachedCallback(() => setPuzzle(setTheme(puzzle, nextTheme)));
+  const onSelect = useCachedCallback((tile) => setPuzzle(togglePuzzleTile(puzzle, tile, {
+    onMiss(miss) {
+      tableEl.current.shakeTiles(miss);
+      toastErrors(miss, theme);
+    },
+    onAlreadyFound(tiles) {
+      tableEl.current.shakeTiles(tiles);
+      toastAlreadyFound();
+    }
+  })));
 
   return (
     <main className="puzzle limited">
@@ -29,6 +39,10 @@ export function Puzzle() {
         <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
         <ThemeButton onClick={onThemeChange} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
+      <div className="puzzle-matches">
+        {puzzle.matches.map((tiles, index) => <TilesList key={index} tiles={tiles} theme={puzzle.found.includes(index) ? theme.id : 'unknown'}/>)}
+      </div>
+      {puzzle.ended && <h2 className="game-end">Well done!</h2>}
       <TilesTable theme={theme.id} tiles={puzzle.table} selected={puzzle.selected} onSelect={onSelect} ref={tableEl}/>
     </main>
   );

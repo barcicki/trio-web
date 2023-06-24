@@ -9,3 +9,8 @@ export function toastErrors(miss, theme) {
   toast.remove();
   toast(`Wrong ${invalidFeatures.join(', ')}`);
 }
+
+export function toastAlreadyFound() {
+  toast.remove();
+  toast('This trio is already found!');
+}

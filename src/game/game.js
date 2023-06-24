@@ -1,5 +1,7 @@
 import { createCore } from '@/game/core.js';
-import { generateId, shuffle } from '@/game/utils.js';
+import { generateId, getSeededRandom, shuffle, shuffleWithRandom } from '@/game/utils.js';
+
+const HASH_SEPARATOR = ';';
 
 const { getDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray, getMatchError } = createCore({
   values: ['a', 'b', 'c'],
@@ -14,9 +16,34 @@ export function createGame(seed = generateId()) {
     seed,
     deck,
     table,
-    selected: [],
     found: [],
     missed: [],
+    selected: [],
+    usedHints: 0,
+    started: false,
+    ended: false,
+    duration: 0
+  };
+}
+
+export function createPuzzle(seed = generateId()) {
+  const deck = getDeck();
+  const random = getSeededRandom(seed);
+  let table;
+  let matches;
+
+  do {
+    table = shuffleWithRandom(deck, random).slice(0, 12);
+    matches = getMatches(table).map((tiles) => tiles.sort());
+  } while (matches.length !== 3);
+
+  return {
+    seed,
+    table,
+    matches,
+    found: [],
+    missed: [],
+    selected: [],
     started: false,
     ended: false,
     duration: 0
@@ -49,11 +76,89 @@ export function saveGame(key, game) {
 }
 
 export function toggleTile(state, target, options) {
-  const { table, selected } = state;
+  const newState = handleToggleTile(state, target);
+
+  if (newState.selected.length !== 3) {
+    return newState;
+  }
 
   const onFind = options?.onFind;
   const onMiss = options?.onMiss;
   const onEnd = options?.onEnd;
+
+  if (!isMatch(newState.selected)) {
+    onMiss?.(newState.selected);
+
+    return handleMatchMiss(newState);
+  }
+
+  const [newTable, newDeck] = replaceTable(newState.deck, newState.table, newState.selected);
+
+  onFind?.(newState.selected);
+
+  newState.deck = newDeck;
+  newState.table = newTable;
+  newState.found.push(newState.selected);
+  newState.selected = [];
+
+  if (!hasMatch(newTable)) {
+    newState.duration = Date.now() - newState.started;
+    newState.started = false;
+    newState.ended = true;
+
+    onEnd?.(newState);
+  }
+
+  return newState;
+}
+
+export function togglePuzzleTile(state, target, options) {
+  const newState = handleToggleTile(state, target);
+
+  if (newState.selected.length !== 3) {
+    return newState;
+  }
+
+  const onFind = options?.onFind;
+  const onMiss = options?.onMiss;
+  const onAlreadyFound = options?.onAlreadyFound;
+  const onEnd = options?.onEnd;
+
+  if (!isMatch(newState.selected)) {
+    onMiss?.(newState.selected);
+
+    return handleMatchMiss(newState);
+  }
+
+  const selected = newState.selected;
+  const hash = selected.sort().join(HASH_SEPARATOR);
+  const index = newState.matches.findIndex((tiles) => tiles.join(HASH_SEPARATOR) === hash);
+
+  newState.selected = [];
+
+  if (newState.found.includes(index)) {
+    onAlreadyFound?.(selected);
+
+    return newState;
+  }
+
+  newState.found.push(index);
+
+  onFind?.(selected, index);
+
+  if (newState.found.length === newState.matches.length) {
+    newState.duration = Date.now() - newState.started;
+    newState.started = false;
+    newState.ended = true;
+
+    onEnd?.(newState);
+  }
+
+  return newState;
+}
+
+function handleToggleTile(state, target) {
+  const { table, selected } = state;
 
   if (!table.includes(target)) {
     return state;
@@ -69,52 +174,21 @@ export function toggleTile(state, target, options) {
 
   const newSelected = selected.concat(target);
 
-  // there are fewer than 3 selected tiles, nothing happens
-  if (newSelected.length < 3) {
-    return {
-      ...state,
-      selected: newSelected
-    };
-  }
-
-  // not a trio, reset selected
-  if (!isMatch(newSelected)) {
-    onMiss?.(newSelected);
-
-    return {
-      ...state,
-      selected: [],
-      missed: [
-        ...state.missed,
-        newSelected
-      ]
-    };
-  }
-
-  const [newTable, newDeck] = replaceTable(state.deck, table, newSelected);
-
-  onFind?.(newSelected);
-
-  const newState = {
+  return {
     ...state,
-    deck: newDeck,
-    table: newTable,
+    selected: newSelected
+  };
+}
+
+function handleMatchMiss(state) {
+  return {
+    ...state,
     selected: [],
-    found: [
-      ...state.found,
-      newSelected
+    missed: [
+      ...state.missed,
+      state.selected
     ]
   };
-
-  if (!hasMatch(newTable)) {
-    newState.duration = Date.now() - newState.started;
-    newState.started = false;
-    newState.ended = true;
-
-    onEnd?.(newState);
-  }
-
-  return newState;
 }
 
 export function shuffleTable(state) {
@@ -130,7 +204,10 @@ export function getHint(state) {
   if (selected.length === 0) {
     const [firstMatch] = getMatches(table);
 
-    return toggleTile(state, firstMatch[0]);
+    return {
+      ...toggleTile(state, firstMatch[0]),
+      usedHints: state.usedHints + 1
+    };
   }
 
   if (selected.length === 1) {
@@ -140,12 +217,14 @@ export function getHint(state) {
     if (matchWithSelectedTile) {
       const nextTileToSelect = matchWithSelectedTile.find((tile) => tile !== selectedTile);
 
-      return toggleTile(state, nextTileToSelect);
+      return {
+        ...toggleTile(state, nextTileToSelect),
+        usedHints: state.usedHints + 1
+      };
     } else {
       return getHint(toggleTile(state, selectedTile));
     }
   }
-
 
   return {
     ...state
