@@ -67,7 +67,7 @@ export function createPractice(seed = generateId()) {
   return {
     seed,
     nextSeed: generateIdWithRandom(random),
-    table: table.filter((tile) => !query.includes(tile)),
+    table: shuffle(table.filter((tile) => !query.includes(tile))),
     query,
     score: 0,
     missed: 0,
@@ -102,6 +102,13 @@ export function startPractice(state, limit) {
   };
 }
 
+export function endPractice(state) {
+  return {
+    ...stopGame(state),
+    ended: true
+  };
+}
+
 export function stopGame(state) {
   return {
     ...state,
@@ -109,6 +116,7 @@ export function stopGame(state) {
     duration: getDuration(state)
   };
 }
+
 
 export function loadGame(key) {
   const result = localStorage.getItem(key);

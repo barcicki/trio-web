@@ -6,8 +6,8 @@
 }
 
 .rules-tile {
-  height: 6em;
-  width: 6em;
+  height: 8em;
+  width: 8em;
   cursor: pointer;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .rules-example {
-  height: 4em;
+  height: 6em;
   gap: .5em;
 }
 

@@ -6,7 +6,8 @@ import { Tile } from '@/components/Tile.jsx';
 import { getNextTheme, getTheme, setTheme } from '@/utils/theme.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { useSavedGame } from '@/hooks/useSavedGame.js';
-import { togglePracticeTile } from '@/game/game.js';
+import { useTimeout } from '@/hooks/useTimeout.js';
+import { endPractice, togglePracticeTile } from '@/game/game.js';
 import { toastErrors } from '@/utils/toast.js';
 
 import './Practice.css';
@@ -25,6 +26,12 @@ export function Practice({ limit }) {
       toastErrors(tiles, theme);
     }
   })));
+
+  useTimeout(() => {
+    if (practice.remaining > 0) {
+      setPractice(endPractice(practice));
+    }
+  }, practice.remaining);
 
   const status = <>
     <span className="practice-score">Score: <strong>{practice.score}</strong></span>

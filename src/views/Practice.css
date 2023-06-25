@@ -25,6 +25,11 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
+.practice-score,
+.practice-missed {
+  font-size: 0.8em;
+}
+
 
 @media (min-aspect-ratio: 4/3) {
   .practice .tiles-table {

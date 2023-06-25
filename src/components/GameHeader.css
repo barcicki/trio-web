@@ -23,6 +23,7 @@
   margin-left: auto;
   font-size: 1.6em;
   gap: .5em;
+  place-items: center;
 }
 
 .game-header-status .game-timer {
