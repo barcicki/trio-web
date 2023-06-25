@@ -2,7 +2,8 @@
   padding: 1em;
   place-content: start;
   max-height: 100%;
-  overflow: scroll;
+  overflow-y: auto;
+  max-width: 1000px;
 }
 
 .rules-tile {
