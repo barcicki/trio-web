@@ -5,6 +5,8 @@ import { ThemeButton } from '@/components/ThemeButton.jsx';
 import { GameHeader } from '@/components/GameHeader.jsx';
 import { TilesTable } from '@/components/TilesTable.jsx';
 import { TilesList } from '@/components/TilesList.jsx';
+import { GameView } from '@/components/GameView.jsx';
+import { PuzzleEnd } from '@/components/PuzzleEnd.jsx';
 import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { shuffleTable, togglePuzzleTile } from '@/game/game.js';
@@ -41,15 +43,14 @@ export function Puzzle() {
   });
 
   return (
-    <main className="puzzle limited">
+    <GameView className="puzzle limited" game={puzzle} EndGame={PuzzleEnd}>
       <GameHeader game={puzzle}>
         <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
         <ThemeButton onClick={onThemeChange} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
       <div className="puzzle-matches">{matches}</div>
-      {puzzle.ended && <h2 className="game-end">Well done!</h2>}
       <TilesTable theme={theme.id} tiles={puzzle.table} selected={puzzle.selected} onSelect={onSelect} ref={tableEl}/>
-    </main>
+    </GameView>
   );
 }
 

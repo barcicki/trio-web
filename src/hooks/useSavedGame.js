@@ -7,6 +7,10 @@ export function useSavedGame(key) {
   const savedGame = useLoaderData();
   const [game, setGame] = useState(savedGame);
 
+  if (savedGame.seed !== game.seed) {
+    setGame(savedGame);
+  }
+
   const save = useCachedCallback(() => saveGame(key, game));
   const visibility = useCachedCallback(() => setGame(document.hidden ? stopGame(game) : startGame(game)));
 

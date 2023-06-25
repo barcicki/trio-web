@@ -1,6 +1,8 @@
 import { useRef } from 'react';
+import { GameView } from '@/components/GameView.jsx';
 import { GameHeader } from '@/components/GameHeader.jsx';
 import { ThemeButton } from '@/components/ThemeButton.jsx';
+import { PracticeEnd } from '@/components/PracticeEnd.jsx';
 import { TilesTable } from '@/components/TilesTable.jsx';
 import { Tile } from '@/components/Tile.jsx';
 import { getNextTheme, getTheme, setTheme } from '@/utils/theme.js';
@@ -33,13 +35,10 @@ export function Practice({ limit }) {
     }
   }, practice.remaining);
 
-  const status = <>
-    <span className="practice-score">Score: <strong>{practice.score}</strong></span>
-    <span className="practice-missed">Missed: <strong>{practice.missed}</strong></span>
-  </>;
+  const status = <span className="practice-score">Score: <strong>{practice.score}</strong></span>;
 
   return (
-    <main className="practice limited">
+    <GameView className="practice limited" game={practice} EndGame={PracticeEnd}>
       <GameHeader game={practice} countdown={limit > 0} status={status}>
         <ThemeButton onClick={onThemeChange} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
@@ -49,6 +48,6 @@ export function Practice({ limit }) {
         <Tile theme='unknown' />
       </div>
       <TilesTable theme={theme.id} tiles={practice.table} onSelect={onSelect} ref={tableEl}/>
-    </main>
+    </GameView>
   );
 }

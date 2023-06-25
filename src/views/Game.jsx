@@ -5,6 +5,8 @@ import { ThemeButton } from '@/components/ThemeButton.jsx';
 import { TilesTable } from '@/components/TilesTable.jsx';
 import { GameHeader } from '@/components/GameHeader.jsx';
 import { Details } from '@/components/Details.jsx';
+import { GameView } from '@/components/GameView.jsx';
+import { GameEnd } from '@/components/GameEnd.jsx';
 import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { getHint, getMatches,  shuffleTable, toggleTile } from '@/game/game.js';
@@ -32,7 +34,7 @@ export function Game() {
   })));
 
   return (
-    <main className="game limited">
+    <GameView className="game limited" game={game} EndGame={GameEnd}>
       <GameHeader game={game}>
         <button onClick={onHint} title="Show hint"><TbBulb/></button>
         <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
@@ -43,8 +45,7 @@ export function Game() {
         Visible: matches.length,
         Found: game.found.length
       }}/>
-      {game.ended && <h2 className="game-end">Well done!</h2>}
       <TilesTable theme={theme.id} tiles={game.table} selected={game.selected} onSelect={onSelect} ref={tableEl}/>
-    </main>
+    </GameView>
   );
 }

@@ -1,0 +1,19 @@
+.game-view.ended {
+  display: flex;
+  place-content: center;
+  place-items: center;
+}
+
+.game-view.ended .details {
+  margin: 1em;
+}
+
+.game-view.ended .end-actions {
+  display: flex;
+  gap: 1em;
+}
+
+.game-view.ended .game-timer {
+  font-size: 3em;
+  font-weight: bold;
+}
