@@ -15,7 +15,7 @@ const CRESTS = [
 const SHIELD_COLORS = [
   '#729E07',
   '#BB0A21',
-  '#404248'
+  '#555555'
 ];
 
 const CREST_COLORS = [

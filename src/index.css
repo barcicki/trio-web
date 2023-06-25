@@ -1,14 +1,16 @@
 :root {
-  --bg-color: #242424;
-  --bg-darker-color: #111;
-  --bg-lighter-color: #333;
+  --fg-color: #e3e3e3;
+  --bg-color: #333;
+  --bg-button: #1a1a1a;
+  --bg-darker-color: #101010;
+  --bg-lighter-color: #494949;
   --highlight-color: gold;
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color: rgba(255, 255, 255, 0.87);
+  color: var(--fg-color);
   background-color: var(--bg-color);
 
   font-synthesis: none;
@@ -51,8 +53,8 @@ button, .button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  color: #fff;
-  background-color: #1a1a1a;
+  color: var(--fg-color);
+  background-color: var(--bg-button);
   cursor: pointer;
   transition: border-color 0.25s;
   text-transform: uppercase;
