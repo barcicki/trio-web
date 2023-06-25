@@ -1,3 +1,7 @@
+.tile:hover {
+  filter: drop-shadow(0px 0px .3em var(--highlight-color));
+}
+
 .tile.selected {
   color: var(--highlight-color);
   filter: drop-shadow(0px 0px .3em var(--highlight-color));
