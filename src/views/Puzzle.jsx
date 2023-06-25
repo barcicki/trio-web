@@ -33,15 +33,20 @@ export function Puzzle() {
     }
   })));
 
+  const matches = puzzle.matches.map((tiles, index) => {
+    const found = puzzle.found.includes(index);
+    const themeId = found ? theme.id : 'unknown';
+
+    return <TilesList key={index} tiles={tiles} theme={themeId} className={found ? 'found' : ''}/>;
+  });
+
   return (
     <main className="puzzle limited">
       <GameHeader game={puzzle}>
         <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
         <ThemeButton onClick={onThemeChange} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
-      <div className="puzzle-matches">
-        {puzzle.matches.map((tiles, index) => <TilesList key={index} tiles={tiles} theme={puzzle.found.includes(index) ? theme.id : 'unknown'}/>)}
-      </div>
+      <div className="puzzle-matches">{matches}</div>
       {puzzle.ended && <h2 className="game-end">Well done!</h2>}
       <TilesTable theme={theme.id} tiles={puzzle.table} selected={puzzle.selected} onSelect={onSelect} ref={tableEl}/>
     </main>

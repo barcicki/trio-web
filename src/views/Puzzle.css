@@ -25,4 +25,9 @@
   border-radius: 1em;
   background: var(--bg-lighter-color);
   gap: .5em;
+  transition: background-color 500ms;
+}
+
+.puzzle-matches .tiles-list.found {
+  background: #729E07;
 }
