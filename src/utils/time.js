@@ -1,6 +1,7 @@
-export function format(ms) {
+export function format(ms, direction = 1) {
   const sign = Math.sign(ms) >= 0 ? '' : '-';
-  const seconds = Math.floor(Math.abs(ms) / 1000);
+  const s = Math.abs(ms) / 1000;
+  const seconds = direction > 0 ? Math.floor(s) : Math.ceil(s);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const minutesString = pad(minutes % 60);

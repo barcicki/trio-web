@@ -14,7 +14,7 @@ export function Timer({ startTime, stopTime, direction = 1, ...props }) {
   }
 
   return (
-    <span ref={el} {...props}>{format(calcDiff())}</span>
+    <span ref={el} {...props}>{format(calcDiff(), direction)}</span>
   );
 
   function calcDiff() {
@@ -32,7 +32,7 @@ export function Timer({ startTime, stopTime, direction = 1, ...props }) {
 
   function update() {
     const diff = calcDiff();
-    const text = format(diff);
+    const text = format(diff, direction);
 
     if (el.current && el.current.textContent !== text) {
       el.current.textContent = text;

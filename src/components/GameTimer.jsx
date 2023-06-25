@@ -5,6 +5,13 @@ export function GameTimer({ game }) {
 }
 
 function getTimerProps(game) {
+  if (game.remaining) {
+    return {
+      stopTime: game.started + game.remaining,
+      direction: -1
+    };
+  }
+
   if (game.started) {
     return {
       startTime: game.started

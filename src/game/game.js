@@ -1,5 +1,5 @@
 import { createCore } from '@/game/core.js';
-import { generateId, getSeededRandom, shuffle, shuffleWithRandom } from '@/game/utils.js';
+import { generateId, generateIdWithRandom, getSeededRandom, shuffle, shuffleWithRandom } from '@/game/utils.js';
 
 const HASH_SEPARATOR = ';';
 
@@ -50,10 +50,55 @@ export function createPuzzle(seed = generateId()) {
   };
 }
 
+export function createPractice(seed = generateId()) {
+  const deck = getDeck();
+  const random = getSeededRandom(seed);
+
+  let table;
+  let matches;
+
+  do {
+    table = shuffleWithRandom(deck, random).slice(0, 8);
+    matches = getMatches(table);
+  } while (matches.length !== 1);
+
+  const query = matches[0].slice(0, 2);
+
+  return {
+    seed,
+    nextSeed: generateIdWithRandom(random),
+    table: table.filter((tile) => !query.includes(tile)),
+    query,
+    score: 0,
+    missed: 0,
+    started: false,
+    ended: false,
+    duration: 0
+  };
+}
+
 export function startGame(state) {
   return {
     ...state,
     started: Date.now() - (state.duration ?? 0)
+  };
+}
+
+export function startPractice(state, limit) {
+  if (!limit) {
+    return startGame(state);
+  }
+
+  if ((state.duration ?? 0) > limit) {
+    return {
+      ...state,
+      ended: true
+    };
+  }
+
+  return {
+    ...startGame(state),
+    remaining: limit - (state.duration ?? 0)
   };
 }
 
@@ -155,6 +200,31 @@ export function togglePuzzleTile(state, target, options) {
   }
 
   return newState;
+}
+
+export function togglePracticeTile(state, target, options) {
+  const tiles = state.query.concat(target);
+
+  if (isMatch(tiles)) {
+    return {
+      ...state,
+      ...createPractice(state.nextSeed),
+      started: state.started,
+      remaining: state.remaining,
+      score: state.score + 1,
+      missed: state.missed,
+    };
+  }
+
+  options?.onMiss?.(target, tiles);
+
+  return {
+    ...state,
+    started: state.started,
+    remaining: state.remaining,
+    score: state.score,
+    missed: state.missed + 1
+  };
 }
 
 function handleToggleTile(state, target) {

@@ -5,11 +5,12 @@ import { Game } from '@/views/Game.jsx';
 import { GameIntro } from '@/views/GameIntro.jsx';
 import { Puzzle } from '@/views/Puzzle.jsx';
 import { PuzzleIntro } from '@/views/PuzzleIntro.jsx';
-import { generateId } from '@/game/utils.js';
-import { createGame, createPuzzle, loadGame, startGame } from '@/game/game.js';
 import { PracticeIntro } from '@/views/PracticeIntro.jsx';
 import { Rules } from '@/views/Rules.jsx';
 import { Practice } from '@/views/Practice.jsx';
+
+import { createGame, createPractice, createPuzzle, loadGame, startGame, startPractice } from '@/game/game.js';
+import { generateId } from '@/game/utils.js';
 
 export const routes = [
   {
@@ -116,11 +117,17 @@ export const routes = [
       },
       {
         path: 'endless',
-        element: <Practice limit={0}/>
+        element: <Practice/>,
+        loader() {
+          return startPractice(createPractice(), 0);
+        }
       },
       {
         path: 'speed',
-        element: <Practice limit={60000}/>
+        element: <Practice/>,
+        loader() {
+          return startPractice(createPractice(), 60000);
+        }
       }
     ]
   },

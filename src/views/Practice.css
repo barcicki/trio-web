@@ -1,0 +1,44 @@
+.practice {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.practice .game-header {
+  margin: .5em;
+}
+
+.practice-query {
+  display: flex;
+  height: 30%;
+  place-content: center;
+  padding: .5em;
+  border-radius: 1em;
+  background: var(--bg-lighter-color);
+  gap: 1em;
+  margin: 0 .5em .5em;
+}
+
+.practice .tiles-list {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+
+@media (min-aspect-ratio: 4/3) {
+  .practice .tiles-table {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-aspect-ratio: 1/2) {
+  .practice .tiles-table {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) and (min-height: 600px) {
+  .practice .tiles-table {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

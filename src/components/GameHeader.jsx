@@ -4,7 +4,7 @@ import { GameTimer } from '@/components/GameTimer.jsx';
 
 import './GameHeader.css';
 
-export function GameHeader({ game, children }) {
+export function GameHeader({ game, children, status }) {
   const navigate = useNavigate();
 
   return (
@@ -13,7 +13,8 @@ export function GameHeader({ game, children }) {
         <button onClick={() => navigate(-1)}><MdArrowBackIosNew/></button>
         {children}
       </div>
-      <div className="game-header-timer">
+      <div className="game-header-status">
+        {status}
         {game && <GameTimer game={game}/>}
       </div>
     </div>
