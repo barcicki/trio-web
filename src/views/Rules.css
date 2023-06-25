@@ -1,0 +1,36 @@
+.rules {
+  padding: 1em;
+  place-content: start;
+  max-height: 100%;
+  overflow: scroll;
+}
+
+.rules-tile {
+  height: 6em;
+  width: 6em;
+  cursor: pointer;
+}
+
+.rules-options {
+  margin-top: 2em;
+  display: flex;
+  gap: 1em;
+  place-items: center;
+}
+
+.rules-example {
+  height: 4em;
+  gap: .5em;
+}
+
+.rules > p {
+  margin: 0.5em 0;
+}
+
+.rules li {
+  margin-left: 2em;
+}
+
+.rules h2 {
+  margin-top: 1em;
+}

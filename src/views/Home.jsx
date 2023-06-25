@@ -28,7 +28,8 @@ export function Home() {
         <Link className="button" to="game">Play</Link>
         <Link className="button disabled">Play online</Link>
         <Link className="button" to="puzzle">Puzzle</Link>
-        <Link className="button" to="tutorial">Tutorial</Link>
+        <Link className="button" to="practice">Practice</Link>
+        <Link className="button" to="rules">Rules</Link>
       </div>
     </main>
   );

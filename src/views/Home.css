@@ -17,12 +17,12 @@
   flex-direction: column;
   place-content: end;
   min-width: 25%;
+  gap: .5em;
 }
 
 .home-menu > .button {
   width: 100%;
   padding: 1em 2em;
-  margin: .5em 0;
 }
 
 .home-promo {
@@ -89,9 +89,19 @@
   .home-promo {
     place-content: center;
   }
+
+  .home-menu {
+    display: grid;
+    overflow: hidden;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .home-menu > .button:nth-child(1) {
+    grid-column: 1 / span 2;
+  }
 }
 
-@media (max-aspect-ratio: 1/1) and (max-height: 550px) {
+@media (max-aspect-ratio: 1/1) and (max-height: 450px) {
   .home-tiles {
     grid-template: auto / repeat(4, 1fr);
   }

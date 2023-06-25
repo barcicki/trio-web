@@ -7,6 +7,9 @@ import { Puzzle } from '@/views/Puzzle.jsx';
 import { PuzzleIntro } from '@/views/PuzzleIntro.jsx';
 import { generateId } from '@/game/utils.js';
 import { createGame, createPuzzle, loadGame, startGame } from '@/game/game.js';
+import { PracticeIntro } from '@/views/PracticeIntro.jsx';
+import { Rules } from '@/views/Rules.jsx';
+import { Practice } from '@/views/Practice.jsx';
 
 export const routes = [
   {
@@ -15,8 +18,8 @@ export const routes = [
     errorElement: <Error/>,
   },
   {
-    path: 'tutorial',
-    element: <div>Tutorial</div>
+    path: 'rules',
+    element: <Rules/>
   },
   {
     path: 'game',
@@ -101,6 +104,23 @@ export const routes = [
           return startGame(createPuzzle(params.seed));
         },
         element: <Puzzle/>
+      }
+    ]
+  },
+  {
+    path: 'practice',
+    children: [
+      {
+        path: '',
+        element: <PracticeIntro/>
+      },
+      {
+        path: 'endless',
+        element: <Practice limit={0}/>
+      },
+      {
+        path: 'speed',
+        element: <Practice limit={60000}/>
       }
     ]
   },
