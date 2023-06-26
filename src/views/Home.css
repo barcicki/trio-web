@@ -5,17 +5,12 @@
   overflow: hidden;
 }
 
-.home-menu,
-.home-promo {
-  display: flex;
-  place-items: center;
-  place-content: center;
-  padding: 1em;
-}
-
 .home-menu {
+  display: flex;
   flex-direction: column;
+  place-items: center;
   place-content: end;
+  padding: 1em;
   min-width: 25%;
   gap: .5em;
 }
@@ -26,10 +21,25 @@
 }
 
 .home-promo {
-  flex-direction: column;
+  max-width: 100%;
+  max-height: min(600px, 100%);
   flex: 1;
+  display: grid;
+  padding: 1em;
+  grid-template-rows: max-content 1fr;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-items: end;
+  align-content: end;
+  align-self: end;
   overflow: hidden;
-  place-content: end;
+}
+
+.home-promo h1 {
+  align-self: end;
+  font-size: 4em;
+  line-height: 1;
+  margin-bottom: .5em;
 }
 
 .home-tiles {
@@ -37,22 +47,16 @@
   grid-template: repeat(2, 1fr) / repeat(2, 1fr);
   grid-gap: 2em;
   width: 100%;
+  height: 100%;
   align-content: center;
   justify-items: center;
   overflow: hidden;
-  max-height: 400px;
 }
 
-.home .tile {
+.home-promo .tile {
   max-width: 100%;
   max-height: 100%;
   cursor: pointer;
-}
-
-.home h1 {
-  font-size: 4em;
-  line-height: 1;
-  margin-bottom: .5em;
 }
 
 @media (min-aspect-ratio: 2/1) and (max-height: 400px) {
@@ -87,7 +91,7 @@
   }
 
   .home-promo {
-    place-content: center;
+    align-self: stretch;
   }
 
   .home-menu {

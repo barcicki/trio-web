@@ -18,8 +18,8 @@ export default defineConfig({
         name: 'Trio',
         short_name: 'Trio',
         description: 'Matching tile game',
-        theme_color: '#242424',
-        orientation: 'portrait-primary',
+        theme_color: '#333333',
+        orientation: 'any',
         icons: [
           {
             src: 'trio-512.svg',
