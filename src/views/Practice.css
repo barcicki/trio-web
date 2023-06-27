@@ -21,6 +21,10 @@
   margin: 0 .5em .5em;
 }
 
+.practice-query .tile:hover {
+  filter: none;
+}
+
 .practice .tiles-list {
   grid-template-columns: repeat(3, 1fr);
 }

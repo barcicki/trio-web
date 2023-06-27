@@ -18,6 +18,10 @@
   margin: 0 .5em .5em;
 }
 
+.puzzle-matches .tile:hover {
+  filter: none;
+}
+
 .puzzle-matches .tiles-list {
   place-content: center;
   height: 4em;
