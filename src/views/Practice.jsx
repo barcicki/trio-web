@@ -5,10 +5,10 @@ import { ThemeButton } from '@/components/ThemeButton.jsx';
 import { PracticeEnd } from '@/components/PracticeEnd.jsx';
 import { TilesTable } from '@/components/TilesTable.jsx';
 import { Tile } from '@/components/Tile.jsx';
-import { getNextTheme, getTheme, setTheme } from '@/utils/theme.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useTimeout } from '@/hooks/useTimeout.js';
+import { useTheme } from '@/hooks/useTheme.js';
 import { endPractice, togglePracticeTile } from '@/game/game.js';
 import { toastErrors } from '@/utils/toast.js';
 
@@ -16,12 +16,9 @@ import './Practice.css';
 
 export function Practice({ limit }) {
   const [practice, setPractice] = useSavedGame('practice');
+  const [theme, nextTheme, changeTheme] = useTheme();
   const tableEl = useRef();
 
-  const theme = getTheme(practice);
-  const nextTheme = getNextTheme(practice);
-
-  const onThemeChange = useCachedCallback(() => setPractice(setTheme(practice, nextTheme)));
   const onSelect = useCachedCallback((tile) => setPractice(togglePracticeTile(practice, tile, {
     onMiss(tile, tiles) {
       tableEl.current.shakeTile(tile);
@@ -40,7 +37,7 @@ export function Practice({ limit }) {
   return (
     <GameView className="practice limited" game={practice} EndGame={PracticeEnd}>
       <GameHeader game={practice} countdown={limit > 0} status={status}>
-        <ThemeButton onClick={onThemeChange} theme={nextTheme.id} title="Switch theme"/>
+        <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
       <div className="practice-query">
         <Tile tile={practice.query[0]} theme={theme.id} />

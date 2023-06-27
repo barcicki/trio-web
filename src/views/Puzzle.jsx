@@ -10,20 +10,17 @@ import { PuzzleEnd } from '@/components/PuzzleEnd.jsx';
 import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { shuffleTable, togglePuzzleTile } from '@/game/game.js';
-import { getNextTheme, getTheme, setTheme } from '@/utils/theme.js';
 import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
 
 import './Puzzle.css';
+import { useTheme } from '@/hooks/useTheme.js';
 
 export function Puzzle() {
   const [puzzle, setPuzzle] = useSavedGame('puzzle');
+  const [theme, nextTheme, changeTheme] = useTheme();
   const tableEl = useRef(null);
 
-  const theme = getTheme(puzzle);
-  const nextTheme = getNextTheme(puzzle);
-
   const onReorder = useCachedCallback(() => setPuzzle(shuffleTable(puzzle)));
-  const onThemeChange = useCachedCallback(() => setPuzzle(setTheme(puzzle, nextTheme)));
   const onSelect = useCachedCallback((tile) => setPuzzle(togglePuzzleTile(puzzle, tile, {
     onMiss(miss) {
       tableEl.current.shakeTiles(miss);
@@ -46,7 +43,7 @@ export function Puzzle() {
     <GameView className="puzzle limited" game={puzzle} EndGame={PuzzleEnd}>
       <GameHeader game={puzzle}>
         <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
-        <ThemeButton onClick={onThemeChange} theme={nextTheme.id} title="Switch theme"/>
+        <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
       <div className="puzzle-matches">{matches}</div>
       <TilesTable theme={theme.id} tiles={puzzle.table} selected={puzzle.selected} onSelect={onSelect} ref={tableEl}/>

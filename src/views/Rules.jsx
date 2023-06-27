@@ -1,14 +1,12 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TilesList } from '@/components/TilesList.jsx';
-import { THEMES, Tile } from '@/components/Tile.jsx';
-import { useCachedCallback } from '@/hooks/useCachedCallback.js';
+import { Tile } from '@/components/Tile.jsx';
+import { useTheme } from '@/hooks/useTheme.js';
 
 import './Rules.css';
 
 export function Rules() {
-  const [theme, setTheme] = useState(THEMES[0]);
-  const onChangeTheme = useCachedCallback(() => setTheme(THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]));
+  const [theme, ,changeTheme] = useTheme();
 
   return (
     <main className="rules">
@@ -16,7 +14,7 @@ export function Rules() {
 
       <p>There are 81 unique tiles in the game.</p>
 
-      <Tile className="rules-tile" tile="abac" theme={theme.id} onSelect={onChangeTheme}/>
+      <Tile className="rules-tile" tile="abac" theme={theme.id} onSelect={changeTheme}/>
 
       <p>Every tile has <strong>four features</strong>:</p>
       <ul>

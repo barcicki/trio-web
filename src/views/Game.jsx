@@ -9,21 +9,19 @@ import { GameView } from '@/components/GameView.jsx';
 import { GameEnd } from '@/components/GameEnd.jsx';
 import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
+import { useTheme } from '@/hooks/useTheme.js';
 import { getHint, getMatches,  shuffleTable, toggleTile } from '@/game/game.js';
 import { toastErrors } from '@/utils/toast.js';
-import { getNextTheme, getTheme, setTheme } from '@/utils/theme.js';
 
 import './game.css';
 
 export function Game() {
   const [game, setGame] = useSavedGame('game');
+  const [theme, nextTheme, changeTheme] = useTheme();
   const tableEl = useRef(null);
 
-  const theme = getTheme(game);
-  const nextTheme = getNextTheme(game);
   const matches = getMatches(game.table);
 
-  const onThemeChange = useCachedCallback(() => setGame(setTheme(game, nextTheme)));
   const onHint = useCachedCallback(() => setGame(getHint(game)));
   const onReorder = useCachedCallback(() => setGame(shuffleTable(game)));
   const onSelect = useCachedCallback((tile) => setGame(toggleTile(game, tile, {
@@ -38,7 +36,7 @@ export function Game() {
       <GameHeader game={game}>
         <button onClick={onHint} title="Show hint"><TbBulb/></button>
         <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
-        <ThemeButton onClick={onThemeChange} theme={nextTheme.id} title="Switch theme"/>
+        <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
       <Details horizontal={true} details={{
         Deck: game.deck.length,
