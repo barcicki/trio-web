@@ -51,6 +51,7 @@ export function Rules() {
       </ul>
 
       <div className="rules-options">
+        <Link className="button" to="../">Home</Link>
         <Link className="button" to="../practice/endless">Practice finding Trios</Link>
       </div>
     </main>

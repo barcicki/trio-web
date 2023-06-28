@@ -1,6 +1,12 @@
 import { createCore } from '@/game/core.js';
 import { generateId, generateIdWithRandom, getSeededRandom, shuffle, shuffleWithRandom } from '@/game/utils.js';
 
+export const GameModes = {
+  SINGLE: 'game',
+  PUZZLE: 'puzzle',
+  PRACTICE: 'practice'
+};
+
 const HASH_SEPARATOR = ';';
 
 const { getDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray, getMatchError } = createCore({
@@ -117,17 +123,6 @@ export function stopGame(state) {
   };
 }
 
-
-export function loadGame(key) {
-  const result = localStorage.getItem(key);
-
-  return result && JSON.parse(result);
-}
-
-export function saveGame(key, game) {
-  return localStorage.setItem(key, JSON.stringify(stopGame(game)));
-}
-
 export function toggleTile(state, target, options) {
   const newState = handleToggleTile(state, target);
 
@@ -151,7 +146,10 @@ export function toggleTile(state, target, options) {
 
   newState.deck = newDeck;
   newState.table = newTable;
-  newState.found.push(newState.selected);
+  newState.found = [
+    ...newState.found,
+    newState.selected
+  ];
   newState.selected = [];
 
   if (!hasMatch(newTable)) {
@@ -195,7 +193,10 @@ export function togglePuzzleTile(state, target, options) {
     return newState;
   }
 
-  newState.found.push(index);
+  newState.found = [
+    ...newState.found,
+    index
+  ];
 
   onFind?.(selected, index);
 
@@ -276,7 +277,7 @@ export function shuffleTable(state) {
   };
 }
 
-export function getHint(state) {
+export function showHint(state) {
   const { selected, table } = state;
 
   if (selected.length === 0) {
@@ -300,7 +301,7 @@ export function getHint(state) {
         usedHints: state.usedHints + 1
       };
     } else {
-      return getHint(toggleTile(state, selectedTile));
+      return showHint(toggleTile(state, selectedTile));
     }
   }
 

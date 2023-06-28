@@ -9,8 +9,11 @@ import { PracticeIntro } from '@/views/PracticeIntro.jsx';
 import { Rules } from '@/views/Rules.jsx';
 import { Practice } from '@/views/Practice.jsx';
 
-import { createGame, createPractice, createPuzzle, loadGame, startGame, startPractice } from '@/game/game.js';
+import { GameModes, createGame, createPractice, createPuzzle, startGame, startPractice } from '@/game/game.js';
 import { generateId } from '@/game/utils.js';
+import { store } from '@/store.js';
+import { setGame } from '@/reducers/games.js';
+import { loadData } from '@/utils/storage.js';
 
 export const routes = [
   {
@@ -29,7 +32,7 @@ export const routes = [
         path: '',
         element: <GameIntro/>,
         loader() {
-          return loadGame('game');
+          return loadData(GameModes.SINGLE);
         }
       },
       {
@@ -41,7 +44,7 @@ export const routes = [
       {
         path: 'continue',
         loader() {
-          const savedGame = loadGame('game');
+          const savedGame = loadData(GameModes.SINGLE);
 
           if (!savedGame || savedGame.ended) {
             return redirect('../new');
@@ -53,13 +56,16 @@ export const routes = [
       {
         path: ':seed',
         loader({ params }) {
-          const savedGame = loadGame('game');
+          const savedGame = loadData(GameModes.SINGLE);
+          const game = savedGame?.seed === params.seed ? savedGame : createGame(params.seed);
+          const result = startGame(game);
 
-          if (savedGame?.seed === params.seed) {
-            return startGame(savedGame);
-          }
+          store.dispatch(setGame({
+            key: GameModes.SINGLE,
+            value: result
+          }));
 
-          return startGame(createGame(params.seed));
+          return result;
         },
         element: <Game/>
       }
@@ -72,7 +78,7 @@ export const routes = [
         path: '',
         element: <PuzzleIntro/>,
         loader() {
-          return loadGame('puzzle');
+          return loadData('puzzle');
         }
       },
       {
@@ -84,7 +90,7 @@ export const routes = [
       {
         path: 'continue',
         loader() {
-          const savedGame = loadGame('puzzle');
+          const savedGame = loadData(GameModes.PUZZLE);
 
           if (!savedGame || savedGame.ended) {
             return redirect('../new');
@@ -96,13 +102,16 @@ export const routes = [
       {
         path: ':seed',
         loader({ params }) {
-          const savedGame = loadGame('puzzle');
+          const savedGame = loadData(GameModes.PUZZLE);
+          const game = savedGame?.seed === params.seed ? savedGame : createPuzzle(params.seed);
+          const result = startGame(game);
 
-          if (savedGame?.seed === params.seed) {
-            return startGame(savedGame);
-          }
+          store.dispatch(setGame({
+            key: GameModes.PUZZLE,
+            value: result
+          }));
 
-          return startGame(createPuzzle(params.seed));
+          return result;
         },
         element: <Puzzle/>
       }
@@ -119,14 +128,28 @@ export const routes = [
         path: 'endless',
         element: <Practice/>,
         loader() {
-          return startPractice(createPractice(), 0);
+          const game = startPractice(createPractice(), 0);
+
+          store.dispatch(setGame({
+            key: GameModes.PRACTICE,
+            value: game
+          }));
+
+          return game;
         }
       },
       {
         path: 'speed',
         element: <Practice/>,
         loader() {
-          return startPractice(createPractice(), 60000);
+          const game = startPractice(createPractice(), 60000);
+
+          store.dispatch(setGame({
+            key: GameModes.PRACTICE,
+            value: game
+          }));
+
+          return game;
         }
       }
     ]

@@ -7,29 +7,29 @@ import { GameHeader } from '@/components/GameHeader.jsx';
 import { Details } from '@/components/Details.jsx';
 import { GameView } from '@/components/GameView.jsx';
 import { GameEnd } from '@/components/GameEnd.jsx';
-import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { useTheme } from '@/hooks/useTheme.js';
-import { getHint, getMatches,  shuffleTable, toggleTile } from '@/game/game.js';
+import { useGame } from '@/hooks/useGame.js';
+import { GameModes, getMatches } from '@/game/game.js';
 import { toastErrors } from '@/utils/toast.js';
 
 import './game.css';
 
 export function Game() {
-  const [game, setGame] = useSavedGame('game');
+  const [game, api] = useGame(GameModes.SINGLE);
   const [theme, nextTheme, changeTheme] = useTheme();
   const tableEl = useRef(null);
 
   const matches = getMatches(game.table);
 
-  const onHint = useCachedCallback(() => setGame(getHint(game)));
-  const onReorder = useCachedCallback(() => setGame(shuffleTable(game)));
-  const onSelect = useCachedCallback((tile) => setGame(toggleTile(game, tile, {
+  const onHint = useCachedCallback(() => api.showHint());
+  const onReorder = useCachedCallback(() => api.shuffleTable());
+  const onSelect = useCachedCallback((tile) => api.toggleTile(tile, {
     onMiss(miss) {
       tableEl.current.shakeTiles(miss);
       toastErrors(miss, theme);
     }
-  })));
+  }));
 
   return (
     <GameView className="game limited" game={game} EndGame={GameEnd}>

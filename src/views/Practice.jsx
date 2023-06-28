@@ -6,29 +6,29 @@ import { PracticeEnd } from '@/components/PracticeEnd.jsx';
 import { TilesTable } from '@/components/TilesTable.jsx';
 import { Tile } from '@/components/Tile.jsx';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
-import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useTimeout } from '@/hooks/useTimeout.js';
+import { useGame } from '@/hooks/useGame.js';
 import { useTheme } from '@/hooks/useTheme.js';
-import { endPractice, togglePracticeTile } from '@/game/game.js';
 import { toastErrors } from '@/utils/toast.js';
+import { GameModes } from '@/game/game.js';
 
 import './Practice.css';
 
 export function Practice({ limit }) {
-  const [practice, setPractice] = useSavedGame('practice');
+  const [practice, api] = useGame(GameModes.PRACTICE);
   const [theme, nextTheme, changeTheme] = useTheme();
   const tableEl = useRef();
 
-  const onSelect = useCachedCallback((tile) => setPractice(togglePracticeTile(practice, tile, {
+  const onSelect = useCachedCallback((tile) => api.togglePracticeTile(tile, {
     onMiss(tile, tiles) {
       tableEl.current.shakeTile(tile);
       toastErrors(tiles, theme);
     }
-  })));
+  }));
 
   useTimeout(() => {
     if (practice.remaining > 0) {
-      setPractice(endPractice(practice));
+      api.endPractice();
     }
   }, practice.remaining);
 

@@ -7,21 +7,21 @@ import { TilesTable } from '@/components/TilesTable.jsx';
 import { TilesList } from '@/components/TilesList.jsx';
 import { GameView } from '@/components/GameView.jsx';
 import { PuzzleEnd } from '@/components/PuzzleEnd.jsx';
-import { useSavedGame } from '@/hooks/useSavedGame.js';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
-import { shuffleTable, togglePuzzleTile } from '@/game/game.js';
+import { useTheme } from '@/hooks/useTheme.js';
+import { useGame } from '@/hooks/useGame.js';
 import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
 
 import './Puzzle.css';
-import { useTheme } from '@/hooks/useTheme.js';
+import { GameModes } from '@/game/game.js';
 
 export function Puzzle() {
-  const [puzzle, setPuzzle] = useSavedGame('puzzle');
+  const [puzzle, api] = useGame(GameModes.PUZZLE);
   const [theme, nextTheme, changeTheme] = useTheme();
   const tableEl = useRef(null);
 
-  const onReorder = useCachedCallback(() => setPuzzle(shuffleTable(puzzle)));
-  const onSelect = useCachedCallback((tile) => setPuzzle(togglePuzzleTile(puzzle, tile, {
+  const onReorder = useCachedCallback(() => api.shuffleTable());
+  const onSelect = useCachedCallback((tile) => api.togglePuzzleTile(tile, {
     onMiss(miss) {
       tableEl.current.shakeTiles(miss);
       toastErrors(miss, theme);
@@ -30,7 +30,7 @@ export function Puzzle() {
       tableEl.current.shakeTiles(tiles);
       toastAlreadyFound();
     }
-  })));
+  }));
 
   const matches = puzzle.matches.map((tiles, index) => {
     const found = puzzle.found.includes(index);
