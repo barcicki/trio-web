@@ -32,7 +32,7 @@ export const routes = [
         path: '',
         element: <GameIntro/>,
         loader() {
-          return loadData(GameModes.SINGLE);
+          return loadData(GameModes.SINGLE) || null;
         }
       },
       {
@@ -78,7 +78,7 @@ export const routes = [
         path: '',
         element: <PuzzleIntro/>,
         loader() {
-          return loadData('puzzle');
+          return loadData('puzzle') || null;
         }
       },
       {
