@@ -35,6 +35,11 @@
   place-content: center;
 }
 
+.intro-hint {
+  margin-bottom: .5em;
+  text-align: center;
+}
+
 @media (max-aspect-ratio: 1/1) {
   .intro-options {
     display: flex;

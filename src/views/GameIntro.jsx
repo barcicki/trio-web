@@ -18,6 +18,10 @@ export function GameIntro() {
         }}/>
         <Link className="button" to="continue">Continue</Link>
       </IntroTile>}
+      {!savedGame && <IntroTile>
+        <p className="intro-hint">Is this your first game? Consider practicing finding <strong>trios</strong> first.</p>
+        <Link className="button" to="../practice/endless">Practice</Link>
+      </IntroTile>}
       <IntroTile>
         <Link className="button" to="new">{savedGame ? 'New game' : 'Start'}</Link>
       </IntroTile>
