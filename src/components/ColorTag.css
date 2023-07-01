@@ -1,0 +1,11 @@
+.button.color-tag {
+  border: 4px solid var(--bg-button);
+}
+
+.button.color-tag:not(.clickable) {
+  cursor: default;
+}
+
+.button.color-tag:hover:not(.clickable) {
+  border-color: var(--bg-button);
+}

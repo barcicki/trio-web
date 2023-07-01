@@ -28,7 +28,7 @@ export function Practice({ limit }) {
 
   useTimeout(() => {
     if (practice.remaining > 0) {
-      api.endPractice();
+      api.endGame();
     }
   }, practice.remaining);
 

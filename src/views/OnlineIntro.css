@@ -1,0 +1,33 @@
+.online-profile {
+  grid-column: 1 / span 2;
+  flex-direction: row;
+  place-content: center;
+  place-items: center;
+  gap: 1em;
+}
+
+.online-mode {
+  grid-row: 2;
+}
+
+.online-game-code-input {
+  font-size: 1.5em;
+  max-width: 100%;
+  margin-bottom: .5em;
+  background-color: #bbb;
+}
+
+.online-player-name-input {
+  font-size: 1.2em;
+}
+
+.online-game-code {
+  text-transform: uppercase;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.online-game-link {
+  font-size: 0.9em;
+  margin-bottom: .5em;
+}

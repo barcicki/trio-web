@@ -10,10 +10,14 @@
   gap: .2em;
 }
 
-.game-header-actions button {
+.game-header-actions button,
+.game-header-actions .button {
   display: flex;
   place-content: center;
   place-items: center;
+}
+
+.game-header-actions button {
   padding: 0.3em 0.6em;
   font-size: 1.5em;
 }

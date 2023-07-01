@@ -1,5 +1,5 @@
-import { createCore } from '@/game/core.js';
-import { generateId, generateIdWithRandom, getSeededRandom, shuffle, shuffleWithRandom } from '@/game/utils.js';
+import { createCore } from './core.js';
+import { generateId, generateIdWithRandom, getSeededRandom, shuffle, shuffleWithRandom } from './utils.js';
 
 export const GameModes = {
   SINGLE: 'game',
@@ -13,6 +13,61 @@ const { getDeck, isMatch, hasMatch, getMatches, getMatchingTile, toStyleArray, g
   values: ['a', 'b', 'c'],
   totalFeatures: 4
 });
+
+export function createServerGame(seed = generateId()) {
+  const initialDeck = shuffle(getDeck(), seed);
+  const [table, deck] = pickTable(initialDeck);
+
+  return {
+    seed,
+    deck,
+    table,
+    players: [],
+    started: false,
+    ended: false,
+    duration: 0
+  };
+}
+
+export function updateGame(prev, next) {
+  if (!prev) {
+    return {
+      ...next,
+      selected: []
+    };
+  }
+
+  const newSelected = prev.selected.filter((t) => next.table.includes(t));
+  const newTable = updateTable(prev.table, next.table);
+
+  return {
+    ...next,
+    selected: newSelected,
+    table: newTable
+  };
+}
+
+function updateTable(prev, next) {
+  const missing = next.filter((t) => !prev.includes(t));
+  const result = [];
+
+  prev.forEach((tile) => {
+    if (next.includes(tile)) {
+      result.push(tile);
+    } else if (missing.length) {
+      result.push(missing.shift());
+    }
+  });
+
+  return result.concat(missing);
+}
+
+export function updatePlayers(state, players) {
+  return {
+    ...state,
+    players
+  };
+}
 
 export function createGame(seed = generateId()) {
   const initialDeck = shuffle(getDeck(), seed);
@@ -108,7 +163,7 @@ export function startPractice(state, limit) {
   };
 }
 
-export function endPractice(state) {
+export function endGame(state) {
   return {
     ...stopGame(state),
     ended: true
@@ -123,6 +178,30 @@ export function stopGame(state) {
   };
 }
 
+export function toggleOnlineTile(state, target, options) {
+  const newState = handleToggleTile(state, target);
+
+  if (newState.selected.length !== 3) {
+    return newState;
+  }
+
+  const onFind = options?.onFind;
+  const onMiss = options?.onMiss;
+
+  if (!isMatch(newState.selected)) {
+    onMiss?.(newState.selected);
+
+    return {
+      ...state,
+      selected: []
+    };
+  }
+
+  onFind?.(newState.selected);
+
+  return newState;
+}
+
 export function toggleTile(state, target, options) {
   const newState = handleToggleTile(state, target);
 
@@ -132,7 +211,6 @@ export function toggleTile(state, target, options) {
 
   const onFind = options?.onFind;
   const onMiss = options?.onMiss;
-  const onEnd = options?.onEnd;
 
   if (!isMatch(newState.selected)) {
     onMiss?.(newState.selected);
@@ -153,14 +231,20 @@ export function toggleTile(state, target, options) {
   newState.selected = [];
 
   if (!hasMatch(newTable)) {
-    newState.duration = Date.now() - newState.started;
-    newState.started = false;
-    newState.ended = true;
-
-    onEnd?.(newState);
+    return endGame(newState);
   }
 
   return newState;
+}
+
+export function replaceTiles(state, tiles) {
+  const [newTable, newDeck] = replaceTable(state.deck, state.table, tiles);
+
+  return {
+    ...state,
+    deck: newDeck,
+    table: newTable
+  };
 }
 
 export function togglePuzzleTile(state, target, options) {
@@ -173,7 +257,6 @@ export function togglePuzzleTile(state, target, options) {
   const onFind = options?.onFind;
   const onMiss = options?.onMiss;
   const onAlreadyFound = options?.onAlreadyFound;
-  const onEnd = options?.onEnd;
 
   if (!isMatch(newState.selected)) {
     onMiss?.(newState.selected);
@@ -201,11 +284,7 @@ export function togglePuzzleTile(state, target, options) {
   onFind?.(selected, index);
 
   if (newState.found.length === newState.matches.length) {
-    newState.duration = Date.now() - newState.started;
-    newState.started = false;
-    newState.ended = true;
-
-    onEnd?.(newState);
+    return endGame(newState);
   }
 
   return newState;
@@ -329,7 +408,7 @@ function pickTable(deck, minTiles = 12, maxTiles = 20) {
   return [newTable, newDeck];
 }
 
-function replaceTable(deck, table, selected, minTiles = 12, maxTiles = 20) {
+export function replaceTable(deck, table, selected, minTiles = 12, maxTiles = 20) {
   const newDeck = deck.slice();
   const newTable = [];
   let index = 0;

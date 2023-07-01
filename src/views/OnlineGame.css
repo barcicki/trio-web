@@ -1,0 +1,24 @@
+.online-status {
+  flex: 1;
+  margin: 0 .5em .5em;
+  display: grid;
+  place-content: center;
+  place-items: center;
+  background: var(--bg-lighter-color);
+  border-radius: 1em;
+  gap: 1em;
+}
+
+.online-players {
+  display: flex;
+  gap: .5em;
+  font-size: 1.8em;
+}
+
+.color-tag.online-player {
+  padding: .4em .6em;
+  display: inline-flex;
+  gap: .3em;
+  place-content: center;
+  place-items: center;
+}

@@ -1,13 +1,16 @@
 import { useMemo, useRef } from 'react';
 import {
-  endPractice,
+  endGame,
   showHint,
   shuffleTable,
   startGame,
   stopGame,
+  toggleOnlineTile,
   togglePracticeTile,
   togglePuzzleTile,
-  toggleTile
+  toggleTile,
+  updateGame,
+  updatePlayers
 } from '@/game/game.js';
 
 const PUBLIC_GAME_API = {
@@ -15,10 +18,13 @@ const PUBLIC_GAME_API = {
   stopGame,
   showHint,
   toggleTile,
+  toggleOnlineTile,
   togglePuzzleTile,
   togglePracticeTile,
   shuffleTable,
-  endPractice
+  endGame,
+  updateGame,
+  updatePlayers
 };
 
 /**

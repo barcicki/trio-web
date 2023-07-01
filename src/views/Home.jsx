@@ -26,7 +26,7 @@ export function Home() {
       </div>
       <div className="home-menu">
         <Link className="button" to="game">Play</Link>
-        <Link className="button disabled">Play online</Link>
+        <Link className="button" to="online">Play online</Link>
         <Link className="button" to="puzzle">Puzzle</Link>
         <Link className="button" to="practice">Practice</Link>
         <Link className="button" to="rules">Rules</Link>

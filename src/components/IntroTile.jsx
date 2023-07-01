@@ -1,5 +1,5 @@
 import './IntroTile.css';
 
-export function IntroTile({ children }) {
-  return <section className="intro-tile">{children}</section>;
+export function IntroTile({ className, children }) {
+  return <section className={`intro-tile ${className || ''}`}>{children}</section>;
 }

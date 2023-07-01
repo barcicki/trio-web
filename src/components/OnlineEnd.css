@@ -1,0 +1,6 @@
+.online-winner,
+.online-others {
+  margin-bottom: 1em;
+  display: grid;
+  place-items: center;
+}

@@ -8,6 +8,8 @@ import { PuzzleIntro } from '@/views/PuzzleIntro.jsx';
 import { PracticeIntro } from '@/views/PracticeIntro.jsx';
 import { Rules } from '@/views/Rules.jsx';
 import { Practice } from '@/views/Practice.jsx';
+import { OnlineIntro } from '@/views/OnlineIntro.jsx';
+import { OnlineGame } from '@/views/OnlineGame.jsx';
 
 import { GameModes, createGame, createPractice, createPuzzle, startGame, startPractice } from '@/game/game.js';
 import { generateId } from '@/game/utils.js';
@@ -58,14 +60,8 @@ export const routes = [
         loader({ params }) {
           const savedGame = loadData(GameModes.SINGLE);
           const game = savedGame?.seed === params.seed ? savedGame : createGame(params.seed);
-          const result = startGame(game);
 
-          store.dispatch(setGame({
-            key: GameModes.SINGLE,
-            value: result
-          }));
-
-          return result;
+          return saveGameInStore(GameModes.SINGLE, startGame(game));
         },
         element: <Game/>
       }
@@ -104,14 +100,8 @@ export const routes = [
         loader({ params }) {
           const savedGame = loadData(GameModes.PUZZLE);
           const game = savedGame?.seed === params.seed ? savedGame : createPuzzle(params.seed);
-          const result = startGame(game);
 
-          store.dispatch(setGame({
-            key: GameModes.PUZZLE,
-            value: result
-          }));
-
-          return result;
+          return saveGameInStore(GameModes.PUZZLE, startGame(game));
         },
         element: <Puzzle/>
       }
@@ -128,34 +118,44 @@ export const routes = [
         path: 'endless',
         element: <Practice/>,
         loader() {
-          const game = startPractice(createPractice(), 0);
-
-          store.dispatch(setGame({
-            key: GameModes.PRACTICE,
-            value: game
-          }));
-
-          return game;
+          return saveGameInStore(GameModes.PRACTICE, startPractice(createPractice(), 0));
         }
       },
       {
         path: 'speed',
         element: <Practice/>,
         loader() {
-          const game = startPractice(createPractice(), 60000);
-
-          store.dispatch(setGame({
-            key: GameModes.PRACTICE,
-            value: game
-          }));
-
-          return game;
+          return saveGameInStore(GameModes.PRACTICE, startPractice(createPractice(), 60000));
         }
       }
     ]
   },
   {
     path: 'online',
-    element: <div>Online game</div>
+    children: [
+      {
+        path: '',
+        element: <OnlineIntro/>,
+        loader() {
+          return generateId();
+        }
+      },
+      {
+        path: ':roomId',
+        element: <OnlineGame/>,
+        loader({ params }) {
+          return params.roomId;
+        }
+      }
+    ]
   }
 ];
+
+function saveGameInStore(mode, game) {
+  store.dispatch(setGame({
+    key: mode,
+    value: game
+  }));
+
+  return game;
+}
