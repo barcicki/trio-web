@@ -11,17 +11,16 @@ import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { useTheme } from '@/hooks/useTheme.js';
 import { useGame } from '@/hooks/useGame.js';
 import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
+import { GameModes } from '@game/trio';
 
 import './Puzzle.css';
-import { GameModes } from '@/game/game.js';
 
 export function Puzzle() {
   const [puzzle, api] = useGame(GameModes.PUZZLE);
   const [theme, nextTheme, changeTheme] = useTheme();
   const tableEl = useRef(null);
 
-  const onReorder = useCachedCallback(() => api.shuffleTable());
-  const onSelect = useCachedCallback((tile) => api.togglePuzzleTile(tile, {
+  const onSelect = useCachedCallback((tile) => api.toggle(tile, {
     onMiss(miss) {
       tableEl.current.shakeTiles(miss);
       toastErrors(miss, theme);
@@ -42,7 +41,7 @@ export function Puzzle() {
   return (
     <GameView className="puzzle limited" game={puzzle} EndGame={PuzzleEnd}>
       <GameHeader game={puzzle}>
-        <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
+        <button onClick={api.reorder} title="Reorder tiles"><TbArrowsShuffle/></button>
         <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
       <div className="puzzle-matches">{matches}</div>

@@ -4,8 +4,8 @@ import { saveData } from '@/utils/storage.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIntervalEffect } from '@/hooks/useIntervalEffect.js';
 import { useVisibilityChangeEffect } from '@/hooks/useVisibilityChangeEffect.js';
-import { startGame, stopGame } from '@/game/game.js';
 import { useGameApi } from '@/hooks/useGameApi.js';
+import { startGame, stopGame} from '@game/trio/time.js';
 
 /**
  * Returns game state and API for controlling it
@@ -25,12 +25,12 @@ export function useGame(key) {
   const selector = useCallback((state) => state.games[key], [key]);
   const state = useSelector(selector);
 
-  // helpers
   const updateInStore = useCallback((state) => dispatch(setGame({ key, value: state })), [key, dispatch]);
-  const updateInLocalStorage = useCallback(() => saveData(key, stopGame(state)), [key, state]);
 
   // create unchangeable api object reference witch access to dynamic `state` and `update`
-  const api = useGameApi(state, updateInStore);
+  const api = useGameApi(key, state, updateInStore);
+
+  const updateInLocalStorage = useCallback(() => saveData(key, stopGame(state)), [key, state]);
 
   // bind effects
   useEffect(updateInLocalStorage, [updateInLocalStorage]);

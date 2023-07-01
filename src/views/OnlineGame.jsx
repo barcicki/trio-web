@@ -13,6 +13,7 @@ import { OnlineEnd } from '@/components/OnlineEnd.jsx';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { usePlayer } from '@/reducers/player.js';
 import { toastErrors } from '@/utils/toast.js';
+import { GameModes } from '@game/trio';
 
 import './OnlineGame.css';
 
@@ -24,9 +25,9 @@ export function OnlineGame() {
 
   const [theme, nextTheme, changeTheme] = useTheme();
   const [game, setGame] = useState();
-  const api = useGameApi(game, setGame);
+  const api = useGameApi(GameModes.ONLINE, game, setGame);
 
-  const onSelect = useCachedCallback((tile) => api.toggleOnlineTile(tile, {
+  const onSelect = useCachedCallback((tile) => api.toggle(tile, {
     onMiss(miss) {
       tableEl.current.shakeTiles(miss);
       toastErrors(miss, theme);
@@ -40,8 +41,8 @@ export function OnlineGame() {
   const player = game?.players?.find((p) => p.id === localPlayer?.id);
 
   useEffect(() => {
-    socket.on('update-game', api.updateGame);
-    socket.on('update-players', api.updatePlayers);
+    socket.on('update-game', api.update);
+    socket.on('update-players', (players) => api.update({ players }));
 
     socket.emit('hello', localPlayer);
     socket.emit('join-game', { roomId });
@@ -56,7 +57,7 @@ export function OnlineGame() {
   return (
     <GameView className="game online limited" game={game} EndGame={OnlineEnd}>
       <GameHeader game={game}>
-        <button onClick={api.shuffleTable} title="Reorder tiles"><TbArrowsShuffle/></button>
+        <button onClick={api.reorder} title="Reorder tiles"><TbArrowsShuffle/></button>
         <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
         <ColorTag className="player" color={player?.color}>{player?.score}</ColorTag>
         {game?.players
@@ -70,7 +71,7 @@ export function OnlineGame() {
         <div className="online-players">
           {game?.players.map((p) => <ColorTag key={p.id} className="online-player" color={p?.color}>{p.ready ? <TbCircleCheck/> : <TbProgress/>} {p.name}</ColorTag>)}
         </div>
-        {!player?.ready && <button onClick={onReady}>I'm ready</button>}
+        {!player?.ready && <button onClick={onReady}>I&apos;m ready</button>}
       </div>}
       {game?.started && <TilesTable theme={theme.id} tiles={game.table} selected={game.selected} onSelect={onSelect} ref={tableEl}/>}
     </GameView>

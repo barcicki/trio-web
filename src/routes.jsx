@@ -11,8 +11,9 @@ import { Practice } from '@/views/Practice.jsx';
 import { OnlineIntro } from '@/views/OnlineIntro.jsx';
 import { OnlineGame } from '@/views/OnlineGame.jsx';
 
-import { GameModes, createGame, createPractice, createPuzzle, startGame, startPractice } from '@/game/game.js';
-import { generateId } from '@/game/utils.js';
+import { GameModes, GameApis } from '@game/trio';
+import { generateId } from '@game/utils';
+
 import { store } from '@/store.js';
 import { setGame } from '@/reducers/games.js';
 import { loadData } from '@/utils/storage.js';
@@ -58,10 +59,7 @@ export const routes = [
       {
         path: ':seed',
         loader({ params }) {
-          const savedGame = loadData(GameModes.SINGLE);
-          const game = savedGame?.seed === params.seed ? savedGame : createGame(params.seed);
-
-          return saveGameInStore(GameModes.SINGLE, startGame(game));
+          return createOrLoadGame(GameModes.SINGLE, params.seed);
         },
         element: <Game/>
       }
@@ -98,10 +96,7 @@ export const routes = [
       {
         path: ':seed',
         loader({ params }) {
-          const savedGame = loadData(GameModes.PUZZLE);
-          const game = savedGame?.seed === params.seed ? savedGame : createPuzzle(params.seed);
-
-          return saveGameInStore(GameModes.PUZZLE, startGame(game));
+          return createOrLoadGame(GameModes.PUZZLE, params.seed);
         },
         element: <Puzzle/>
       }
@@ -118,14 +113,14 @@ export const routes = [
         path: 'endless',
         element: <Practice/>,
         loader() {
-          return saveGameInStore(GameModes.PRACTICE, startPractice(createPractice(), 0));
+          return createGameWithLimit(GameModes.PRACTICE, 0);
         }
       },
       {
         path: 'speed',
         element: <Practice/>,
         loader() {
-          return saveGameInStore(GameModes.PRACTICE, startPractice(createPractice(), 60000));
+          return createGameWithLimit(GameModes.PRACTICE, 60000);
         }
       }
     ]
@@ -150,6 +145,20 @@ export const routes = [
     ]
   }
 ];
+
+function createOrLoadGame(mode, seed) {
+  const api = GameApis[mode];
+  const savedGame = loadData(mode);
+  const game = savedGame?.seed === seed ? savedGame : api.create(seed);
+
+  return saveGameInStore(mode, api.start(game));
+}
+
+function createGameWithLimit(mode, limit) {
+  const api = GameApis[mode];
+
+  return saveGameInStore(mode, api.start(api.create(), limit));
+}
 
 function saveGameInStore(mode, game) {
   store.dispatch(setGame({

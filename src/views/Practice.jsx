@@ -10,7 +10,7 @@ import { useTimeout } from '@/hooks/useTimeout.js';
 import { useGame } from '@/hooks/useGame.js';
 import { useTheme } from '@/hooks/useTheme.js';
 import { toastErrors } from '@/utils/toast.js';
-import { GameModes } from '@/game/game.js';
+import { GameModes } from '@game/trio';
 
 import './Practice.css';
 
@@ -19,7 +19,7 @@ export function Practice({ limit }) {
   const [theme, nextTheme, changeTheme] = useTheme();
   const tableEl = useRef();
 
-  const onSelect = useCachedCallback((tile) => api.togglePracticeTile(tile, {
+  const onSelect = useCachedCallback((tile) => api.toggle(tile, {
     onMiss(tile, tiles) {
       tableEl.current.shakeTile(tile);
       toastErrors(tiles, theme);
@@ -28,7 +28,7 @@ export function Practice({ limit }) {
 
   useTimeout(() => {
     if (practice.remaining > 0) {
-      api.endGame();
+      api.check();
     }
   }, practice.remaining);
 

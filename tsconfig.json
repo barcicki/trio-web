@@ -3,10 +3,12 @@
     "baseUrl": ".",
     "allowJs": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@game/*": ["./game/*"]
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "game/**/*",
   ]
 }

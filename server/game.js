@@ -1,10 +1,5 @@
-import {
-  createServerGame,
-  endGame, hasMatch,
-  isMatch,
-  replaceTiles,
-  startGame
-} from '../src/game/game.js';
+import * as serverGame from '../game/trio/online';
+import { isMatch } from '../game/trio';
 
 export function configureGameSocket(server) {
   const games = {};
@@ -33,7 +28,7 @@ export function configureGameSocket(server) {
 
     socket.on('join-game', ({ roomId }) => {
       if (!games[roomId]) {
-        games[roomId] = createServerGame();
+        games[roomId] = serverGame.create();
       }
 
       const game = games[roomId];
@@ -65,7 +60,7 @@ export function configureGameSocket(server) {
         socket.to(roomId).emit('update-players', game.players);
 
         if (game.players.every((p) => p.ready)) {
-          Object.assign(game, startGame(game));
+          Object.assign(game, serverGame.start(game));
           socket.emit('update-game', game);
           socket.to(roomId).emit('update-game', game);
         }
@@ -84,11 +79,8 @@ export function configureGameSocket(server) {
 
       if (canCheck && isMatch(tiles)) {
         player.score += 1;
-        Object.assign(game, replaceTiles(game, tiles));
-
-        if (!hasMatch(game.table)) {
-          Object.assign(game, endGame(game));
-        }
+        Object.assign(game, serverGame.replace(game, tiles));
+        Object.assign(game, serverGame.check(game));
 
         socket.emit('update-game', game);
         socket.to(roomId).emit('update-game', game);

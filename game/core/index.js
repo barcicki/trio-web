@@ -1,4 +1,4 @@
-import { permutation, combination } from './utils.js';
+import { permutation, combination } from '../utils';
 
 export function createCore({
   totalFeatures = 4,

@@ -34,7 +34,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src')
+      '@': resolve(__dirname, './src'),
+      '@game': resolve(__dirname, './game')
     }
   }
 });

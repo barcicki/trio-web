@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { generateColor, generateId } from '@/game/utils.js';
+import { generateColor, generateId } from '@game/utils';
 import { useSelector } from 'react-redux';
 
 export function usePlayer() {

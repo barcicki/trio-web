@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Tile } from '@/components/Tile.jsx';
-import { getRandomTile } from '@/game/game.js';
+import { getRandomTile } from '@game/trio';
 
 import './Home.css';
 import { Link } from 'react-router-dom';

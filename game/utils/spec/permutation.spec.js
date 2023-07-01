@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { combination } from '@/game/utils.js';
+import { permutation } from '../math.js';
 
 const TEST_CASES = [
   {
@@ -11,13 +11,19 @@ const TEST_CASES = [
   {
     input: ['a', 'b'],
     expected: [
-      ['a', 'b']
+      ['a', 'b'],
+      ['b', 'a'],
     ]
   },
   {
     input: ['a', 'b', 'c'],
     expected: [
-      ['a', 'b', 'c']
+      ['a', 'b', 'c'],
+      ['a', 'c', 'b'],
+      ['b', 'a', 'c'],
+      ['b', 'c', 'a'],
+      ['c', 'a', 'b'],
+      ['c', 'b', 'a']
     ]
   },
   {
@@ -26,7 +32,10 @@ const TEST_CASES = [
     expected: [
       ['a', 'b'],
       ['a', 'c'],
-      ['b', 'c']
+      ['b', 'a'],
+      ['b', 'c'],
+      ['c', 'a'],
+      ['c', 'b']
     ]
   },
   {
@@ -45,18 +54,24 @@ const TEST_CASES = [
       ['a', 'b'],
       ['a', 'c'],
       ['a', 'd'],
+      ['b', 'a'],
       ['b', 'c'],
       ['b', 'd'],
-      ['c', 'd']
+      ['c', 'a'],
+      ['c', 'b'],
+      ['c', 'd'],
+      ['d', 'a'],
+      ['d', 'b'],
+      ['d', 'c']
     ]
   }
 ];
 
 describe('utils', () => {
-  describe('combination', () => {
+  describe('permutation', () => {
     TEST_CASES.forEach(({ input, expected, size }) => {
-      test(`checks combination of ${JSON.stringify(input)} with size=${size ?? input.length}`, () => {
-        expect(Array.from(combination(input, size))).toEqual(expected);
+      test(`checks permutation of ${JSON.stringify(input)} with size=${size ?? input.length}`, () => {
+        expect(Array.from(permutation(input, size))).toEqual(expected);
       });
     });
   });

@@ -10,7 +10,7 @@ import { GameEnd } from '@/components/GameEnd.jsx';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { useTheme } from '@/hooks/useTheme.js';
 import { useGame } from '@/hooks/useGame.js';
-import { GameModes, getMatches } from '@/game/game.js';
+import { GameModes, getMatches } from '@game/trio';
 import { toastErrors } from '@/utils/toast.js';
 
 import './game.css';
@@ -22,9 +22,7 @@ export function Game() {
 
   const matches = getMatches(game.table);
 
-  const onHint = useCachedCallback(() => api.showHint());
-  const onReorder = useCachedCallback(() => api.shuffleTable());
-  const onSelect = useCachedCallback((tile) => api.toggleTile(tile, {
+  const onSelect = useCachedCallback((tile) => api.toggle(tile, {
     onMiss(miss) {
       tableEl.current.shakeTiles(miss);
       toastErrors(miss, theme);
@@ -34,8 +32,8 @@ export function Game() {
   return (
     <GameView className="game limited" game={game} EndGame={GameEnd}>
       <GameHeader game={game}>
-        <button onClick={onHint} title="Show hint"><TbBulb/></button>
-        <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>
+        <button onClick={api.hint} title="Show hint"><TbBulb/></button>
+        <button onClick={api.reorder} title="Reorder tiles"><TbArrowsShuffle/></button>
         <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
       </GameHeader>
       <Details horizontal={true} details={{

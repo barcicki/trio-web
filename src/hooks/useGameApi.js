@@ -1,42 +1,18 @@
 import { useMemo, useRef } from 'react';
-import {
-  endGame,
-  showHint,
-  shuffleTable,
-  startGame,
-  stopGame,
-  toggleOnlineTile,
-  togglePracticeTile,
-  togglePuzzleTile,
-  toggleTile,
-  updateGame,
-  updatePlayers
-} from '@/game/game.js';
-
-const PUBLIC_GAME_API = {
-  startGame,
-  stopGame,
-  showHint,
-  toggleTile,
-  toggleOnlineTile,
-  togglePuzzleTile,
-  togglePracticeTile,
-  shuffleTable,
-  endGame,
-  updateGame,
-  updatePlayers
-};
+import { GameApis } from '@game/trio';
 
 /**
  * Creates Game API
  * - the API is an object with methods to update game state, which will be generated once (kept same between rerenders)
  * - the methods will always use passed `state` and call `update` with new state
 
+ * @param {string} mode - api mode to get api for
  * @param {object} state - current game state
  * @param {function} update - function to call that receives new state and should know what to do afterwards
  * @returns {object}
  */
-export function useGameApi(state, update) {
+export function useGameApi(mode, state, update) {
+  const api = GameApis[mode];
   const ref = useRef();
 
   ref.current = {
@@ -47,9 +23,9 @@ export function useGameApi(state, update) {
   return useMemo(() => {
     const result = {};
 
-    for (const method in PUBLIC_GAME_API) {
+    for (const method in api) {
       result[method] = (...args) => {
-        const newState = PUBLIC_GAME_API[method](ref.current.state, ...args);
+        const newState = api[method](ref.current.state, ...args);
 
         ref.current.update(newState);
 
@@ -58,5 +34,5 @@ export function useGameApi(state, update) {
     }
 
     return result;
-  }, [ref]);
+  }, [api, ref]);
 }

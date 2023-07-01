@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { createCore } from '@/game/core.js';
+import { createCore } from '../index.js';
 import { MATCH_CASES, TABLE_CASES } from './cases.js';
 
 describe('core', () => {

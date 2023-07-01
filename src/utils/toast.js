@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import { getMatchError } from '@/game/game.js';
+import { getMatchError } from '@game/trio';
 
 export function toastErrors(miss, theme) {
   const invalidFeatures = getMatchError(miss)

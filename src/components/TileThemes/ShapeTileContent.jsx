@@ -1,4 +1,4 @@
-import { toStyleArray } from '@/game/game.js';
+import { toStyleArray } from '@game/trio';
 
 const COLORS = [
   '#729E07',
