@@ -40,7 +40,7 @@ export function stop(state) {
 }
 
 export function check(state) {
-  if (!state.found.length === state.matches.length) {
+  if (state.found.length === state.matches.length) {
     return endGame(state);
   }
 
