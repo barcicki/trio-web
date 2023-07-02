@@ -1,5 +1,5 @@
-import { createCore } from '../core';
-import { shuffle } from '../utils';
+import { createCore } from '../core/index.js';
+import { shuffle } from '../utils/index.js';
 
 const {
   getDeck,

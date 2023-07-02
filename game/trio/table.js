@@ -1,5 +1,5 @@
 import { hasMatch } from './base.js';
-import { shuffle } from '../utils';
+import { shuffle } from '../utils/index.js';
 
 export function pickTable(deck, minTiles = 12, maxTiles = 20) {
   const newDeck = deck.slice();

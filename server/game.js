@@ -1,12 +1,19 @@
-import * as serverGame from '../game/trio/online';
-import { isMatch } from '../game/trio';
+import { Server } from 'socket.io';
+import * as serverGame from '../game/trio/online.js';
+import { isMatch } from '../game/trio/index.js';
 
-export function configureGameSocket(server) {
+export function createTrioSocketServer(httpServer) {
+  const ioServer = new Server(httpServer);
+
+  configureTrioServer(ioServer);
+}
+
+export function configureTrioServer(ioServer) {
   const games = {};
   const players = {};
   const socketsToPlayers = {};
 
-  server.on('connection', (socket) => {
+  ioServer.on('connection', (socket) => {
     socket.on('hello', ({ id, name, color}) => {
       if (!players[id]) {
         players[id] = {
@@ -118,7 +125,7 @@ export function configureGameSocket(server) {
       const game = games[roomId];
 
       if (game.players.some((p) => p.online)) {
-        server.to(roomId).emit('update-game', game);
+        ioServer.to(roomId).emit('update-game', game);
       } else {
         game.abandon = (game.abandon ?? 0) + 1;
       }

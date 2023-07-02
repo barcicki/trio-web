@@ -1,15 +1,20 @@
 /* eslint-env node */
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import socket from './server/plugin.js';
 import { VitePWA } from 'vite-plugin-pwa';
 import { resolve } from 'path';
+import { createTrioSocketServer } from './server/game.js';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    socket(),
+    {
+      name: 'trio',
+      configureServer(server) {
+        createTrioSocketServer(server.httpServer);
+      }
+    },
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
