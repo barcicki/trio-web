@@ -34,7 +34,7 @@ export function configureTrioServer(ioServer) {
     });
 
     socket.on('join-game', ({ roomId }) => {
-      if (!games[roomId]) {
+      if (!games[roomId] || games[roomId].ended) {
         games[roomId] = serverGame.create();
       }
 
@@ -93,7 +93,7 @@ export function configureTrioServer(ioServer) {
         socket.to(roomId).emit('update-game', game);
 
         if (game.ended) {
-          delete games[roomId];
+          ioServer.in(roomId).socketsLeave(roomId);
         }
       }
     });
@@ -124,7 +124,7 @@ export function configureTrioServer(ioServer) {
     for (const roomId in games) {
       const game = games[roomId];
 
-      if (game.players.some((p) => p.online)) {
+      if (game.players.some((p) => p.online) && !game.ended) {
         ioServer.to(roomId).emit('update-game', game);
       } else {
         game.abandon = (game.abandon ?? 0) + 1;

@@ -52,8 +52,6 @@ export function OnlineGame() {
     };
   }, [roomId, socket]);
 
-  console.log(game?.players);
-
   return (
     <GameView className="game online limited" game={game} EndGame={OnlineEnd}>
       <GameHeader game={game}>

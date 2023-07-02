@@ -45,7 +45,7 @@ export function update(state, newState) {
   }
 
   const newSelected = state.selected.filter((t) => newState.table.includes(t));
-  const newTable = updateTable(state.table, newState.table);
+  const newTable = newState.table ? updateTable(state.table, newState.table) : state.table;
 
   return {
     ...newState,
