@@ -74,6 +74,20 @@ export function configureTrioServer(ioServer) {
       }
     });
 
+    socket.on('miss', ({ roomId }) => {
+      const game = games[roomId];
+
+      if (!game || game.ended || !game.started) {
+        return;
+      }
+
+      const player = game?.players.find((p) => p.id === socketsToPlayers[socket.id]);
+
+      if (player) {
+        player.missed += 1;
+      }
+    });
+
     socket.on('check', ({ roomId, tiles }) => {
       const game = games[roomId];
 
@@ -144,6 +158,7 @@ export function configureTrioServer(ioServer) {
       game.players.push({
         id,
         score: 0,
+        missed: 0,
         online: true,
         color: players[id].color,
         name: players[id].name,

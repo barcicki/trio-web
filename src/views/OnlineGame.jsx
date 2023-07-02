@@ -31,6 +31,7 @@ export function OnlineGame() {
     onMiss(miss) {
       tableEl.current.shakeTiles(miss);
       toastErrors(miss, theme);
+      socket.emit('miss', { roomId });
     },
     onFind(tiles) {
       socket.emit('check', { roomId, tiles });
