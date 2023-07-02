@@ -8,7 +8,7 @@ export function GameEnd({ game }) {
       <h1>Well done!</h1>
       <p>You have found all hidden trios.</p>
 
-      <GameTimer game={game}/>
+      <GameTimer className="game-timer-ended" game={game}/>
 
       <Details details={{
         'Trios found': game.found.length,

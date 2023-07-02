@@ -8,7 +8,7 @@ export function PuzzleEnd({ game }) {
       <h1>Well done!</h1>
       <p>You have found all 3 hidden trios.</p>
 
-      <GameTimer game={game}/>
+      <GameTimer className="game-timer-ended" game={game}/>
 
       <Details details={{
         'Miss-clicks': game.missed.length

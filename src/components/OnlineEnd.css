@@ -1,6 +1,55 @@
-.online-winner,
-.online-others {
-  margin-bottom: 1em;
-  display: grid;
+.online-winners {
+  margin: .5em 0 1em;
+  display: flex;
   place-items: center;
+  gap: .5em;
+  font-size: 1.5em;
+}
+
+.online-results {
+  width: calc(100% - 2em);
+  margin: .5em .5em 1em;
+  padding: 1em;
+  display: grid;
+  grid-template-columns: max-content 1fr max-content max-content;
+  background: var(--bg-lighter-color);
+  border-radius: 1em;
+  gap: 1em;
+  align-items: center;
+  font-size: 1.2em;
+  overflow-x: auto;
+}
+
+.online-result-score,
+.online-result-missed {
+  place-self: center;
+}
+
+.online-result-name,
+.online-result-score {
+  font-weight: bold;
+}
+
+.online-result-header {
+  font-size: 0.8em;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.online-result-color.color-tag {
+  width: 3em;
+  height: 3em;
+}
+
+.online-time-result {
+  display: flex;
+  place-items: center;
+  place-self: end;
+  margin-right: 1.5em;
+  gap: .5em;
+}
+
+.online-time-result .game-timer {
+  font-size: 1.2em;
+  font-weight: bold;
 }

@@ -1,7 +1,7 @@
 import { Timer } from '@/components/Timer.jsx';
 
-export function GameTimer({ game }) {
-  return <Timer className="game-timer" {...getTimerProps(game)}/>;
+export function GameTimer({ className, game }) {
+  return <Timer className={`game-timer ${className || ''}`} {...getTimerProps(game)}/>;
 }
 
 function getTimerProps(game) {

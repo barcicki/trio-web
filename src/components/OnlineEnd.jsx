@@ -1,38 +1,45 @@
+import { Fragment } from "react";
 import { Link, useNavigate } from 'react-router-dom';
+import { usePlayer } from "@/reducers/player.js";
 import { GameTimer } from '@/components/GameTimer.jsx';
 import { ColorTag } from '@/components/ColorTag.jsx';
 
 import './OnlineEnd.css';
 
 export function OnlineEnd({ game }) {
+  const localPlayer = usePlayer();
   const navigate = useNavigate();
   const players = game.players.slice().sort((a, b) => b.score - a.score);
   const winners = players.filter((p) => p.score === players[0].score);
-  const others = players.filter((p) => !winners.includes(p));
-
-  const otherPlayers = others?.length ? (
-    <div className="online-others">
-      <h3>Other results:</h3>
-      <div className="online-players">
-        {others.map((p) => <ColorTag key={p.id} color={p.color}>{p.score}</ColorTag>)}
-      </div>
-    </div>
-  ) : '';
+  const isWinner = winners.find((p) => p.id === localPlayer.id);
 
   return (
     <>
-      <h1>Game over!</h1>
+      <h1>{ isWinner ? 'Congratulations!' : 'Game over!' }</h1>
 
-      <GameTimer game={game}/>
-
-      <div className="online-winner">
-        <h2>The winner:</h2>
-        <div className="online-players">
-          {winners.map((p) => <ColorTag key={p.id} color={p.color}>{p.score}</ColorTag>)}
-        </div>
+      <h2>Winners</h2>
+      <div className="online-winners">
+        {winners.map((p) => <ColorTag key={p.id} color={p.color}>{p.name}</ColorTag>)}
       </div>
 
-      {otherPlayers}
+      <p className="online-time-result">
+        Time taken: <GameTimer game={game}/>
+      </p>
+
+      <div className="online-results">
+        <div className="online-result-header online-result-color">Color</div>
+        <div className="online-result-header online-result-name">Player</div>
+        <div className="online-result-header online-result-score">Score</div>
+        <div className="online-result-header online-result-missed">Missed</div>
+        {players.map((player) => (
+          <Fragment key={player.id}>
+            <ColorTag className="online-result-color" color={player.color}/>
+            <div className="online-result-name">{player.name}</div>
+            <div className="online-result-score">{player.score}</div>
+            <div className="online-result-missed">{player.missed}</div>
+          </Fragment>
+        ))}
+      </div>
 
       <div className="end-actions">
         <Link className="button" to="/">Home</Link>
