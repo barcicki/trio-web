@@ -10,7 +10,7 @@ export function Home() {
   const [tiles, setTiles] = useState([
     { theme: 'shapes', tile: 'cbac' },
     { theme: 'shields', tile: 'cbac' },
-    { theme: 'shields', tile: 'babb' },
+    { theme: 'faces', tile: 'abca' },
     { theme: 'shapes', tile: 'bcbac'}
   ]);
 

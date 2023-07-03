@@ -1,6 +1,7 @@
 import { ShapeTileContent } from './ShapeTileContent.jsx';
 import { ShieldTileContent } from './ShieldTileContent.jsx';
 import { UnknownTileContent } from './UnknownTileContent.jsx';
+import { FaceTileContent } from "./FaceTileContent.jsx";
 
 export const THEMES = [
   {
@@ -23,6 +24,17 @@ export const THEMES = [
       'crest type',
       'shield color',
       'crest color'
+    ]
+  },
+  {
+    id: 'faces',
+    label: 'Faces',
+    renderer: FaceTileContent,
+    features: [
+      'skin color',
+      'hair style',
+      'hair color',
+      'eyes color'
     ]
   }
 ];
