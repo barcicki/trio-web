@@ -2,6 +2,7 @@ import { ShapeTileContent } from './ShapeTileContent.jsx';
 import { ShieldTileContent } from './ShieldTileContent.jsx';
 import { UnknownTileContent } from './UnknownTileContent.jsx';
 import { FaceTileContent } from "./FaceTileContent.jsx";
+import { PlanetTileContent } from "./PlanetTileContent.jsx";
 
 export const THEMES = [
   {
@@ -35,6 +36,17 @@ export const THEMES = [
       'hair style',
       'hair color',
       'eyes color'
+    ]
+  },
+  {
+    id: 'planets',
+    label: 'Planets',
+    renderer: PlanetTileContent,
+    features: [
+      'type',
+      'rings',
+      'moons',
+      'color'
     ]
   }
 ];

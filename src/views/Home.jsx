@@ -11,7 +11,7 @@ export function Home() {
     { theme: 'shapes', tile: 'cbac' },
     { theme: 'shields', tile: 'cbac' },
     { theme: 'faces', tile: 'abca' },
-    { theme: 'shapes', tile: 'bcbac'}
+    { theme: 'planets', tile: 'abbc'}
   ]);
 
   return (
