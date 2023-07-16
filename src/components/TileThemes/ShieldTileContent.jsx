@@ -19,17 +19,17 @@ const SHIELD_COLORS = [
 ];
 
 const CREST_COLORS = [
-  '#000000',
   '#ffffff',
+  '#000000',
   '#FFD700'
 ];
 
 export function ShieldTileContent({ tile }) {
   const styles = toStyleArray(tile);
-  const shield = SHIELDS[styles[0]];
-  const crest = CRESTS[styles[1]];
-  const shieldColor = SHIELD_COLORS[styles[2]];
-  const crestColor = CREST_COLORS[styles[3]];
+  const shield = SHIELDS[styles[0]] || SHIELDS[0];
+  const crest = CRESTS[styles[1]] || CRESTS[0];
+  const shieldColor = SHIELD_COLORS[styles[2]] || SHIELD_COLORS[0];
+  const crestColor = CREST_COLORS[styles[3]] || CREST_COLORS[0];
 
   return (
     <>

@@ -14,33 +14,40 @@ const SHAPES = [
 
 export function ShapeTileContent({ tile }) {
   const [color, count, pattern, shape] = toStyleArray(tile);
+  const mainColor = COLORS[color] || COLORS[0];
   const props = {};
 
   let patternId = `pattern-${tile}`;
 
   switch (pattern) {
+    case -1:
+      props.fill = mainColor;
+      props.stroke = mainColor;
+      props.strokeWidth = 5;
+      break;
     case 0:
-      props.fill = COLORS[color];
-      props.stroke = COLORS[color];
+      props.fill = mainColor;
+      props.stroke = mainColor;
       props.strokeWidth = 5;
       break;
     case 1:
       patternId = `pattern-${tile}`;
       props.fill = `url(#${patternId})`;
-      props.stroke = COLORS[color];
+      props.stroke = mainColor;
       props.strokeWidth = 3;
       break;
     case 2:
       props.fill = "none";
-      props.stroke = COLORS[color];
+      props.stroke = mainColor;
       props.strokeWidth = 5;
       break;
   }
 
-  const Renderer = SHAPES[shape];
+  const Renderer = SHAPES[shape] || Circle;
   const content = [];
 
   switch (count) {
+    case -1:
     case 0:
       content.push({
         x: 100,

@@ -25,6 +25,7 @@ export function createCore({
     getMatches,
     getMatchingTile,
     getMatchError,
+    getFeatureTiles,
     countMatches,
     toStyleArray
   };
@@ -207,5 +208,17 @@ export function createCore({
 
   function toStyleArray(tile) {
     return tile.split('').map((char) => values.indexOf(char));
+  }
+
+  function getFeatureTiles(index, tile) {
+    return values.map((value) => {
+      let result = '';
+
+      for (let i = 0; i < totalFeatures; i++) {
+        result += (i === index) ? value : (tile?.[i] || '-');
+      }
+
+      return result;
+    });
   }
 }

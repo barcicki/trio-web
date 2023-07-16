@@ -9,6 +9,7 @@ const {
   getMatchingTile,
   toStyleArray,
   getMatchError,
+  getFeatureTiles,
   countMatches,
   canMatch
 } = createCore({
@@ -22,6 +23,7 @@ export {
   hasMatch,
   getMatches,
   getMatchingTile,
+  getFeatureTiles,
   toStyleArray,
   getMatchError,
   countMatches,
@@ -31,3 +33,4 @@ export {
 export function getRandomTile() {
   return shuffle(getDeck())[0];
 }
+

@@ -26,10 +26,10 @@ const EYE_COLORS = [
 
 export function FaceTileContent({ tile }) {
   const styles = toStyleArray(tile);
-  const skinColor = SKIN_COLORS[styles[0]];
-  const hairStyle = HAIRS[styles[1]];
-  const hairColor = HAIR_COLORS[styles[2]];
-  const eyeColor = EYE_COLORS[styles[3]];
+  const skinColor = SKIN_COLORS[styles[0]] || SKIN_COLORS[0];
+  const hairStyle = HAIRS[styles[1]] || HAIRS[0];
+  const hairColor = HAIR_COLORS[styles[2]] || HAIR_COLORS[0];
+  const eyeColor = EYE_COLORS[styles[3]] || EYE_COLORS[0];
 
   return (
     <>
