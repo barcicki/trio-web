@@ -29,8 +29,10 @@
 body, #root {
   margin: 0;
   display: flex;
-  place-content: center;
-  place-items: center;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
   width: 100svw;
   height: 100svh;
 }

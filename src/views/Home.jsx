@@ -1,31 +1,28 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { Tile } from '@/components/Tile.jsx';
-import { getRandomTile } from '@game/trio';
+import { useTheme } from '@/hooks/useTheme.js';
+import { getRandomTrio } from '@game/trio';
 
 import './Home.css';
-import { Link } from 'react-router-dom';
 
 export function Home() {
-  const [tiles, setTiles] = useState([
-    { theme: 'shapes', tile: 'cbac' },
-    { theme: 'shields', tile: 'cbac' },
-    { theme: 'faces', tile: 'abca' },
-    { theme: 'planets', tile: 'abbc'}
-  ]);
+  const [theme] = useTheme();
+  const [tiles, setTiles] = useState(getRandomTrio());
 
   return (
     <main className="home limited">
-      <div className="home-promo">
-        <h1>TRIO</h1>
-        <div className="home-tiles">
-          <AnimatePresence>
-            {tiles.map((tile, index) => <Tile key={index} {...tile} onSelect={() => changeTile(index)}/>)}
-          </AnimatePresence>
-        </div>
+      <h1 className="home-name">TRIO</h1>
+
+      <div className="home-tiles">
+        <AnimatePresence>
+          {tiles.map((tile, index) => <Tile key={index} theme={theme.id} tile={tile} onSelect={() => changeTile(index)}/>)}
+        </AnimatePresence>
       </div>
+
       <div className="home-menu">
-        <Link className="button" to="game">Play</Link>
+        <Link className="button home-play" to="game">Play</Link>
         <Link className="button" to="online">Play online</Link>
         <Link className="button" to="puzzle">Puzzle</Link>
         <Link className="button" to="practice">Practice</Link>
@@ -34,15 +31,7 @@ export function Home() {
     </main>
   );
 
-  function changeTile(index) {
-    const newTiles = tiles.slice();
-    const tile = tiles[index];
-
-    newTiles.splice(index, 1, {
-      theme: tile.theme,
-      tile: getRandomTile()
-    });
-
-    setTiles(newTiles);
+  function changeTile() {
+    setTiles(getRandomTrio());
   }
 }
