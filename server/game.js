@@ -42,9 +42,8 @@ export function configureTrioServer(ioServer) {
 
       addPlayer(game, socketsToPlayers[socket.id]);
 
-      socket.emit('update-game', game);
-      socket.to(roomId).emit('update-players', game.players);
       socket.join(roomId);
+      updateGameStatus(roomId);
     });
 
     socket.on('leave-game', ({ roomId }) => {
@@ -53,9 +52,8 @@ export function configureTrioServer(ioServer) {
       removePlayer(game, socketsToPlayers[socket.id]);
 
       socket.leave(roomId);
-      socket.to(roomId).emit('update-players', game.players);
+      updateGameStatus(roomId);
     });
-
 
     socket.on('ready', ({ roomId }) => {
       const game = games[roomId];
@@ -63,14 +61,7 @@ export function configureTrioServer(ioServer) {
 
       if (player) {
         player.ready = true;
-        socket.emit('update-players', game.players);
-        socket.to(roomId).emit('update-players', game.players);
-
-        if (game.players.every((p) => p.ready)) {
-          Object.assign(game, serverGame.start(game));
-          socket.emit('update-game', game);
-          socket.to(roomId).emit('update-game', game);
-        }
+        updateGameStatus(roomId);
       }
     });
 
@@ -103,8 +94,7 @@ export function configureTrioServer(ioServer) {
         Object.assign(game, serverGame.replace(game, tiles));
         Object.assign(game, serverGame.check(game));
 
-        socket.emit('update-game', game);
-        socket.to(roomId).emit('update-game', game);
+        updateGameStatus(roomId);
 
         if (game.ended) {
           ioServer.in(roomId).socketsLeave(roomId);
@@ -128,7 +118,7 @@ export function configureTrioServer(ioServer) {
         const game = games[roomId];
 
         if (removePlayer(game, playerId)) {
-          socket.to(roomId).emit('update-players', game.players);
+          updateGameStatus(roomId);
         }
       }
     });
@@ -138,8 +128,11 @@ export function configureTrioServer(ioServer) {
     for (const roomId in games) {
       const game = games[roomId];
 
-      if (game.players.some((p) => p.online) && !game.ended) {
-        ioServer.to(roomId).emit('update-game', game);
+      if (shouldGameStart(game)) {
+        Object.assign(game, serverGame.start(game));
+        updateGameStatus(roomId);
+      } else if (game.players.some((p) => p.online) && !game.ended) {
+        updateGameStatus(roomId);
       } else {
         game.abandon = (game.abandon ?? 0) + 1;
       }
@@ -180,4 +173,28 @@ export function configureTrioServer(ioServer) {
     return false;
   }
 
+  function shouldGameStart(game) {
+    if (game.started) {
+      return false;
+    }
+
+    const onlinePlayers = game.players.filter((p) => p.online);
+
+    return onlinePlayers.length > 0 && onlinePlayers.every((p) => p.ready);
+  }
+
+  function updateGameStatus(roomId) {
+    const game = cleanUpGame(games[roomId]);
+
+    ioServer.to(roomId).emit('update-game', game);
+  }
+
+  function cleanUpGame(game) {
+    return {
+      ...game,
+      deck: undefined,
+      seed: undefined,
+      selected: undefined
+    };
+  }
 }

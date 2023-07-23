@@ -4,7 +4,7 @@ import { useLoaderData } from 'react-router-dom';
 import { useGameApi } from '@/hooks/useGameApi.js';
 import { useTheme } from '@/hooks/useTheme.js';
 import { GameHeader } from '@/components/GameHeader.jsx';
-import { TbArrowsShuffle, TbCircleCheck, TbProgress } from 'react-icons/tb';
+import { TbArrowsShuffle, TbCircleCheck, TbNetworkOff, TbProgress, TbProgressX } from 'react-icons/tb';
 import { ThemeButton } from '@/components/ThemeButton.jsx';
 import { TilesTable } from '@/components/TilesTable.jsx';
 import { GameView } from '@/components/GameView.jsx';
@@ -41,10 +41,24 @@ export function OnlineGame() {
 
   const player = game?.players?.find((p) => p.id === localPlayer?.id);
 
+  const otherPlayers = (game?.players || [])
+    .filter((p) => p.id !== player?.id)
+    .sort((a, b) => {
+      if (b.online === a.online) {
+        return b.ready - a.ready;
+      }
+
+      return b.online - a.online;
+    })
+    .map((p) => ({
+      ...p,
+      color: p.online ? p.color : '#232323'
+    }));
+
+  console.log(otherPlayers);
+
   useEffect(() => {
     socket.on('update-game', api.update);
-    socket.on('update-players', (players) => api.update({ players }));
-
     socket.emit('hello', localPlayer);
     socket.emit('join-game', { roomId });
 
@@ -59,20 +73,26 @@ export function OnlineGame() {
         <button onClick={api.reorder} title="Reorder tiles"><TbArrowsShuffle/></button>
         <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
         <ColorTag className="player" color={player?.color}>{player?.score}</ColorTag>
-        {game?.players
-          .filter((p) => p.id !== player?.id)
-          .sort((a, b) => a.online - b.online)
-          .map((p) => <ColorTag key={p.id} color={p.online ? p.color : '#232323'}>{ p.score}</ColorTag>)
+        {otherPlayers.map((p) => <ColorTag key={p.id} color={p.color} title={p.name}>{p.score}</ColorTag>)
         }
       </GameHeader>
-      {!game?.started && <div className="online-status">
+      {!game && <div className="online-status">Connecting...</div>}
+      {game && !game.started && <div className="online-status">
         <p>Waiting for players</p>
         <div className="online-players">
-          {game?.players.map((p) => <ColorTag key={p.id} className="online-player" color={p?.color}>{p.ready ? <TbCircleCheck/> : <TbProgress/>} {p.name}</ColorTag>)}
+          {[player, ...otherPlayers].map((p) => <ColorTag key={p.id} className="online-player" color={p.color}>{getPlayerStatusIcon(p)} {p.name}</ColorTag>)}
         </div>
         {!player?.ready && <button onClick={onReady}>I&apos;m ready</button>}
       </div>}
       {game?.started && <TilesTable theme={theme.id} tiles={game.table} selected={game.selected} onSelect={onSelect} ref={tableEl}/>}
     </GameView>
   );
+}
+
+function getPlayerStatusIcon(player) {
+  if (!player?.online) {
+    return <TbProgressX/>;
+  }
+
+  return player.ready ? <TbCircleCheck/> : <TbProgress className="animated"/>;
 }
