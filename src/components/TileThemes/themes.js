@@ -27,17 +27,17 @@ export const THEMES = [
       'crest color'
     ]
   },
-  {
-    id: 'faces',
-    label: 'Faces',
-    renderer: FaceTileContent,
-    features: [
-      'skin color',
-      'hair style',
-      'hair color',
-      'eyes color'
-    ]
-  },
+  // {
+  //   id: 'faces',
+  //   label: 'Faces',
+  //   renderer: FaceTileContent,
+  //   features: [
+  //     'skin color',
+  //     'hair style',
+  //     'hair color',
+  //     'eyes color'
+  //   ]
+  // },
   {
     id: 'planets',
     label: 'Planets',
