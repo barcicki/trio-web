@@ -12,7 +12,9 @@ export default defineConfig({
     {
       name: 'trio',
       configureServer(server) {
-        createTrioSocketServer(server.httpServer);
+        if (server.config.mode !== 'test') {
+          createTrioSocketServer(server.httpServer);
+        }
       }
     },
     VitePWA({
