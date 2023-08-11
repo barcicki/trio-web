@@ -1,29 +1,23 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { loadData, saveData } from '@/utils/storage.js';
-import { themeReducer } from '@/reducers/theme.js';
-import { gamesReducer } from '@/reducers/games.js';
-import { playerReducer } from '@/reducers/player.js';
+import { createSynchronizerMiddleware } from '@/utils/redux.js';
+import { themeReducer, themeSynchronizer } from '@/reducers/theme.js';
+import { gamesReducer, gamesSynchronizer } from '@/reducers/games.js';
+import { playerReducer, playerSynchronizer } from '@/reducers/player.js';
+import { storyReducer, storySynchronizer } from '@/reducers/story.js';
 
 export const store = configureStore({
   reducer: {
     theme: themeReducer,
     games: gamesReducer,
-    player: playerReducer
+    player: playerReducer,
+    story: storyReducer
   },
-  preloadedState: {
-    theme: loadData('theme'),
-    player: loadData('player')
-  }
+  middleware: [
+    createSynchronizerMiddleware([
+      themeSynchronizer,
+      playerSynchronizer,
+      storySynchronizer,
+      gamesSynchronizer
+    ])
+  ]
 });
-
-store.subscribe(saveToLocalStorage);
-
-// immediately save store state
-saveToLocalStorage();
-
-function saveToLocalStorage() {
-  const { theme, player } = store.getState();
-
-  saveData('theme', theme);
-  saveData('player', player);
-}

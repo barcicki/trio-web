@@ -1,0 +1,42 @@
+.game--body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: .5em;
+    overflow: hidden;
+}
+
+.game--goal-text {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.game--goals {
+    display: flex;
+    justify-content: space-evenly;
+    gap: .5em;
+    flex-wrap: wrap;
+}
+
+.game--goals.game--match-goals {
+    height: max(28%, 5em);
+}
+
+.game--goals.game--find-goals .game--goal .tile {
+    max-width: 4em;
+    max-height: 4em;
+}
+
+.game--table {
+    display: grid;
+    flex: 1;
+    gap: .5em;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+

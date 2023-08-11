@@ -1,6 +1,5 @@
 import { Server } from 'socket.io';
-import * as serverGame from '../game/trio/online.js';
-import { isMatch } from '../game/trio/index.js';
+import { GameTypes, TargetTypes, createGame } from '@game/trio';
 
 export function createTrioSocketServer(httpServer) {
   const ioServer = new Server(httpServer);
@@ -33,72 +32,52 @@ export function configureTrioServer(ioServer) {
       socketsToPlayers[socket.id] = id;
     });
 
-    socket.on('join-game', ({ roomId }) => {
-      if (!games[roomId] || games[roomId].ended) {
-        games[roomId] = serverGame.create();
+    socket.on('join-game', ({ roomId, config }) => {
+      if (!games[roomId] || hasGameEnded(roomId)) {
+        games[roomId] = createGame(config || {
+          type: GameTypes.FIND,
+          target: TargetTypes.DECK,
+          hintsLimit: 0
+        });
       }
 
-      const game = games[roomId];
-
-      addPlayer(game, socketsToPlayers[socket.id]);
+      const playerId = socketsToPlayers[socket.id];
+      const player = players[playerId];
 
       socket.join(roomId);
-      updateGameStatus(roomId);
+      updateGame(roomId, 'join', player, false);
     });
 
     socket.on('leave-game', ({ roomId }) => {
-      const game = games[roomId];
-
-      removePlayer(game, socketsToPlayers[socket.id]);
-
       socket.leave(roomId);
-      updateGameStatus(roomId);
+      updateGame(roomId, 'leave', socketsToPlayers[socket.id]);
     });
 
     socket.on('ready', ({ roomId }) => {
-      const game = games[roomId];
-      const player = game?.players.find((p) => p.id === socketsToPlayers[socket.id]);
-
-      if (player) {
-        player.ready = true;
-        updateGameStatus(roomId);
-      }
+      updateGame(roomId, 'join', players[socketsToPlayers[socket.id]], true);
     });
 
-    socket.on('miss', ({ roomId }) => {
+    socket.on('miss', ({ roomId, tiles }) => {
       const game = games[roomId];
 
-      if (!game || game.ended || !game.started) {
+      if (!game) {
         return;
       }
 
-      const player = game?.players.find((p) => p.id === socketsToPlayers[socket.id]);
-
-      if (player) {
-        player.missed += 1;
-      }
+      updateGame(roomId, 'miss', socketsToPlayers[socket.id], tiles);
     });
 
     socket.on('check', ({ roomId, tiles }) => {
       const game = games[roomId];
 
-      if (!game || game.ended || !game.started) {
+      if (!game) {
         return;
       }
 
-      const player = game.players.find((p) => p.id === socketsToPlayers[socket.id]);
-      const canCheck = player && tiles.length === 3 && tiles.every((tile) => game.table.includes(tile));
+      updateGame(roomId, 'submit', socketsToPlayers[socket.id], tiles);
 
-      if (canCheck && isMatch(tiles)) {
-        player.score += 1;
-        Object.assign(game, serverGame.replace(game, tiles));
-        Object.assign(game, serverGame.check(game));
-
-        updateGameStatus(roomId);
-
-        if (game.ended) {
-          ioServer.in(roomId).socketsLeave(roomId);
-        }
+      if (hasGameEnded(roomId)) {
+        ioServer.in(roomId).socketsLeave(roomId);
       }
     });
 
@@ -115,11 +94,7 @@ export function configureTrioServer(ioServer) {
       }
 
       for (const roomId in games) {
-        const game = games[roomId];
-
-        if (removePlayer(game, playerId)) {
-          updateGameStatus(roomId);
-        }
+        updateGame(roomId, 'leave', playerId);
       }
     });
   });
@@ -128,11 +103,10 @@ export function configureTrioServer(ioServer) {
     for (const roomId in games) {
       const game = games[roomId];
 
-      if (shouldGameStart(game)) {
-        Object.assign(game, serverGame.start(game));
-        updateGameStatus(roomId);
-      } else if (game.players.some((p) => p.online) && !game.ended) {
-        updateGameStatus(roomId);
+      if (shouldGameStart(game.state)) {
+        updateGame(roomId, 'start');
+      } else if (isGameActive(game.state)) {
+        publishGameStatus(roomId);
       } else {
         game.abandon = (game.abandon ?? 0) + 1;
       }
@@ -144,57 +118,56 @@ export function configureTrioServer(ioServer) {
     }
   }, 1000);
 
-  function addPlayer(game, id) {
-    const player = game.players.find((p) => p.id === id);
-
-    if (!player) {
-      game.players.push({
-        id,
-        score: 0,
-        missed: 0,
-        online: true,
-        color: players[id].color,
-        name: players[id].name,
-        ready: !!game.started
-      });
-    } else {
-      player.online = true;
-    }
+  function hasGameEnded(roomId) {
+    return games[roomId]?.state?.ended;
   }
 
-  function removePlayer(game, id) {
-    const player = game?.players.find((p) => p.id === id);
-
-    if (player) {
-      player.online = false;
-      return true;
-    }
-
-    return false;
-  }
-
-  function shouldGameStart(game) {
-    if (game.started) {
+  function shouldGameStart(state) {
+    if (state.started) {
       return false;
     }
 
-    const onlinePlayers = game.players.filter((p) => p.online);
+    const onlinePlayers = state.players.filter((p) => p.active);
 
     return onlinePlayers.length > 0 && onlinePlayers.every((p) => p.ready);
   }
 
-  function updateGameStatus(roomId) {
-    const game = cleanUpGame(games[roomId]);
+  function isGameActive(state) {
+    return state.players.some((p) => p.active) && !state.ended;
+  }
 
-    ioServer.to(roomId).emit('update-game', game);
+  function updateGame(roomId, command, ...args) {
+    const prev = games[roomId];
+    const next = prev && prev[command](...args);
+
+    if (prev !== next) {
+      games[roomId] = next;
+      publishGameStatus(roomId);
+    }
+  }
+
+  function publishGameStatus(roomId) {
+    const game = games[roomId];
+
+    ioServer.to(roomId).emit('sync', cleanUpGame(game));
   }
 
   function cleanUpGame(game) {
     return {
-      ...game,
-      deck: undefined,
-      seed: undefined,
-      selected: undefined
+      config: {
+        ...game.config,
+        seed: undefined
+      },
+      state: {
+        ...game.state,
+        seed: undefined,
+        nextSeed: undefined,
+        players: game.state.players.map((player) => ({
+          ...player,
+          sockets: undefined,
+          selected: undefined
+        }))
+      }
     };
   }
 }

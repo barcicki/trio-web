@@ -34,8 +34,12 @@ export function getRandomTile() {
   return shuffle(getDeck())[0];
 }
 
+export function getRandomTiles(count) {
+  return shuffle(getDeck()).slice(0, count);
+}
+
 export function getRandomTrio() {
-  const tiles = shuffle(getDeck()).slice(0, 2);
+  const tiles = getRandomTiles(2);
 
   return [...tiles, getMatchingTile(tiles)];
 }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export function Intro({ goal, children }) {
   return (
-    <main className="intro">
+    <main className="intro centered">
       <div className="intro-goal">
         {goal}
       </div>

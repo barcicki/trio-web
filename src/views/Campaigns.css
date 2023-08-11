@@ -1,0 +1,52 @@
+.campaigns {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    gap: 2em;
+    margin: 0 auto;
+}
+
+.campaign > h3 {
+    font-size: 2em;
+    margin-bottom: .5em;
+    text-align: center;
+}
+
+.campaigns--actions {
+    display: flex;
+    gap: .5em;
+    font-size: .8em;
+}
+
+.campaign--missions {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+}
+
+.mission {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    padding: .5em 1em;
+    border-radius: .5em;
+    background: var(--bg-lighter-color);
+    font-size: 1.5em;
+    color: var(--fg-color);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.mission > svg {
+    flex-shrink: 0;
+}
+
+.mission.locked {
+    background: var(--bg-darker-color);
+    color: var(--fg-darker-color);
+    cursor: default;
+}
+
+.mission.completed {
+    background: var(--primary-color);
+}

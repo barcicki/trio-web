@@ -1,0 +1,27 @@
+.game--goal {
+    flex: 1;
+    display: flex;
+    padding: .5em;
+    border-radius: .5em;
+    background: var(--bg-lighter-color);
+    gap: .5em;
+    transition: background-color 500ms;
+    align-items: center;
+    justify-content: center;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.game--goal.found {
+    background: #729E07;
+}
+
+.game--goal .tile {
+    max-height: 100%;
+    max-width: 100%;
+    cursor: default;
+}
+
+.game--goal .tile:hover {
+    filter: none;
+}

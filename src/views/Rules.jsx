@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { TilesList } from '@/components/TilesList.jsx';
 import { Tile } from '@/components/Tile.jsx';
 import { useTheme } from '@/hooks/useTheme.js';
-import { getFeatureTiles, getRandomTile } from '@game/trio/index.js';
+import { getFeatureTiles, getRandomTile } from '@game/trio';
 
 import './Rules.css';
+import { MdArrowBackIosNew } from 'react-icons/md';
 
 export function Rules() {
   const [tile, setTile] = useState('abac');
@@ -13,12 +14,15 @@ export function Rules() {
 
   return (
     <main className="rules">
-      <h1>Rules</h1>
-
-      <p className="rules-options">
+      <div className="rules--actions">
+        <Link className="button" to=".."><MdArrowBackIosNew/></Link>
         <button onClick={() => setTile(getRandomTile())}>Change tile</button>
         <button onClick={changeTheme}>Change theme</button>
-      </p>
+        <Link className="button" to="../campaign">Campaign</Link>
+        <Link className="button" to="../practice/endless">Practice</Link>
+      </div>
+
+      <h1>Rules</h1>
 
       <p>There are 81 unique tiles in the game.</p>
       <Tile className="rules-tile" tile={tile} theme={theme.id} onSelect={() => setTile(getRandomTile())}/>
@@ -69,8 +73,9 @@ export function Rules() {
         </li>
       </ul>
 
-      <div className="rules-options">
-        <Link className="button" to="../">Back to home</Link>
+      <div className="rules--actions">
+        <Link className="button" to=".."><MdArrowBackIosNew/></Link>
+        <Link className="button" to="../campaign">Start campaign</Link>
         <Link className="button" to="../practice/endless">Practice finding Trios</Link>
       </div>
     </main>

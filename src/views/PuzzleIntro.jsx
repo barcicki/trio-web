@@ -4,6 +4,8 @@ import { IntroTile } from '@/components/IntroTile.jsx';
 import { Intro } from '@/components/Intro.jsx';
 import { format } from '@/utils/time.js';
 import { Details } from '@/components/Details.jsx';
+import { countMatches } from '@game/trio';
+import { getTotalFoundTrios } from '@game/trio/player.js';
 
 export function PuzzleIntro() {
   const savedPuzzle = useLoaderData();
@@ -13,7 +15,7 @@ export function PuzzleIntro() {
       {savedPuzzle && !savedPuzzle.ended && <IntroTile>
         <Details details={{
           'Time spent': format(savedPuzzle.duration),
-          'Trios to find': savedPuzzle.matches?.length - savedPuzzle.found?.length
+          'Trios to find': countMatches(savedPuzzle.table) - getTotalFoundTrios(savedPuzzle)
         }}/>
         <Link className="button" to="continue">Continue</Link>
       </IntroTile>}

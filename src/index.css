@@ -1,10 +1,15 @@
 :root {
   --fg-color: #e3e3e3;
+  --fg-darker-color: #b1b1b1;
   --bg-color: #333;
   --bg-button: #1a1a1a;
   --bg-darker-color: #101010;
   --bg-lighter-color: #494949;
+  --bg-modal-color: rgba(73, 73, 73, 0.8);
   --highlight-color: gold;
+  --primary-color: #729E07;
+  --btn-vpadding: 0.5em;
+  --btn-hpadding: 1em;
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -29,17 +34,13 @@
 body, #root {
   margin: 0;
   display: flex;
-  align-items: center;
-  align-content: center;
-  justify-items: center;
-  justify-content: center;
-  width: 100svw;
-  height: 100svh;
+  min-width: 100%;
+  min-height: 100svh;
 }
 
 a {
   font-weight: 500;
-  color: #5b87e1;
+  color: var(--primary-color);
   text-decoration: underline;
 }
 
@@ -50,7 +51,7 @@ a:hover {
 input {
   display: inline-block;
   border-radius: 8px;
-  border: 2px solid transparent;
+  border: 4px solid transparent;
   padding: 0.5em 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -62,10 +63,12 @@ input {
 }
 
 button, .button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2em;
   border-radius: 8px;
-  border: 2px solid transparent;
-  padding: 0.6em 1.2em;
+  border: 4px solid transparent;
+  padding: var(--btn-vpadding) var(--btn-hpadding);
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -75,7 +78,7 @@ button, .button {
   transition: border-color 0.25s;
   text-transform: uppercase;
   text-decoration: none;
-  text-align: center;
+  justify-content: center;
 }
 button.selected,
 .button.selected {
@@ -104,13 +107,35 @@ button.disabled:hover,
   border-color: transparent;
 }
 
+.button.non-interactive:hover {
+  border-color: transparent;
+  cursor: default;
+}
+
+button.primary,
+.button.primary {
+  background-color: var(--primary-color);
+}
+button.primary:hover,
+.button.primary:hover {
+  border-color: var(--highlight-color);
+  color: var(--highlight-color);
+}
+
 .tile {
   -webkit-tap-highlight-color: transparent;
 }
 
-@media (min-width: 1000px) and (min-height: 600px) {
+.limited, .centered {
+  align-self: center;
+  margin: 0 auto;
+  max-height: 100svh;
+  max-width: 100svw;
+}
+
+@media (min-width: 1000px) and (min-height: 700px) {
   .limited {
     width: 1000px;
-    height: 600px;
+    height: 700px;
   }
 }

@@ -1,52 +1,50 @@
-import { useRef } from 'react';
-import { TbArrowsShuffle } from 'react-icons/tb';
-
-import { ThemeButton } from '@/components/ThemeButton.jsx';
-import { GameHeader } from '@/components/GameHeader.jsx';
-import { TilesTable } from '@/components/TilesTable.jsx';
-import { TilesList } from '@/components/TilesList.jsx';
-import { GameView } from '@/components/GameView.jsx';
-import { PuzzleEnd } from '@/components/PuzzleEnd.jsx';
-import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { useTheme } from '@/hooks/useTheme.js';
-import { useGame } from '@/hooks/useGame.js';
-import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
-import { GameModes } from '@game/trio';
+import { usePlayer } from '@/reducers/player.js';
+import { Link, useLoaderData } from 'react-router-dom';
+import { useLocalGame } from '@/hooks/useLocalGame.js';
 
-import './Puzzle.css';
+import { GameModes, GameTypes, TargetTypes } from '@game/trio';
+import { LocalGame } from '@/components/Game/LocalGame.jsx';
 
 export function Puzzle() {
-  const [puzzle, api] = useGame(GameModes.PUZZLE);
+  const seed = useLoaderData();
+
+  const config = {
+    type: GameTypes.FIND,
+    target: TargetTypes.GOAL,
+    goalSize: 3,
+    tableSize: 12,
+    hintsLimit: 3,
+    seed
+  };
+
+  const [game, updateGame] = useLocalGame(GameModes.PUZZLE);
   const [theme, nextTheme, changeTheme] = useTheme();
-  const tableEl = useRef(null);
-
-  const onSelect = useCachedCallback((tile) => api.toggle(tile, {
-    onMiss(miss) {
-      tableEl.current.shakeTiles(miss);
-      toastErrors(miss, theme);
-    },
-    onAlreadyFound(tiles) {
-      tableEl.current.shakeTiles(tiles);
-      toastAlreadyFound();
-    }
-  }));
-
-  const matches = puzzle.matches.map((tiles, index) => {
-    const found = puzzle.found.includes(index);
-    const themeId = found ? theme.id : 'unknown';
-
-    return <TilesList key={index} tiles={tiles} theme={themeId} className={found ? 'found' : ''}/>;
-  });
+  const player = usePlayer();
 
   return (
-    <GameView className="puzzle limited" game={puzzle} EndGame={PuzzleEnd}>
-      <GameHeader game={puzzle}>
-        <button onClick={api.reorder} title="Reorder tiles"><TbArrowsShuffle/></button>
-        <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
-      </GameHeader>
-      <div className="puzzle-matches">{matches}</div>
-      <TilesTable theme={theme.id} tiles={puzzle.table} selected={puzzle.selected} onSelect={onSelect} ref={tableEl}/>
-    </GameView>
+    <LocalGame
+      backPath=".."
+      config={config}
+      game={game}
+      theme={theme.id}
+      nextTheme={nextTheme.id}
+      onThemeSwitch={changeTheme}
+      showPlayers={false}
+      player={player}
+      onUpdate={updateGame}
+      endMessage="You have found all 3 hidden trios."
+      endDetails={(game) => ({
+        'Miss-clicks': game.currentPlayer.missed.length,
+        'Used hints': game.currentPlayer.hints
+      })}
+      endActions={(
+        <>
+          <Link className="button" to="/">Home</Link>
+          <Link className="button primary" to="../new" replace={true}>New puzzle</Link>
+        </>
+      )}
+    />
   );
 }
 

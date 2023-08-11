@@ -41,4 +41,3 @@ export function Timer({ startTime, stopTime, direction = 1, ...props }) {
     handle.current = diff >= 0 ? requestAnimationFrame(update) : null;
   }
 }
-

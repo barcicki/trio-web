@@ -13,21 +13,9 @@
 }
 
 .home-tiles {
-  display: flex;
   padding: 2em;
   width: 100%;
   height: 100%;
-  align-content: center;
-  justify-content: center;
-  overflow: hidden;
-  flex-wrap: wrap;
-  gap: 1em;
-}
-
-.home-tiles .tile {
-  width: 30%;
-  max-height: 100%;
-  cursor: pointer;
 }
 
 .home-menu {
@@ -47,13 +35,8 @@
     grid-template: auto / 1fr;
   }
 
-  .home-tiles > .tile {
-    width: calc(50% - 1em);
-    max-height: calc(50% - 1em);
-  }
-
-  .home-tiles > *:nth-child(3) {
-    grid-column: span 2;
+  .home-tiles {
+    padding: 0 1em;
   }
 }
 

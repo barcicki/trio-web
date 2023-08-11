@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
-import { Tile } from '@/components/Tile.jsx';
+import { TilesTable } from '@/components/TilesTable.jsx';
 import { useTheme } from '@/hooks/useTheme.js';
 import { getRandomTrio } from '@game/trio';
 
@@ -15,14 +14,11 @@ export function Home() {
     <main className="home limited">
       <h1 className="home-name">TRIO</h1>
 
-      <div className="home-tiles">
-        <AnimatePresence>
-          {tiles.map((tile, index) => <Tile key={index} theme={theme.id} tile={tile} onSelect={() => changeTile(index)}/>)}
-        </AnimatePresence>
-      </div>
+      <TilesTable className="home-tiles" tiles={tiles} theme={theme.id} onSelect={() => changeTile()}/>
 
       <div className="home-menu">
-        <Link className="button home-play" to="game">Play</Link>
+        <Link className="button" to="campaign">Campaign</Link>
+        <Link className="button" to="game">Play</Link>
         <Link className="button" to="online">Play online</Link>
         <Link className="button" to="puzzle">Puzzle</Link>
         <Link className="button" to="practice">Practice</Link>

@@ -10,13 +10,16 @@ import { Rules } from '@/views/Rules.jsx';
 import { Practice } from '@/views/Practice.jsx';
 import { OnlineIntro } from '@/views/OnlineIntro.jsx';
 import { OnlineGame } from '@/views/OnlineGame.jsx';
+import { Campaigns } from '@/views/Campaigns.jsx';
+import { CampaignMission } from '@/views/CampaignMission.jsx';
 
-import { GameModes, GameApis } from '@game/trio';
+import { GameModes } from '@game/trio';
 import { generateId } from '@game/utils';
+import { toastMissionLocked } from '@/utils/toast.js';
+import { gamesSelector } from '@/reducers/games.js';
+import { missionSelector } from '@/reducers/story.js';
 
 import { store } from '@/store.js';
-import { setGame } from '@/reducers/games.js';
-import { loadData } from '@/utils/storage.js';
 
 export const routes = [
   {
@@ -29,13 +32,41 @@ export const routes = [
     element: <Rules/>
   },
   {
+    path: 'campaign',
+    children: [
+      {
+        path: '',
+        element: <Campaigns/>
+      },
+      {
+        path: ':key',
+        element: <CampaignMission/>,
+        loader({ params }) {
+          const state = store.getState();
+          const mission = missionSelector(state, params.key);
+
+          if (!mission) {
+            return redirect('../404');
+          }
+
+          if (mission.locked) {
+            toastMissionLocked();
+            return redirect('..');
+          }
+
+          return mission.id;
+        }
+      }
+    ]
+  },
+  {
     path: 'game',
     children: [
       {
         path: '',
         element: <GameIntro/>,
         loader() {
-          return loadData(GameModes.SINGLE) || null;
+          return gamesSelector(store.getState(), GameModes.SINGLE) || null;
         }
       },
       {
@@ -47,7 +78,7 @@ export const routes = [
       {
         path: 'continue',
         loader() {
-          const savedGame = loadData(GameModes.SINGLE);
+          const savedGame = gamesSelector(store.getState(), GameModes.SINGLE);
 
           if (!savedGame || savedGame.ended) {
             return redirect('../new');
@@ -59,7 +90,7 @@ export const routes = [
       {
         path: ':seed',
         loader({ params }) {
-          return createOrLoadGame(GameModes.SINGLE, params.seed);
+          return params.seed;
         },
         element: <Game/>
       }
@@ -72,7 +103,7 @@ export const routes = [
         path: '',
         element: <PuzzleIntro/>,
         loader() {
-          return loadData('puzzle') || null;
+          return gamesSelector(store.getState(), GameModes.PUZZLE) || null;
         }
       },
       {
@@ -84,7 +115,7 @@ export const routes = [
       {
         path: 'continue',
         loader() {
-          const savedGame = loadData(GameModes.PUZZLE);
+          const savedGame = gamesSelector(store.getState(), GameModes.PUZZLE);
 
           if (!savedGame || savedGame.ended) {
             return redirect('../new');
@@ -96,7 +127,7 @@ export const routes = [
       {
         path: ':seed',
         loader({ params }) {
-          return createOrLoadGame(GameModes.PUZZLE, params.seed);
+          return params.seed;
         },
         element: <Puzzle/>
       }
@@ -111,17 +142,11 @@ export const routes = [
       },
       {
         path: 'endless',
-        element: <Practice/>,
-        loader() {
-          return createGameWithLimit(GameModes.PRACTICE, 0);
-        }
+        element: <Practice limit={0}/>
       },
       {
         path: 'speed',
-        element: <Practice/>,
-        loader() {
-          return createGameWithLimit(GameModes.PRACTICE, 60000);
-        }
+        element: <Practice limit={60000}/>
       }
     ]
   },
@@ -145,26 +170,3 @@ export const routes = [
     ]
   }
 ];
-
-function createOrLoadGame(mode, seed) {
-  const api = GameApis[mode];
-  const savedGame = loadData(mode);
-  const game = savedGame?.seed === seed ? savedGame : api.create(seed);
-
-  return saveGameInStore(mode, api.start(game));
-}
-
-function createGameWithLimit(mode, limit) {
-  const api = GameApis[mode];
-
-  return saveGameInStore(mode, api.start(api.create(), limit));
-}
-
-function saveGameInStore(mode, game) {
-  store.dispatch(setGame({
-    key: mode,
-    value: game
-  }));
-
-  return game;
-}

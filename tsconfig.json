@@ -2,10 +2,21 @@
   "compilerOptions": {
     "baseUrl": ".",
     "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "noEmit": true,
     "paths": {
       "@/*": ["./src/*"],
       "@game/*": ["./game/*"]
-    }
+    },
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
   },
   "include": [
     "src/**/*",

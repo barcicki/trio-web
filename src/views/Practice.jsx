@@ -1,50 +1,44 @@
-import { useRef } from 'react';
-import { GameView } from '@/components/GameView.jsx';
-import { GameHeader } from '@/components/GameHeader.jsx';
-import { ThemeButton } from '@/components/ThemeButton.jsx';
-import { PracticeEnd } from '@/components/PracticeEnd.jsx';
-import { TilesTable } from '@/components/TilesTable.jsx';
-import { Tile } from '@/components/Tile.jsx';
-import { useCachedCallback } from '@/hooks/useCachedCallback.js';
-import { useTimeout } from '@/hooks/useTimeout.js';
-import { useGame } from '@/hooks/useGame.js';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { GameTypes } from '@game/trio';
+import { LocalGame } from '@/components/Game/LocalGame.jsx';
 import { useTheme } from '@/hooks/useTheme.js';
-import { toastErrors } from '@/utils/toast.js';
-import { GameModes } from '@game/trio';
-
-import './Practice.css';
+import { usePlayer } from '@/reducers/player.js';
 
 export function Practice({ limit }) {
-  const [practice, api] = useGame(GameModes.PRACTICE);
+  const config = {
+    type: GameTypes.MATCH,
+    matchLimit: null,
+    tableSize: 6,
+    timeLimit: limit
+  };
+
+  const [game, setGame] = useState();
   const [theme, nextTheme, changeTheme] = useTheme();
-  const tableEl = useRef();
-
-  const onSelect = useCachedCallback((tile) => api.toggle(tile, {
-    onMiss(tile, tiles) {
-      tableEl.current.shakeTile(tile);
-      toastErrors(tiles, theme);
-    }
-  }));
-
-  useTimeout(() => {
-    if (practice.remaining > 0) {
-      api.check();
-    }
-  }, practice.remaining);
-
-  const status = <span className="practice-score">Score: <strong>{practice.score}</strong></span>;
+  const player = usePlayer();
 
   return (
-    <GameView className="practice limited" game={practice} EndGame={PracticeEnd}>
-      <GameHeader game={practice} countdown={limit > 0} status={status}>
-        <ThemeButton onClick={changeTheme} theme={nextTheme.id} title="Switch theme"/>
-      </GameHeader>
-      <div className="practice-query">
-        <Tile tile={practice.query[0]} theme={theme.id} />
-        <Tile tile={practice.query[1]} theme={theme.id} />
-        <Tile theme='unknown' />
-      </div>
-      <TilesTable theme={theme.id} tiles={practice.table} onSelect={onSelect} ref={tableEl}/>
-    </GameView>
+    <LocalGame
+      backPath=".."
+      config={config}
+      game={game}
+      theme={theme.id}
+      nextTheme={nextTheme.id}
+      onThemeSwitch={changeTheme}
+      showPlayers={false}
+      player={player}
+      onUpdate={setGame}
+      endMessage="Time-limited practice completed."
+      endDetails={(game) => ({
+        'Found trios': game.currentPlayer.found.length,
+        'Miss-clicks': game.currentPlayer.missed.length
+      })}
+      endActions={(
+        <>
+          <Link className="button" to="/">Home</Link>
+          <Link className="button primary" onClick={() => setGame(null)}>Restart</Link>
+        </>
+      )}
+    />
   );
 }

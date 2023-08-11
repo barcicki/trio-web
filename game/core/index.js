@@ -123,7 +123,7 @@ export function createCore({
     }
 
     if (count === totalValues) {
-      return isMatch(tiles) ? [tiles.slice()] : 0;
+      return isMatch(tiles) ? [tiles.slice()] : [];
     }
 
     const matches = [];

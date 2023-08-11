@@ -1,9 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { generateColor, generateId } from '@game/utils';
 import { useSelector } from 'react-redux';
+import { createSliceWithStorage } from '@/utils/redux.js';
+import { generateColor, generateId } from '@game/utils';
 
 export function usePlayer() {
-  return useSelector(getPlayer);
+  return useSelector(playerSelector);
 }
 
 const {
@@ -11,13 +11,16 @@ const {
     setName,
     changeColor
   },
-  reducer
-} = createSlice({
+  reducer,
+  synchronizer
+} = createSliceWithStorage({
   name: 'player',
-  initialState: {
-    id: generateId(),
-    name: 'Player',
-    color: generateColor()
+  initialState(saved) {
+    return {
+      id: saved?.id ?? generateId(),
+      name: saved?.name ?? 'Player',
+      color: saved?.color ?? generateColor()
+    };
   },
   reducers: {
     setName(state, action) {
@@ -38,9 +41,10 @@ const {
 export {
   setName,
   changeColor,
-  reducer as playerReducer
+  reducer as playerReducer,
+  synchronizer as playerSynchronizer
 };
 
-function getPlayer(state) {
+export function playerSelector(state) {
   return state?.player;
 }

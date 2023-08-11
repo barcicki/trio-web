@@ -1,15 +1,18 @@
 import { THEMES } from '@/components/TileThemes/themes.js';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSliceWithStorage } from '@/utils/redux.js';
 
 const {
   actions: {
     setTheme,
     setNextTheme
   },
-  reducer
-} = createSlice({
+  reducer,
+  synchronizer
+} = createSliceWithStorage({
   name: 'theme',
-  initialState: THEMES[0].id,
+  initialState(saved) {
+    return saved ?? THEMES[0].id;
+  },
   reducers: {
     setTheme(state, action) {
       return action.payload;
@@ -26,5 +29,6 @@ const {
 export {
   setTheme,
   setNextTheme,
-  reducer as themeReducer
+  reducer as themeReducer,
+  synchronizer as themeSynchronizer
 };

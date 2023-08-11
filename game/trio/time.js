@@ -1,4 +1,8 @@
 export function startGame(state) {
+  if (state.started) {
+    return state;
+  }
+
   return {
     ...state,
     started: Date.now() - (state.duration ?? 0)

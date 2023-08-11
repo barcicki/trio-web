@@ -1,0 +1,37 @@
+.game--header {
+  display: flex;
+  width: 100%;
+  gap: .2em;
+}
+
+.game--header-actions,
+.game--header-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .2em;
+  align-items: center;
+}
+
+.game--header-status {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.game--current-player,
+.game--other-player {
+  min-width: 2.5em;
+}
+
+.game--header-actions > button,
+.game--header-status > button,
+.game--header-status > .button,
+.game--header-actions > .button {
+  padding: .4em .6em;
+  font-size: 1.2em;
+  gap: .5em;
+  line-height: 1em;
+}
+
+.game--header-timer {
+  font-weight: bold;
+}

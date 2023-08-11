@@ -1,3 +1,3 @@
 export * from './base.js';
-export * from './consts.js';
-export * from './api.js';
+export * from './consts.ts';
+export * from './game.ts';

@@ -1,14 +1,20 @@
 import { AnimatePresence } from 'framer-motion';
 import { Tile } from '@/components/Tile.jsx';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useResizeEffect } from '@/hooks/useResizeObserver.js';
 
 import './TilesTable.css';
 
-export const TilesTable = forwardRef(function TileTable({ tiles, selected = [], theme, onSelect }, ref) {
+export const TilesTable = forwardRef(function TileTable({ className = '', tiles, selected = [], theme, onSelect }, ref) {
   const tilesEls = useRef([]);
+  const tableEl = useRef();
+  const [gridTemplate, setGridTemplate] = useState();
 
   useImperativeHandle(ref, () => {
     return {
+      get current() {
+        return tableEl.current;
+      },
       shakeIndex(index) {
         return tilesEls.current[index]?.shake?.();
       },
@@ -36,8 +42,20 @@ export const TilesTable = forwardRef(function TileTable({ tiles, selected = [], 
     };
   });
 
+  const onResize = useCallback(() => {
+    if (tableEl.current) {
+      const area = tableEl.current.getBoundingClientRect();
+      const grid = getGrid(area.width, area.height, tiles.length);
+
+      setGridTemplate(`repeat(${grid.rows}, 1fr) / repeat(${grid.cols}, 1fr)`);
+    }
+  }, [tableEl, tiles.length]);
+
+  useResizeEffect(tableEl, onResize);
+  useEffect(onResize, [onResize]);
+
   return (
-    <div className="tiles-table">
+    <div className={`tiles-table ${className}`} ref={tableEl} style={{ gridTemplate }}>
       <AnimatePresence>
         {tiles.map((tile, index) => (
           <Tile
@@ -53,3 +71,33 @@ export const TilesTable = forwardRef(function TileTable({ tiles, selected = [], 
     </div>
   );
 });
+
+function getGrid(containerWidth, containerHeight, count, ratio = 1) {
+  let best = null;
+
+  for (let i = 1; i <= count; i++) {
+    const cols = i;
+    const rows = Math.ceil(count / cols);
+    const [width, height] = getContainedSize(containerWidth / cols, containerHeight / rows, ratio);
+    const area = width * height;
+
+    if (!best || area > best.area) {
+      best = {
+        cols,
+        rows,
+        width,
+        height,
+        area
+      };
+    }
+  }
+
+  return best;
+}
+
+function getContainedSize(containerWidth, containerHeight, ratio) {
+  const maxWidth = Math.min(containerHeight * ratio, containerWidth);
+  const maxHeight = Math.min(containerWidth / ratio, containerHeight);
+
+  return ratio > 1 ? [maxWidth, maxWidth / ratio] : [maxHeight * ratio, maxHeight];
+}

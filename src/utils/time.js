@@ -16,3 +16,29 @@ export function format(ms, direction = 1) {
 export function pad(num, len = 2) {
   return String(num).padStart(len, '0');
 }
+
+export function getTimerProps(game) {
+  if (game.remaining) {
+    return {
+      stopTime: game.started + game.remaining,
+      direction: -1
+    };
+  }
+
+  if (!game.ended && game.started) {
+    return {
+      startTime: game.started
+    };
+  }
+
+  if (game.duration) {
+    const now = Date.now();
+
+    return {
+      startTime: now - game.duration,
+      stopTime: now
+    };
+  }
+
+  return {};
+}

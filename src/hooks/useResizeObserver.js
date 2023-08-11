@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { useCachedCallback } from './useCachedCallback.js';
+import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 
 export function useResizeEffect(ref, handler) {
   const callback = useCachedCallback(handler);
