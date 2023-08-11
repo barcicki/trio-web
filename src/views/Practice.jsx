@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { GameTypes } from '@game/trio';
+import { GameTypes } from '@/game/trio';
 import { LocalGame } from '@/components/Game/LocalGame.jsx';
 import { useTheme } from '@/hooks/useTheme.js';
 import { usePlayer } from '@/reducers/player.js';

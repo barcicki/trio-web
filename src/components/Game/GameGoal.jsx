@@ -1,4 +1,4 @@
-import { GameTypes, getMatchingTile } from '@game/trio';
+import { GameTypes, getMatchingTile } from '@/game/trio';
 import { TilesList } from '@/components/TilesList.jsx';
 import { Tile } from '@/components/Tile.jsx';
 

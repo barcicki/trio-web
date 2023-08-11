@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import { getMatchError } from '@game/trio';
+import { getMatchError } from '@/game/trio';
 
 export function toastMiss(miss, theme) {
   toastErrors(getMatchError(miss), theme);

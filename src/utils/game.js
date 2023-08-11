@@ -1,5 +1,5 @@
-import { GameTypes, getMatches, TargetTypes } from '@game/trio';
-import { hasAnyPlayerFound } from '@game/trio/player.js';
+import { GameTypes, getMatches, TargetTypes } from '@/game/trio';
+import { hasAnyPlayerFound } from '@/game/trio/player.js';
 
 export function getHintsConfig(api, playerId) {
   const { config, state } = api;

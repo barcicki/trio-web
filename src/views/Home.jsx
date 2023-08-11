@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TilesTable } from '@/components/TilesTable.jsx';
 import { useTheme } from '@/hooks/useTheme.js';
-import { getRandomTrio } from '@game/trio';
+import { getRandomTrio } from '@/game/trio';
 
 import './Home.css';
 

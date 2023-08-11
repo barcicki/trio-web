@@ -1,5 +1,5 @@
 import { createSliceWithStorage } from '@/utils/redux.js';
-import { stopGame } from '@game/trio/time.js';
+import { stopGame } from '@/game/trio/time.js';
 
 export function gamesSelector(state, key) {
   return state.games[key];

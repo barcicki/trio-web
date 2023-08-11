@@ -1,4 +1,4 @@
-import { toStyleArray } from '@game/trio';
+import { toStyleArray } from '@/game/trio';
 
 const TYPES = [
   PlanetA,

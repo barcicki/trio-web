@@ -1,6 +1,6 @@
 import { createSliceWithStorage } from '@/utils/redux.js';
 import { THEMES } from '@/components/TileThemes/themes.js';
-import { MISSIONS } from '@game/trio/missions.js';
+import { MISSIONS } from '@/game/trio/missions.js';
 import { useSelector } from 'react-redux';
 
 export function useCampaigns() {

@@ -4,7 +4,7 @@ import { GameGoal } from '@/components/GameGoal.jsx';
 import { Intro } from '@/components/Intro.jsx';
 import { format } from '@/utils/time.js';
 import { Details } from '@/components/Details.jsx';
-import { getTotalFoundTrios } from '@game/trio/player.js';
+import { getTotalFoundTrios } from '@/game/trio/player.js';
 
 export function GameIntro() {
   const savedGame = useLoaderData();

@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { TilesTable } from '@/components/TilesTable.jsx';
 import { GameGoal } from './GameGoal.jsx';
-import { GameTypes } from '@game/trio';
+import { GameTypes } from '@/game/trio';
 
 import './GameBody.css';
 

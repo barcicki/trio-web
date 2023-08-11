@@ -7,7 +7,7 @@ import {
   generateIdWithRandom,
   getSeededRandom,
   shuffleWithRandom
-} from '../utils/index.js';
+} from '../utils';
 import { createMatchTable } from './match.js';
 import {
   createTable,

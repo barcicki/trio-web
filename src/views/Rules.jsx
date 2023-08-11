@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { TilesList } from '@/components/TilesList.jsx';
 import { Tile } from '@/components/Tile.jsx';
 import { useTheme } from '@/hooks/useTheme.js';
-import { getFeatureTiles, getRandomTile } from '@game/trio';
+import { getFeatureTiles, getRandomTile } from '@/game/trio';
 
 import './Rules.css';
 import { MdArrowBackIosNew } from 'react-icons/md';

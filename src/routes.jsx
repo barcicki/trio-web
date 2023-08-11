@@ -13,8 +13,8 @@ import { OnlineGame } from '@/views/OnlineGame.jsx';
 import { Campaigns } from '@/views/Campaigns.jsx';
 import { CampaignMission } from '@/views/CampaignMission.jsx';
 
-import { GameModes } from '@game/trio';
-import { generateId } from '@game/utils';
+import { GameModes } from '@/game/trio';
+import { generateId } from '@/game/utils';
 import { toastMissionLocked } from '@/utils/toast.js';
 import { gamesSelector } from '@/reducers/games.js';
 import { missionSelector } from '@/reducers/story.js';

@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import { GameTypes, TargetTypes, createGame } from '@game/trio';
+import { GameTypes, TargetTypes, createGame } from '../src/game/trio';
 
 export function createTrioSocketServer(httpServer) {
   const ioServer = new Server(httpServer);

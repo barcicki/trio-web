@@ -9,7 +9,7 @@ import { useTheme } from '@/hooks/useTheme.js';
 import { usePlayer } from '@/reducers/player.js';
 import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
 import { getHintsConfig, getStatusConfig, getGoals, getPlayers } from '@/utils/game.js';
-import { createGame } from '@game/trio';
+import { createGame } from '@/game/trio';
 import { THEMES } from '@/components/Tile.jsx';
 
 import './OnlineGame.css';

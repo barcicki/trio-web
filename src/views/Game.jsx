@@ -1,4 +1,4 @@
-import { GameModes, GameTypes, TargetTypes } from '@game/trio';
+import { GameModes, GameTypes, TargetTypes } from '@/game/trio';
 import { Link, useLoaderData } from 'react-router-dom';
 import { LocalGame } from '@/components/Game/LocalGame.jsx';
 

@@ -1,6 +1,6 @@
 import { THEMES } from '@/components/TileThemes/themes.js';
 import { GameView } from '@/components/Game/GameView.jsx';
-import { createGame } from '@game/trio';
+import { createGame } from '@/game/trio';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
 import { getHintsConfig, getStatusConfig, getGoals, getPlayers } from '@/utils/game.js';

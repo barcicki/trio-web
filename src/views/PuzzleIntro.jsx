@@ -4,8 +4,8 @@ import { IntroTile } from '@/components/IntroTile.jsx';
 import { Intro } from '@/components/Intro.jsx';
 import { format } from '@/utils/time.js';
 import { Details } from '@/components/Details.jsx';
-import { countMatches } from '@game/trio';
-import { getTotalFoundTrios } from '@game/trio/player.js';
+import { countMatches } from '@/game/trio';
+import { getTotalFoundTrios } from '@/game/trio/player.js';
 
 export function PuzzleIntro() {
   const savedPuzzle = useLoaderData();

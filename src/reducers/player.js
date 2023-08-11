@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { createSliceWithStorage } from '@/utils/redux.js';
-import { generateColor, generateId } from '@game/utils';
+import { generateColor, generateId } from '@/game/utils';
 
 export function usePlayer() {
   return useSelector(playerSelector);
