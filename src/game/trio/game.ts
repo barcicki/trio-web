@@ -454,8 +454,6 @@ export function createGame(gameConfig?: GameConfig, gameState?: GameState): Game
   }
 
   function submit(state: GameState, playerId: string, tiles: string[]): GameState {
-    console.log('PRE FOUND');
-
     if (!isMatch(tiles)) {
       return updatePlayer(state, playerId, increaseMissed, tiles);
     }
@@ -476,8 +474,6 @@ export function createGame(gameConfig?: GameConfig, gameState?: GameState): Game
       }
 
       let newState = updatePlayer(state, playerId, increaseFound, tiles);
-
-      console.log('FOUND');
 
       if (config.target === TargetTypes.DECK) {
         newState = getNextFindDeckState(newState, tiles);
