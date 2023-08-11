@@ -17,3 +17,4 @@ export function startServer(dir, port) {
   server.listen(port);
 }
 
+startServer(process.env.PUBLIC_DIR || './dist', process.env.PORT || 8080);
