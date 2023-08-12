@@ -1,0 +1,60 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      server:
+        required: true
+        type: string
+    secrets:
+      SSH_USER:
+        required: true
+      SSH_KEY:
+        required: true
+      SSH_KEY_PASS:
+        required: true
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      SSH_PATH: "/usr/home/${{ secrets.user }}/domains/${{ inputs.server }}/public_nodejs"
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: trio
+      - name: Deploy frontend
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ inputs.server }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASS }}
+          source: dist/*
+          target: ${{ env.SSH_PATH }}
+      - name: Deploy backend
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ inputs.server }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASS }}
+          source: dist-srv/app.cjs
+          strip_components: 1
+          target: ${{ env.SSH_PATH }}
+      - name: Restart server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ inputs.server }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASS }}
+          script: |
+            cd ${{ env.SSH_PATH }}
+            mv app.cjs app.js
+            devil www restart ${{ inputs.server }}

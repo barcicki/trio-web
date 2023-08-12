@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  workflow_call:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: NPM install
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Build frontend
+        run: npm run build
+      - name: Build backend
+        run: npm run build:server
+      - name: Save artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: trio
+          path: |
+            dist
+            dist-srv

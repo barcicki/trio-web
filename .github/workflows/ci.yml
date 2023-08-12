@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Build:
+    uses: ./.github/workflows/build.yml
+  DEV:
+    uses: ./.github/workflows/deploy.yml
+    needs: Build
+    with:
+      environment: DEV
+      server: ${{ inputs.server }}
+    secrets: inherit
+  PROD:
+    uses: ./.github/workflows/deploy.yml
+    needs:
+      - Build
+      - DEV
+    with:
+      environment: PROD
+      server: ${{ inputs.server }}
+    secrets: inherit
