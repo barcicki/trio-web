@@ -1,9 +1,8 @@
-name: CI
+name: PR
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
-  workflow_dispatch:
 
 jobs:
   Build:
@@ -13,10 +12,4 @@ jobs:
     needs: Build
     with:
       environment: DEV
-    secrets: inherit
-  PROD:
-    uses: ./.github/workflows/deploy.yml
-    needs: Build
-    with:
-      environment: PROD
     secrets: inherit
