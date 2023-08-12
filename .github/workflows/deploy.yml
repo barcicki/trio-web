@@ -6,10 +6,9 @@ on:
       environment:
         required: true
         type: string
-      server:
-        required: true
-        type: string
     secrets:
+      SERVER:
+        required: true
       SSH_USER:
         required: true
       SSH_KEY:
@@ -22,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
-      SSH_PATH: "/usr/home/${{ secrets.user }}/domains/${{ inputs.server }}/public_nodejs"
+      SSH_PATH: "/usr/home/${{ secrets.SSH_USER }}/domains/${{ secrets.SERVER }}/public_nodejs"
     steps:
       - name: Download build
         uses: actions/download-artifact@v3
@@ -31,7 +30,7 @@ jobs:
       - name: Deploy frontend
         uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ inputs.server }}
+          host: ${{ secrets.SERVER }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASS }}
@@ -40,7 +39,7 @@ jobs:
       - name: Deploy backend
         uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ inputs.server }}
+          host: ${{ secrets.SERVER }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASS }}
@@ -50,11 +49,11 @@ jobs:
       - name: Restart server
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ inputs.server }}
+          host: ${{ secrets.SERVER }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASS }}
           script: |
             cd ${{ env.SSH_PATH }}
             mv app.cjs app.js
-            devil www restart ${{ inputs.server }}
+            devil www restart ${{ secrets.SERVER }}
