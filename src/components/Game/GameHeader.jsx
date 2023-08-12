@@ -40,7 +40,7 @@ export function GameHeader({
     <div className="game--header">
       <div className="game--header-actions">
         {showBack && <Link className="button" to={backPath} onClick={onBack}><MdArrowBackIosNew/></Link>}
-        {showHint && <button onClick={onHint} title="Show hint"><TbBulb/>{showRemainingHints ? ` (${remainingHints})` : ''}</button>}
+        {showHint && <button disabled={showRemainingHints && remainingHints === 0} onClick={onHint} title="Show hint"><TbBulb/>{showRemainingHints ? remainingHints : ''}</button>}
         {showReorder && <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>}
         {showThemeSwitcher && <ThemeButton theme={nextTheme} onClick={onThemeSwitch} title="Switch theme"/>}
         {showPlayers && currentPlayer && (
