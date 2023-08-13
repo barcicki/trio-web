@@ -28,140 +28,9 @@ import {
   updatePlayer
 } from './player.js';
 
-export type TrioTiles = [string, string, string];
+import type { GameConfig, GameState, GameApi, GamePlayer, CheckResult, GamePlayerState } from './types.ts';
 
-export interface GameState {
-  players: GamePlayerState[];
-
-  started?: number;
-  duration?: number;
-  remaining?: number;
-  ended?: boolean;
-
-  seed?: string;
-  nextSeed?: string;
-  matchTiles?: [string, string];
-  table?: string[];
-  deck?: string[];
-}
-
-export interface GameConfig {
-  type?: GameTypes;
-  seed?: string;
-  tableSize?: number;
-  timeLimit?: number | null;
-  matchLimit?: number | null;
-  matchTiles?: [string, string] | null;
-  target?: TargetTypes;
-  goalSize?: number | null;
-  hintsLimit?: number | null;
-}
-
-export interface GamePlayer {
-  id: string;
-  name: string;
-  color: string;
-}
-
-export interface GamePlayerState extends GamePlayer {
-  active: boolean;
-  found?: TrioTiles[];
-  missed?: TrioTiles[];
-  hints: number;
-  reorders: number;
-  selected?: string[];
-}
-
-export interface CheckResult {
-  valid?: boolean;
-  match?: boolean;
-  miss?: null | (string[] | null)[];
-  tiles?: string[];
-  error?: string;
-}
-
-export interface GameApi {
-  join(player: GamePlayer, ready?: boolean): GameApi;
-  leave(playerId: string): GameApi;
-  start(): GameApi;
-  stop(): GameApi;
-  toggle(playerId: string, tile: string): GameApi;
-  miss(playerId: string, tiles: string[]): GameApi;
-  submit(playerId: string, tiles: string[]): GameApi;
-  reorder(): GameApi;
-  tick(): GameApi;
-  sync(newState: GameState): GameApi;
-  hint(playerId: string): GameApi;
-
-  check(playerId: string, tile: string): CheckResult;
-  readonly state: GameState;
-  readonly config: GameConfig;
-}
-
-function createGameState(config: GameConfig): GameState {
-  const initialDeck = getDeck();
-  const random = getSeededRandom(config.seed);
-  const nextSeed = generateIdWithRandom(random);
-
-  const base = {
-    seed: config.seed,
-    nextSeed,
-    players: []
-  };
-
-  if (config.type === GameTypes.MATCH) {
-    const [table, matchTiles] = createMatchTable(initialDeck,
-      random,
-      config.tableSize,
-      config.matchTiles
-    );
-
-    return {
-      ...base,
-      matchTiles,
-      table
-    };
-  }
-
-  if (config.target === TargetTypes.DECK) {
-    const shuffledDeck = shuffleWithRandom(initialDeck, random);
-    const [table, deck] = pickTable(shuffledDeck, config.tableSize);
-
-    return {
-      ...base,
-      deck,
-      table
-    };
-  }
-
-  if (config.target === TargetTypes.GOAL) {
-    const [table] = createTable(
-      initialDeck,
-      random,
-      config.tableSize,
-      config.goalSize
-    );
-
-    return {
-      ...base,
-      table
-    };
-  }
-
-  const [table] = createTable(
-    initialDeck,
-    random,
-    config.tableSize,
-    1
-  );
-
-  return {
-    ...base,
-    table
-  };
-}
-
-export function createGame(gameConfig?: GameConfig, gameState?: GameState): GameApi {
+export function createGame(gameConfig?: GameConfig, gameState?: GameState, initState: boolean = true): GameApi {
   const type = gameConfig?.type === GameTypes.MATCH ? GameTypes.MATCH : GameTypes.FIND;
   const tableSize = gameConfig?.tableSize ?? (type === GameTypes.MATCH ? 6 : 12);
   const target = gameConfig?.target ?? TargetTypes.ENDLESS;
@@ -178,8 +47,14 @@ export function createGame(gameConfig?: GameConfig, gameState?: GameState): Game
     hintsLimit: type === GameTypes.MATCH ? 0 : (typeof gameConfig?.hintsLimit !== 'undefined' ? gameConfig.hintsLimit : 10)
   };
 
-  const state = create(gameState);
+  if (initState && (!gameState || gameState.seed !== config.seed)) {
+    return createGameApi(config, createGameState(config));
+  }
 
+  return createGameApi(config, gameState);
+}
+
+function createGameApi(config: GameConfig, state: GameState = createEmptyGameState()): GameApi {
   return createApi(state);
 
   function createApi(state: GameState): GameApi {
@@ -239,14 +114,6 @@ export function createGame(gameConfig?: GameConfig, gameState?: GameState): Game
         return config;
       }
     };
-  }
-
-  function create(state?: GameState): GameState {
-    if (state && (state.seed === config.seed)) {
-      return state;
-    }
-
-    return createGameState(config);
   }
 
   function start(state: GameState): GameState {
@@ -517,7 +384,7 @@ export function createGame(gameConfig?: GameConfig, gameState?: GameState): Game
           selected: old.selected?.length ? old.selected.filter((tile) => newState.table!.includes(tile)) : []
         });
       }),
-      table: updateTable(state.table, newState.table)
+      table: updateTable(state.table || [], newState.table)
     };
   }
 
@@ -560,4 +427,73 @@ export function createGame(gameConfig?: GameConfig, gameState?: GameState): Game
 
     return state;
   }
+}
+
+function createEmptyGameState() {
+  return {
+    players: []
+  };
+}
+
+function createGameState(config: GameConfig): GameState {
+  const initialDeck = getDeck();
+  const random = getSeededRandom(config.seed);
+  const nextSeed = generateIdWithRandom(random);
+
+  const base = {
+    ...createEmptyGameState(),
+    seed: config.seed,
+    nextSeed
+  };
+
+  if (config.type === GameTypes.MATCH) {
+    const [table, matchTiles] = createMatchTable(initialDeck,
+      random,
+      config.tableSize,
+      config.matchTiles
+    );
+
+    return {
+      ...base,
+      matchTiles,
+      table
+    };
+  }
+
+  if (config.target === TargetTypes.DECK) {
+    const shuffledDeck = shuffleWithRandom(initialDeck, random);
+    const [table, deck] = pickTable(shuffledDeck, config.tableSize);
+
+    return {
+      ...base,
+      deck,
+      table
+    };
+  }
+
+  if (config.target === TargetTypes.GOAL) {
+    const [table] = createTable(
+      initialDeck,
+      random,
+      config.tableSize,
+      config.goalSize
+    );
+
+    return {
+      ...base,
+      table
+    };
+  }
+
+  const [table] = createTable(
+    initialDeck,
+    random,
+    config.tableSize,
+    1
+  );
+
+  return {
+    ...base,
+    table
+  };
 }

@@ -24,7 +24,7 @@ export function OnlineGame() {
   const [theme, setTheme] = useState(localTheme.id);
   const socket = useMemo(() => io(), [replays]);
 
-  const api = createGame(config, game)
+  const api = createGame(config, game, false)
     .join(player);
 
   const [currentPlayer, otherPlayers] = getPlayers(api, player.id);
