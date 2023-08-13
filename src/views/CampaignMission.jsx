@@ -27,7 +27,7 @@ export function CampaignMission() {
       canChangeTheme={false}
       onUpdate={onUpdate}
       goalText={missionGoal}
-      endHeader="Mission completed!"
+      endHeader={mission.end || `Mission completed!`}
       endShowTime={false}
       endActions={(
         <>

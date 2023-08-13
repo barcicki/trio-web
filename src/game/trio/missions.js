@@ -5,7 +5,7 @@ export const MISSIONS = [
     id: 'match-3',
     label: 'Make trio with 3 shared features',
     goal: 'These tiles share $F1, $F2 and $F3. They have different $F4. Select a tile that has the same shared features but different $F4.',
-    end: 'Trio completed',
+    end: 'Trio completed!',
     config: {
       type: GameTypes.MATCH,
       matchLimit: 1,
@@ -18,7 +18,7 @@ export const MISSIONS = [
     id: 'match-2',
     label: 'Make trio with 2 shared features',
     goal: 'These tiles share $F1 and $F2. They have different $F3 and $F4. Select a tile that has different $F3 and $F4 from those two.',
-    end: 'Trio completed',
+    end: 'Trio completed!',
     config: {
       type: GameTypes.MATCH,
       matchLimit: 1,
@@ -31,7 +31,7 @@ export const MISSIONS = [
     id: 'match-1',
     label: 'Make trio with 1 shared feature',
     goal: 'These tiles have only one common feature - $F1. Select a tile with the same $F1 but different all other features.',
-    end: 'Trio completed',
+    end: 'Trio completed!',
     config: {
       type: GameTypes.MATCH,
       matchLimit: 1,
@@ -44,7 +44,7 @@ export const MISSIONS = [
     id: 'match-0',
     label: 'Make trio with none shared feature',
     goal: 'These tiles don\'t share any features. Find a tile with different $F1, $F2, $F3 and $F4.',
-    end: 'Trio completed',
+    end: 'Trio completed!',
     config: {
       type: GameTypes.MATCH,
       matchLimit: 1,
