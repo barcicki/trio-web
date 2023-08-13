@@ -8,10 +8,6 @@ import './Tile.css';
 
 const DURATION = 0.2;
 
-export {
-  THEMES
-};
-
 export const Tile = forwardRef(function Tile({ className, tile, isSelected, onSelect, theme }, ref) {
   const isFirstRender = useIsFirstRender();
   const [content, setContent] = useState();

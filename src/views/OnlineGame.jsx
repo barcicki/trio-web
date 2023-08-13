@@ -9,8 +9,8 @@ import { useTheme } from '@/hooks/useTheme.js';
 import { usePlayer } from '@/reducers/player.js';
 import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
 import { getHintsConfig, getStatusConfig, getGoals, getPlayers } from '@/utils/game.js';
+import { getTheme } from '@/components/TileThemes/themes.js';
 import { createGame } from '@/game/trio';
-import { THEMES } from '@/components/Tile.jsx';
 
 import './OnlineGame.css';
 
@@ -53,7 +53,7 @@ export function OnlineGame() {
       });
 
       if (result.miss) {
-        toastErrors(result.miss, THEMES.find((t) => t.id === theme) || THEMES[0]);
+        toastErrors(result.miss, getTheme(theme));
       } else if (result.error) {
         toastAlreadyFound();
       }

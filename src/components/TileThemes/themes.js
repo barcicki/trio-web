@@ -1,7 +1,7 @@
 import { ShapeTileContent } from './ShapeTileContent.jsx';
 import { ShieldTileContent } from './ShieldTileContent.jsx';
 import { UnknownTileContent } from './UnknownTileContent.jsx';
-import { FaceTileContent } from "./FaceTileContent.jsx";
+// import { FaceTileContent } from "./FaceTileContent.jsx";
 import { PlanetTileContent } from "./PlanetTileContent.jsx";
 
 export const THEMES = [
@@ -51,6 +51,12 @@ export const THEMES = [
   }
 ];
 
+export const THEMES_MAP = THEMES.reduce((map, theme) => {
+  map[theme.id] = theme;
+
+  return map;
+}, {});
+
 export const RENDERERS = THEMES.reduce((map, theme) => {
   map[theme.id] = theme.renderer;
 
@@ -58,3 +64,7 @@ export const RENDERERS = THEMES.reduce((map, theme) => {
 }, {
   unknown: UnknownTileContent // extra Idle renderer
 });
+
+export function getTheme(id) {
+  return THEMES_MAP[id] ?? THEMES[0];
+}

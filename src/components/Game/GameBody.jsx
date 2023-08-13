@@ -1,9 +1,10 @@
 import classNames from 'classnames';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { MdOutlineClose } from 'react-icons/md';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { TilesTable } from '@/components/TilesTable.jsx';
-import { GameGoal } from './GameGoal.jsx';
 import { GameTypes } from '@/game/trio';
+import { GameGoal } from './GameGoal.jsx';
 
 import './GameBody.css';
 
@@ -15,12 +16,16 @@ export function GameBody({
   selected,
   onSelect
 }) {
+  const [goalTextVisible, setGoalTextVisible] = useState(true);
   const tableRef = useRef();
   const onTileSelect = useCachedCallback((tile) => onSelect?.(tile, tableRef.current));
 
   return (
     <div className="game--body">
-      {goalText && <p className="game--goal-text">{goalText}</p>}
+      {goalText && goalTextVisible && <p className="game--goal-text">
+        <span className="game--goal-text-content">{goalText}</span>
+        <span className="game--goal-text-toggle" onClick={() => setGoalTextVisible(!goalTextVisible)}><MdOutlineClose/></span>
+      </p>}
       {goals?.length ? (
         <div className={classNames({
           'game--goals': true,

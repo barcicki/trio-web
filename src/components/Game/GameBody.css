@@ -7,9 +7,16 @@
 }
 
 .game--goal-text {
+    display: flex;
     text-align: center;
     font-size: 1.1em;
     font-weight: bold;
+}
+
+.game--goal-text-toggle {
+    margin-left: auto;
+    padding-left: .2em;
+    cursor: pointer;
 }
 
 .game--goals {

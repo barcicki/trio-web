@@ -1,9 +1,9 @@
-import { THEMES } from '@/components/TileThemes/themes.js';
 import { GameView } from '@/components/Game/GameView.jsx';
 import { createGame } from '@/game/trio';
 import { useCachedCallback } from '@/hooks/useCachedCallback.js';
 import { toastAlreadyFound, toastErrors } from '@/utils/toast.js';
 import { getHintsConfig, getStatusConfig, getGoals, getPlayers } from '@/utils/game.js';
+import { getTheme } from '@/components/TileThemes/themes.js';
 import { useVisibilityChangeEffect } from '@/hooks/useVisibilityChangeEffect.js';
 import { useIntervalEffect } from '@/hooks/useIntervalEffect.js';
 
@@ -16,7 +16,7 @@ export function LocalGame(props) {
     ...otherProps
   } = props;
 
-  const theme = THEMES.find((t) => t.id === props.theme) || THEMES[0];
+  const theme = getTheme(props.theme);
 
   let api = createGame(config, game)
     .join(player);
