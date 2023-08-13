@@ -17,7 +17,7 @@ import './OnlineGame.css';
 export function OnlineGame() {
   const roomId = useLoaderData();
   const player = usePlayer();
-  const [localTheme] = useTheme();
+  const [localTheme, nextTheme, changeTheme] = useTheme();
   const [replays, setReplays] = useState(0);
   const [game, setGame] = useState();
   const [config, setConfig] = useState();
@@ -32,7 +32,10 @@ export function OnlineGame() {
   const onUpdate = useCachedCallback(({ config, state, theme }) => {
     setConfig(config);
     setGame(api.sync(state).state);
-    setTheme(theme);
+
+    if (config.theme && !config.canChangeTheme) {
+      setTheme(theme);
+    }
   });
 
   const onReady = useCachedCallback(() => socket.emit('ready', { roomId }));
@@ -77,6 +80,12 @@ export function OnlineGame() {
     };
   }, [roomId, socket]);
 
+  useEffect(() => {
+    if (config?.canChangeTheme !== false) {
+      setTheme(localTheme.id);
+    }
+  }, [config, setTheme, localTheme.id]);
+
   return (
     <>
       {!game && <p className="centered">Connecting...</p>}
@@ -96,6 +105,8 @@ export function OnlineGame() {
         currentPlayer={currentPlayer}
         otherPlayers={otherPlayers}
         selected={currentPlayer.selected}
+        nextTheme={nextTheme.id}
+        onThemeSwitch={changeTheme}
         onHint={onHint}
         onSelect={onSelect}
         onReorder={onReorder}
