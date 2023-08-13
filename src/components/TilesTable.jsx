@@ -8,7 +8,9 @@ import './TilesTable.css';
 export const TilesTable = forwardRef(function TileTable({ className = '', tiles, selected = [], theme, onSelect }, ref) {
   const tilesEls = useRef([]);
   const tableEl = useRef();
-  const [gridTemplate, setGridTemplate] = useState();
+  const [grid, setGrid] = useState(null);
+  const gridTemplate = grid ? `repeat(${grid.rows}, 1fr) / repeat(${grid.cols}, 1fr)` : '';
+  const gridClassName = grid ? `grid-${tiles.length}-${grid.rows}x${grid.cols}` : '';
 
   useImperativeHandle(ref, () => {
     return {
@@ -45,9 +47,12 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
   const onResize = useCallback(() => {
     if (tableEl.current) {
       const area = tableEl.current.getBoundingClientRect();
-      const grid = getGrid(area.width, area.height, tiles.length);
+      const { rows, cols } = getGrid(area.width, area.height, tiles.length);
 
-      setGridTemplate(`repeat(${grid.rows}, 1fr) / repeat(${grid.cols}, 1fr)`);
+      setGrid({
+        rows,
+        cols,
+      });
     }
   }, [tableEl, tiles.length]);
 
@@ -55,7 +60,7 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
   useEffect(onResize, [onResize]);
 
   return (
-    <div className={`tiles-table ${className}`} ref={tableEl} style={{ gridTemplate }}>
+    <div className={`tiles-table ${className} ${gridClassName}`} ref={tableEl} style={{ gridTemplate }}>
       <AnimatePresence>
         {tiles.map((tile, index) => (
           <Tile
