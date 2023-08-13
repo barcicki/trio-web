@@ -1,9 +1,8 @@
 .home {
   display: grid;
-  grid-template-rows: max-content 2fr 1fr;
+  grid-template-rows: min-content 1fr min-content;
   height: 100%;
   width: 100%;
-  overflow: hidden;
 }
 
 .home-name {
@@ -13,14 +12,22 @@
 }
 
 .home-tiles {
-  padding: 2em;
+  display: flex;
+  padding: 0 2em;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  align-items: center;
+}
+
+.home-tiles > .tiles-table {
   width: 100%;
   height: 100%;
 }
 
 .home-menu {
   display: grid;
-  grid-template: auto / repeat(2, 1fr);
+  grid-template: auto / 1fr;
   padding: 1em;
   gap: .5em;
 }
@@ -30,18 +37,14 @@
   padding: 1em 2em;
 }
 
-@media (max-aspect-ratio: 1/1) {
+@media (min-width: 400px) {
   .home-menu {
-    grid-template: auto / 1fr;
-  }
-
-  .home-tiles {
-    padding: 0 1em;
+    grid-template: auto / repeat(2, 1fr);
   }
 }
 
-@media (min-aspect-ratio: 1/1) {
-  .home-play {
-    grid-column: span 2;
+@media (min-width: 1000px) {
+  .home-menu {
+    grid-template: auto / repeat(3, 1fr);
   }
 }

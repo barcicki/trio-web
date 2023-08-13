@@ -14,7 +14,9 @@ export function Home() {
     <main className="home limited">
       <h1 className="home-name">TRIO</h1>
 
-      <TilesTable className="home-tiles" tiles={tiles} theme={theme.id} onSelect={() => changeTile()}/>
+      <div className="home-tiles">
+        <TilesTable tiles={tiles} theme={theme.id} onSelect={() => changeTile()}/>
+      </div>
 
       <div className="home-menu">
         <Link className="button" to="campaign">Campaign</Link>
