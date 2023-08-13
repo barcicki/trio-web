@@ -126,10 +126,16 @@ button.primary:hover,
   -webkit-tap-highlight-color: transparent;
 }
 
-.limited, .centered {
+.limited {
   align-self: center;
   margin: 0 auto;
   max-height: 100svh;
+  max-width: 100svw;
+}
+
+.centered {
+  align-self: center;
+  margin: 1em auto;
   max-width: 100svw;
 }
 
