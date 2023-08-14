@@ -27,6 +27,7 @@ export interface GameConfig {
   target?: TargetTypes;
   goalSize?: number | null;
   hintsLimit?: number | null;
+  sharedFeatures?: number[];
 }
 
 export interface GamePlayer {

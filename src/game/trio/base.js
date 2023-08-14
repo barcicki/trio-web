@@ -10,6 +10,7 @@ const {
   toStyleArray,
   getMatchError,
   getFeatureTiles,
+  getSharedFeatures,
   countMatches,
   canMatch
 } = createCore({
@@ -24,6 +25,7 @@ export {
   getMatches,
   getMatchingTile,
   getFeatureTiles,
+  getSharedFeatures,
   toStyleArray,
   getMatchError,
   countMatches,

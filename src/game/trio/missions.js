@@ -15,6 +15,36 @@ export const MISSIONS = [
     }
   },
   {
+    id: 'find-3-features-in-6',
+    label: 'Find trio with 3 shared features within 6 tiles',
+    goal: 'These tiles contain exactly 1 trio with 3 shared features. Find it.',
+    end: 'Trio found!',
+    config: {
+      type: GameTypes.FIND,
+      target: TargetTypes.GOAL,
+      goalSize: 1,
+      timeLimit: null,
+      hintsLimit: 0,
+      sharedFeatures: [3],
+      tableSize: 6
+    }
+  },
+  {
+    id: 'find-3-features-in-12',
+    label: 'Find trio with 3 shared features within 12 tiles',
+    goal: 'These tiles contain exactly 1 trio with 3 shared features. Find it.',
+    end: 'Trio found!',
+    config: {
+      type: GameTypes.FIND,
+      target: TargetTypes.GOAL,
+      goalSize: 1,
+      timeLimit: null,
+      hintsLimit: 0,
+      sharedFeatures: [3],
+      tableSize: 12
+    }
+  },
+  {
     id: 'match-2',
     label: 'Make trio with 2 shared features',
     goal: 'These tiles share $F1 and $F2. They have different $F3 and $F4. Select a tile that has different $F3 and $F4 from those two.',
@@ -25,6 +55,36 @@ export const MISSIONS = [
       matchTiles: ['aaaa', 'aabb'],
       timeLimit: null,
       tableSize: 6
+    }
+  },
+  {
+    id: 'find-2-features-in-6',
+    label: 'Find trio with 2 shared features within 6 tiles',
+    goal: 'These tiles contain exactly 1 trio with 2 shared features. Find it.',
+    end: 'Trio found!',
+    config: {
+      type: GameTypes.FIND,
+      target: TargetTypes.GOAL,
+      goalSize: 1,
+      timeLimit: null,
+      hintsLimit: 0,
+      sharedFeatures: [2],
+      tableSize: 6
+    }
+  },
+  {
+    id: 'find-2-features-in-12',
+    label: 'Find trio with 2 shared features within 12 tiles',
+    goal: 'These tiles contain exactly 1 trio with 2 shared features. Find it.',
+    end: 'Trio found!',
+    config: {
+      type: GameTypes.FIND,
+      target: TargetTypes.GOAL,
+      goalSize: 1,
+      timeLimit: null,
+      hintsLimit: 0,
+      sharedFeatures: [2],
+      tableSize: 12
     }
   },
   {
@@ -41,6 +101,36 @@ export const MISSIONS = [
     }
   },
   {
+    id: 'find-1-features-in-6',
+    label: 'Find trio with 1 shared features within 6 tiles',
+    goal: 'These tiles contain exactly 1 trio with 1 shared features. Find it.',
+    end: 'Trio found!',
+    config: {
+      type: GameTypes.FIND,
+      target: TargetTypes.GOAL,
+      goalSize: 1,
+      timeLimit: null,
+      hintsLimit: 0,
+      sharedFeatures: [1],
+      tableSize: 6
+    }
+  },
+  {
+    id: 'find-1-features-in-12',
+    label: 'Find trio with 1 shared features within 12 tiles',
+    goal: 'These tiles contain exactly 1 trio with 1 shared features. Find it.',
+    end: 'Trio found!',
+    config: {
+      type: GameTypes.FIND,
+      target: TargetTypes.GOAL,
+      goalSize: 1,
+      timeLimit: null,
+      hintsLimit: 0,
+      sharedFeatures: [1],
+      tableSize: 12
+    }
+  },
+  {
     id: 'match-0',
     label: 'Make trio with none shared feature',
     goal: 'These tiles don\'t share any features. Find a tile with different $F1, $F2, $F3 and $F4.',
@@ -51,6 +141,36 @@ export const MISSIONS = [
       matchTiles: ['bbca', 'caac'],
       timeLimit: null,
       tableSize: 6
+    }
+  },
+  {
+    id: 'find-0-features-in-6',
+    label: 'Find trio with none shared features within 6 tiles',
+    goal: 'These tiles contain exactly 1 trio with none shared features. Find it.',
+    end: 'Trio found!',
+    config: {
+      type: GameTypes.FIND,
+      target: TargetTypes.GOAL,
+      goalSize: 1,
+      timeLimit: null,
+      hintsLimit: 0,
+      sharedFeatures: [0],
+      tableSize: 6
+    }
+  },
+  {
+    id: 'find-0-features-in-12',
+    label: 'Find trio with none shared features within 12 tiles',
+    goal: 'These tiles contain exactly 1 trio with none shared features. Find it.',
+    end: 'Trio found!',
+    config: {
+      type: GameTypes.FIND,
+      target: TargetTypes.GOAL,
+      goalSize: 1,
+      timeLimit: null,
+      hintsLimit: 0,
+      sharedFeatures: [0],
+      tableSize: 12
     }
   },
   {

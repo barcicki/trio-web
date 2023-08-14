@@ -48,7 +48,7 @@ const {
         const id = getMissionKey(theme.id, mission.id);
         const game = saved?.pending?.[id] ?? null;
         const completed = saved?.completed?.[id] ?? false;
-        const available = completed || index === 0 || prevMission?.completed;
+        const available = game || index === 0 || prevMission?.completed;
 
         if (prevMission) {
           prevMission.next = id;

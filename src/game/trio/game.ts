@@ -44,7 +44,8 @@ export function createGame(gameConfig?: GameConfig, gameState?: GameState, initS
     matchLimit: gameConfig?.matchLimit ?? null,
     matchTiles: gameConfig?.matchTiles ?? null,
     goalSize: gameConfig?.goalSize ?? (target === TargetTypes.GOAL ? 1 : null),
-    hintsLimit: type === GameTypes.MATCH ? 0 : (typeof gameConfig?.hintsLimit !== 'undefined' ? gameConfig.hintsLimit : 10)
+    hintsLimit: type === GameTypes.MATCH ? 0 : (typeof gameConfig?.hintsLimit !== 'undefined' ? gameConfig.hintsLimit : 10),
+    sharedFeatures: gameConfig?.sharedFeatures
   };
 
   if (initState && (!gameState || gameState.seed !== config.seed)) {
@@ -476,7 +477,9 @@ function createGameState(config: GameConfig): GameState {
       initialDeck,
       random,
       config.tableSize,
-      config.goalSize
+      config.goalSize,
+      config.goalSize,
+      config.sharedFeatures
     );
 
     return {
@@ -489,7 +492,8 @@ function createGameState(config: GameConfig): GameState {
     initialDeck,
     random,
     config.tableSize,
-    1
+    1,
+    5
   );
 
   return {

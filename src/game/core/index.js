@@ -26,6 +26,7 @@ export function createCore({
     getMatchingTile,
     getMatchError,
     getFeatureTiles,
+    getSharedFeatures,
     countMatches,
     toStyleArray
   };
@@ -220,5 +221,21 @@ export function createCore({
 
       return result;
     });
+  }
+
+  function getSharedFeatures(tiles) {
+    if (!isMatch(tiles)) {
+      return -1;
+    }
+
+    let result = 0;
+
+    for (let i = 0; i < totalFeatures; i++) {
+      if (tiles[0][i] === tiles[1][i]) {
+        result += 1;
+      }
+    }
+
+    return result;
   }
 }

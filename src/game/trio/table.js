@@ -1,4 +1,4 @@
-import { getMatches, hasMatch } from './base.js';
+import { getMatches, getSharedFeatures, hasMatch } from './base.js';
 import { shuffle, shuffleWithRandom } from '../utils/index.js';
 
 export function pickTable(deck, minTiles = 12, maxTiles = 20) {
@@ -31,14 +31,20 @@ export function pickUniqueTiles(deck, count, picked) {
   return result;
 }
 
-export function createTable(initialDeck, random, tableSize, matchesSize, omit) {
+export function createTable(initialDeck, random, tableSize, minMatches, maxMatches, sharedFeatures) {
   let table;
   let matches;
+  let valid = false;
 
   do {
-    table = pickUniqueTiles(shuffleWithRandom(initialDeck, random), tableSize, omit);
+    table = pickUniqueTiles(shuffleWithRandom(initialDeck, random), tableSize);
     matches = getMatches(table).map((tiles) => tiles.sort());
-  } while (matches.length !== matchesSize);
+    valid = matches.length >= minMatches && matches.length <= maxMatches;
+
+    if (valid && sharedFeatures?.length) {
+      valid = matches.every((match) => sharedFeatures.includes(getSharedFeatures(match)));
+    }
+  } while (!valid);
 
   return [table, matches];
 }
