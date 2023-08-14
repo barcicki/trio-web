@@ -1,4 +1,4 @@
-import { TargetTypes, GameTypes } from './consts.ts';
+import { TargetTypes, GameTypes } from '@/game/trio';
 
 export const MISSIONS = [
   {

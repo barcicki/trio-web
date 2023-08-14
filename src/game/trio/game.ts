@@ -14,8 +14,7 @@ import {
   pickTable,
   replaceTableWithDeck,
   replaceTableWithRandom,
-  shuffleTable,
-  updateTable
+  shuffleTable
 } from './table.js';
 import {
   getPlayer,
@@ -27,8 +26,9 @@ import {
   leavePlayer,
   updatePlayer
 } from './player.js';
+import { syncState } from './sync.ts';
 
-import type { GameConfig, GameState, GameApi, GamePlayer, CheckResult, GamePlayerState } from './types.ts';
+import type { GameConfig, GameState, GameApi, CheckResult } from './types.ts';
 
 export function createGame(gameConfig?: GameConfig, gameState?: GameState, initState: boolean = true): GameApi {
   const type = gameConfig?.type === GameTypes.MATCH ? GameTypes.MATCH : GameTypes.FIND;
@@ -61,19 +61,19 @@ function createGameApi(config: GameConfig, state: GameState = createEmptyGameSta
   function createApi(state: GameState): GameApi {
     return {
       start() {
-        return createApi(start(state));
+        return createApi(startGameWithTimeLimit(state, config.timeLimit));
       },
       stop() {
-        return createApi(stop(state));
+        return createApi(stopGame(state));
       },
       tick() {
         return createApi(tick(state));
       },
       join(player, ready) {
-        return createApi(join(state, player, ready));
+        return createApi(joinPlayer(state, player, ready));
       },
       leave(playerId) {
-        return createApi(leave(state, playerId));
+        return createApi(leavePlayer(state, playerId));
       },
       toggle(playerId, tile) {
         if (state.ended || !state.started) {
@@ -97,10 +97,10 @@ function createGameApi(config: GameConfig, state: GameState = createEmptyGameSta
         return createApi(submit(state, playerId, tiles));
       },
       reorder() {
-        return createApi(reorder(state));
+        return createApi(shuffleTable(state));
       },
       sync(newState) {
-        return createApi(sync(state, newState));
+        return createApi(syncState(state, newState));
       },
       check(playerId, tile) {
         return check(state, playerId, tile);
@@ -117,28 +117,12 @@ function createGameApi(config: GameConfig, state: GameState = createEmptyGameSta
     };
   }
 
-  function start(state: GameState): GameState {
-    return startGameWithTimeLimit(state, config.timeLimit);
-  }
-
-  function stop(state: GameState): GameState {
-    return stopGame(state);
-  }
-
   function tick(state: GameState): GameState {
     if (shouldEnd(state)) {
       return endGame(state);
     }
 
     return state;
-  }
-
-  function join(state: GameState, player: GamePlayer, ready?: boolean): GameState {
-    return joinPlayer(state, player, ready);
-  }
-
-  function leave(state: GameState, playerId: string): GameState {
-    return leavePlayer(state, playerId);
   }
 
   function shouldEnd(state: GameState): boolean {
@@ -357,36 +341,6 @@ function createGameApi(config: GameConfig, state: GameState = createEmptyGameSta
     }
 
     return state;
-  }
-
-  function reorder(state: GameState): GameState {
-    return shuffleTable(state);
-  }
-
-  function sync(state: GameState, newState: GameState): GameState {
-    const oldPlayersMap = state.players.reduce<Record<string, GamePlayerState>>((map, player) => {
-      map[player.id] = player;
-
-      return map;
-    }, {});
-
-    return {
-      ...state,
-      ...newState,
-      players: newState.players.map((p) => {
-        const old = oldPlayersMap[p.id];
-
-        if (!old) {
-          return p;
-        }
-
-        return ({
-          ...p,
-          selected: old.selected?.length ? old.selected.filter((tile) => newState.table!.includes(tile)) : []
-        });
-      }),
-      table: updateTable(state.table || [], newState.table)
-    };
   }
 
   function hint(state: GameState, playerId: string): GameState {

@@ -1,4 +1,4 @@
-import type { GameTypes, TargetTypes } from '@/game/trio/consts.ts';
+import type { GameTypes, TargetTypes } from './consts.ts';
 
 export type TrioTiles = [string, string, string];
 
