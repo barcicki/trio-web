@@ -36,7 +36,6 @@ const {
 } = createSliceWithStorage({
   name: 'story',
   initialState(saved) {
-    let lastLocked = false;
     let prevMission = null;
 
     const campaigns = [];
@@ -45,16 +44,14 @@ const {
     THEMES.forEach((theme) => {
       const campaignMissions = [];
 
-      MISSIONS.forEach((mission) => {
+      MISSIONS.forEach((mission, index) => {
         const id = getMissionKey(theme.id, mission.id);
         const game = saved?.pending?.[id] ?? null;
         const completed = saved?.completed?.[id] ?? false;
-        const locked = lastLocked;
-
-        lastLocked ||= !completed;
+        const available = completed || index === 0 || prevMission?.completed;
 
         if (prevMission) {
-          missions[prevMission].next = id;
+          prevMission.next = id;
         }
 
         missions[id] = {
@@ -62,19 +59,20 @@ const {
           theme: theme.id,
           id,
           game,
-          locked,
+          locked: !available,
           completed,
-          prev: prevMission,
+          prev: prevMission?.id || null,
           next: null
         };
 
         campaignMissions.push(id);
-        prevMission = id;
+        prevMission = missions[id];
       });
 
       campaigns.push({
         id: `campaign-${theme.id}`,
         label: theme.label,
+        theme: theme.id,
         completed: campaignMissions.every((id) => missions[id].completed),
         locked: missions[campaignMissions[0]].locked,
         missions: campaignMissions

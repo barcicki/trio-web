@@ -4,7 +4,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tile:hover {
+  .tile.interactive:hover {
     filter: drop-shadow(0px 0px .3em var(--highlight-color));
   }
 }

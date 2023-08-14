@@ -49,7 +49,19 @@ export const Tile = forwardRef(function Tile({ className, tile, isSelected, onSe
   };
 
   return (
-    <motion.svg {...animations} className={classNames({selected: isSelected, tile: true, [className]: !!className})} onPointerDown={onSelectTile} viewBox="0 0 200 200" ref={scope} color="#000">
+    <motion.svg
+      {...animations}
+      className={classNames({
+        selected: isSelected,
+        tile: true,
+        [className]: !!className,
+        interactive: !!onSelect
+      })}
+      onPointerDown={onSelectTile}
+      viewBox="0 0 200 200"
+      color="#000"
+      ref={scope}
+    >
       {content}
     </motion.svg>
   );

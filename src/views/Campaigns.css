@@ -7,9 +7,18 @@
 }
 
 .campaign > h3 {
+    display: flex;
     font-size: 2em;
     margin-bottom: .5em;
     text-align: center;
+    align-items: center;
+    justify-content: center;
+    gap: .5em;
+}
+
+.campaign--tiles {
+    width: 3em;
+    height: 1em;
 }
 
 .campaigns--actions {
@@ -49,4 +58,10 @@
 
 .mission.completed {
     background: var(--primary-color);
+}
+
+.mission--tile {
+    margin-left: auto;
+    width: 1em;
+    height: 1em;
 }

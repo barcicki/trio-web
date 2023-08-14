@@ -5,19 +5,21 @@ import { Link } from 'react-router-dom';
 import { MdArrowBackIosNew } from 'react-icons/md';
 
 import './Campaigns.css';
+import { Tile } from '@/components/Tile.jsx';
+import { TilesList } from '@/components/TilesList.jsx';
 
 export function Campaigns() {
   const campaigns = useCampaigns();
   const missions = useMissions();
 
-  const nextMissionId = campaigns
+  const availableMissions = campaigns
     .map((cmp) => cmp.missions)
     .flat()
-    .find((id) => !missions[id].completed && !missions[id].locked);
+    .filter((id) => !missions[id].completed && !missions[id].locked);
 
-  const nextMission = nextMissionId ? {
-    label: 'Next mission',
-    missions: [nextMissionId],
+  const availableMissionsInfo = availableMissions ? {
+    label: 'Available missions',
+    missions: availableMissions,
     showStatus: false
   } : null;
 
@@ -27,13 +29,13 @@ export function Campaigns() {
         <Link className="button" to=".."><MdArrowBackIosNew/></Link>
         <Link className="button" to="../rules">Rules</Link>
       </div>
-      {nextMissionId && <Campaign {...nextMission}/>}
+      {availableMissions && <Campaign {...availableMissionsInfo}/>}
       {campaigns.map((campaign) => <Campaign key={campaign.id} {...campaign}/>)}
     </main>
   );
 }
 
-function Campaign({ label, locked, missions, showStatus = true }) {
+function Campaign({ label, locked, missions, theme, showStatus = true }) {
   const missionsMap = useMissions();
   const completedCount = missions.filter((mission) => missionsMap[mission]?.completed).length;
   const missionsTotal = missions.length;
@@ -44,7 +46,10 @@ function Campaign({ label, locked, missions, showStatus = true }) {
       campaign: true,
       locked
     })}>
-      <h3>{label} {status}</h3>
+      <h3>
+        {theme && <TilesList className="campaign--tiles" tiles={['aaaa', 'bbbb', 'cccc']} theme={theme}/>}
+        <span>{label} {status}</span>
+      </h3>
       <div className="campaign--missions">
         {missions.map((id) => <Mission key={id} {...missionsMap[id]}/>)}
       </div>
@@ -53,7 +58,7 @@ function Campaign({ label, locked, missions, showStatus = true }) {
 }
 
 function Mission(props) {
-  const { id, label, locked, completed } = props;
+  const { id, label, locked, completed, theme } = props;
 
   return (
     <Link className={classNames({
@@ -63,6 +68,7 @@ function Mission(props) {
     })} to={id}>
       <MissionIcon {...props}/>
       {label}
+      <Tile className="mission--tile" tile="aaaa" theme={theme}/>
     </Link>
   );
 }
