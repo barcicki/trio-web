@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 import { usePlayer } from '@/reducers/player.js';
 import { useMissions } from '@/reducers/story.js';
@@ -15,6 +16,11 @@ export function CampaignMission() {
   const theme = getTheme(mission.theme);
   const missionGoal = mission.goal
     .replace(/\$F(\d)/g, (str, place) => theme.features[Number(place) - 1]);
+  const [infoVisible, setInfoVisible] = useState(true);
+
+  useEffect(() => {
+    setInfoVisible(true);
+  }, [missionId]);
 
   return (
     <LocalGame
@@ -26,7 +32,10 @@ export function CampaignMission() {
       player={player}
       canChangeTheme={false}
       onUpdate={onUpdate}
-      goalText={missionGoal}
+      showInfo={!infoVisible}
+      onInfo={() => setInfoVisible(true)}
+      onGoalClose={() => setInfoVisible(false)}
+      goalText={infoVisible ? missionGoal : null}
       endHeader={mission.end || `Mission completed!`}
       endShowTime={false}
       endActions={(

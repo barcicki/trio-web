@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MdArrowBackIosNew } from 'react-icons/md';
+import { MdArrowBackIosNew, MdOutlineInfo } from 'react-icons/md';
 import { TbArrowsShuffle, TbBulb, TbCards, TbStarsFilled } from 'react-icons/tb';
 import { ThemeButton } from '@/components/ThemeButton.jsx';
 import { ColorTag } from '@/components/ColorTag.jsx';
@@ -35,6 +35,9 @@ export function GameHeader({
   showScore = !!score,
   showTimer = true,
   showPlayers = true,
+  onInfo,
+  infoLabel = 'About',
+  showInfo = !!onInfo,
 }) {
   return (
     <div className="game--header">
@@ -43,6 +46,7 @@ export function GameHeader({
         {showHint && <button disabled={showRemainingHints && remainingHints === 0} onClick={onHint} title="Show hint"><TbBulb/>{showRemainingHints ? remainingHints : ''}</button>}
         {showReorder && <button onClick={onReorder} title="Reorder tiles"><TbArrowsShuffle/></button>}
         {showThemeSwitcher && <ThemeButton theme={nextTheme} onClick={onThemeSwitch} title="Switch theme"/>}
+        {showInfo && <button onClick={onInfo} title={infoLabel}><MdOutlineInfo/></button> }
         {showPlayers && currentPlayer && (
             <ColorTag className="game--current-player" color={currentPlayer.color} title={currentPlayer.name}>
               {currentPlayer.score ?? currentPlayer.found?.length ?? 0}
