@@ -10,7 +10,7 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
   const tableEl = useRef();
   const [grid, setGrid] = useState(null);
   const gridTemplate = grid ? `repeat(${grid.rows}, 1fr) / repeat(${grid.cols}, 1fr)` : '';
-  const gridClassName = grid ? `grid-${tiles.length}-${grid.rows}x${grid.cols}` : '';
+  const gridClassName = grid ? `grid-${grid.tiles}-${grid.rows}x${grid.cols}` : '';
 
   useImperativeHandle(ref, () => {
     return {
@@ -47,12 +47,15 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
   const onResize = useCallback(() => {
     if (tableEl.current) {
       const area = tableEl.current.getBoundingClientRect();
-      const { rows, cols } = getGrid(area.width, area.height, tiles.length);
+      const gridConfig = getGrid(area.width, area.height, tiles.length);
 
-      setGrid({
-        rows,
-        cols,
-      });
+      if (gridConfig) {
+        setGrid({
+          rows: gridConfig.rows,
+          cols: gridConfig.cols,
+          tiles: tiles.length
+        });
+      }
     }
   }, [tableEl, tiles.length]);
 
