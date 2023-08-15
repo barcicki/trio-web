@@ -29,6 +29,10 @@
     font-weight: bold;
 }
 
+.online-result-name {
+    text-transform: uppercase;
+}
+
 .online-result-header {
     font-size: 0.8em;
     font-weight: normal;
