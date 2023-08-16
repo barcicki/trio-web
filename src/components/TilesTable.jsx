@@ -11,6 +11,7 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
   const [grid, setGrid] = useState(null);
   const gridTemplate = grid ? `repeat(${grid.rows}, 1fr) / repeat(${grid.cols}, 1fr)` : '';
   const gridClassName = grid ? `grid-${grid.tiles}-${grid.rows}x${grid.cols}` : '';
+  const gridSizeValue = grid ? `${grid.size}px` : '';
 
   useImperativeHandle(ref, () => {
     return {
@@ -53,6 +54,7 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
         setGrid({
           rows: gridConfig.rows,
           cols: gridConfig.cols,
+          size: gridConfig.width,
           tiles: tiles.length
         });
       }
@@ -63,7 +65,7 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
   useEffect(onResize, [onResize]);
 
   return (
-    <div className={`tiles-table ${className} ${gridClassName}`} ref={tableEl} style={{ gridTemplate }}>
+    <div className={`tiles-table ${className} ${gridClassName}`} ref={tableEl} style={{ gridTemplate, '--tile-size': gridSizeValue }}>
       <AnimatePresence>
         {tiles.map((tile, index) => (
           <Tile

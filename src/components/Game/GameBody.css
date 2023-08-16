@@ -25,6 +25,10 @@
     flex-wrap: wrap;
 }
 
+.game--goals.game--find-goals {
+    height: 4em;
+}
+
 .game--goals.game--match-goals {
     height: max(28%, 5em);
 }

@@ -19,8 +19,9 @@ export function OnlineIntro() {
   return (
     <Intro goal={<p>Find all trios in a shuffled deck of 81 unique tiles.<br/>The game starts with 12 tiles visible.<br/>When trio is found, selected 3 tiles are replaced with new ones from the deck. </p>}>
       <IntroTile className="online-profile">
-        <ColorTag color={player?.color} onClick={() => dispatch(changeColor())}>Change Color</ColorTag>
+        <p className="intro-hint">Player name & color:</p>
         <input className="online-player-name-input" defaultValue={player?.name} onChange={(e) => dispatch(setName(e.target.value))}/>
+        <ColorTag color={player?.color} onClick={() => dispatch(changeColor())}>Change Color</ColorTag>
       </IntroTile>
       <IntroTile className="online-mode">
         <p className="intro-hint">Got a game code? Join the game:</p>
