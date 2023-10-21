@@ -58,7 +58,7 @@ function Campaign({ label, locked, missions, theme, showStatus = true }) {
 }
 
 function Mission(props) {
-  const { id, label, locked, completed, theme } = props;
+  const { id, label, locked, completed, theme, tile } = props;
 
   return (
     <Link className={classNames({
@@ -68,7 +68,7 @@ function Mission(props) {
     })} to={id}>
       <MissionIcon {...props}/>
       {label}
-      <Tile className="mission--tile" tile="aaaa" theme={theme}/>
+      <Tile className="mission--tile" tile={tile} theme={theme}/>
     </Link>
   );
 }

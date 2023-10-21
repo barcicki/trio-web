@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { createSliceWithStorage } from '@/utils/redux.js';
 import { THEMES } from '@/components/TileThemes/themes.js';
 import { MISSIONS } from './missions.js';
+import { getDeck } from '@/game/trio';
 
 export function useCampaigns() {
   return useSelector(campaignsSelector);
@@ -40,6 +41,7 @@ const {
 
     const campaigns = [];
     const missions = {};
+    const deck = getDeck();
 
     THEMES.forEach((theme) => {
       const campaignMissions = [];
@@ -62,7 +64,8 @@ const {
           locked: !available,
           completed,
           prev: prevMission?.id || null,
-          next: null
+          next: null,
+          tile: deck[index]
         };
 
         campaignMissions.push(id);
