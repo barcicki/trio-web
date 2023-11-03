@@ -3,6 +3,7 @@ import { createSliceWithStorage } from '@/utils/redux.js';
 import { THEMES } from '@/components/TileThemes/themes.js';
 import { MISSIONS } from './missions.js';
 import { getDeck } from '@/game/trio';
+import { stopGame } from '@/game/trio/time.js';
 
 export function useCampaigns() {
   return useSelector(campaignsSelector);
@@ -30,7 +31,8 @@ export function getMissionKey(themeId, missionId) {
 const {
   actions: {
     updateMission,
-    resetMission
+    resetMission,
+    stopMission
   },
   reducer,
   synchronizer
@@ -97,7 +99,7 @@ const {
       const mission = state.missions[id];
 
       if (mission.game) {
-        result.pending[mission.id] = mission.game;
+        result.pending[mission.id] = stopGame(mission.game);
       }
 
       result.completed[mission.id] = !!mission.completed;
@@ -106,6 +108,25 @@ const {
     return result;
   },
   reducers: {
+    stopMission(state, action) {
+      const id = action.payload;
+      const mission = state.missions?.[id];
+
+      if (!mission?.game) {
+        return state;
+      }
+
+      return {
+        ...state,
+        missions: {
+          ...state.missions,
+          [id]: {
+            ...mission,
+            game: stopGame(mission.game)
+          }
+        }
+      };
+    },
     updateMission(state, action) {
       const { id, game } = action.payload;
 
@@ -165,6 +186,7 @@ const {
 export {
   updateMission,
   resetMission,
+  stopMission,
   reducer as storyReducer,
   synchronizer as storySynchronizer
 };

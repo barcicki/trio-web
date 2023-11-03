@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
-import { resetMission, updateMission, useMissions } from '@/reducers/story.js';
-import { useCallback } from 'react';
+import { resetMission, stopMission, updateMission, useMissions } from '@/reducers/story.js';
+import { useCallback, useEffect } from 'react';
 
 export function useMissionGame(missionId) {
   const missions = useMissions();
@@ -11,6 +11,11 @@ export function useMissionGame(missionId) {
     game
   })), [mission.id, dispatch]);
   const onReset = useCallback(() => dispatch(resetMission(mission.id)), [mission.id, dispatch]);
+  const onStop = useCallback(() => dispatch(stopMission(mission.id)), [mission.id, dispatch]);
 
-  return [mission.game, onUpdate, onReset];
+  useEffect(() => {
+    return onStop;
+  }, [onStop]);
+
+  return [mission.game, onUpdate, onReset, onStop];
 }
