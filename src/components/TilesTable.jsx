@@ -2,6 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Tile } from '@/components/Tile.jsx';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useResizeEffect } from '@/hooks/useResizeObserver.js';
+import { getGrid } from '@/utils/grid.js';
 
 import './TilesTable.css';
 
@@ -11,7 +12,7 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
   const [grid, setGrid] = useState(null);
   const gridTemplate = grid ? `repeat(${grid.rows}, 1fr) / repeat(${grid.cols}, 1fr)` : '';
   const gridClassName = grid ? `grid-${grid.tiles}-${grid.rows}x${grid.cols}` : '';
-  const gridSizeValue = grid ? `${grid.size}px` : '';
+  const gridSizeValue = grid ? `${Math.floor(grid.size)}px` : '';
 
   useImperativeHandle(ref, () => {
     return {
@@ -48,7 +49,8 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
   const onResize = useCallback(() => {
     if (tableEl.current) {
       const area = tableEl.current.getBoundingClientRect();
-      const gridConfig = getGrid(area.width, area.height, tiles.length);
+      const gap = parseFloat(getComputedStyle(tableEl.current).gap) || 0;
+      const gridConfig = getGrid(area.width, area.height, tiles.length, gap);
 
       if (gridConfig) {
         setGrid({
@@ -81,33 +83,3 @@ export const TilesTable = forwardRef(function TileTable({ className = '', tiles,
     </div>
   );
 });
-
-function getGrid(containerWidth, containerHeight, count, ratio = 1) {
-  let best = null;
-
-  for (let i = 1; i <= count; i++) {
-    const cols = i;
-    const rows = Math.ceil(count / cols);
-    const [width, height] = getContainedSize(containerWidth / cols, containerHeight / rows, ratio);
-    const area = width * height;
-
-    if (!best || area > best.area) {
-      best = {
-        cols,
-        rows,
-        width,
-        height,
-        area
-      };
-    }
-  }
-
-  return best;
-}
-
-function getContainedSize(containerWidth, containerHeight, ratio) {
-  const maxWidth = Math.min(containerHeight * ratio, containerWidth);
-  const maxHeight = Math.min(containerWidth / ratio, containerHeight);
-
-  return ratio > 1 ? [maxWidth, maxWidth / ratio] : [maxHeight * ratio, maxHeight];
-}

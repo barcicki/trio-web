@@ -1,20 +1,18 @@
 .tiles-table {
-  --tile-gap: 1em;
   --tile-size: 100%;
   flex: 1;
   display: grid;
   place-items: center;
-  gap: var(--tile-gap);
+  gap: 1em;
   overflow: hidden;
   grid-auto-columns: 1fr;
   grid-auto-rows: 1fr;
 }
 
 .tiles-table .tile {
-  --calculated-tile-size: calc(var(--tile-size) - (var(--tile-gap) / 2));
   cursor: pointer;
-  width: var(--calculated-tile-size);
-  height: var(--calculated-tile-size);
+  width: var(--tile-size);
+  height: var(--tile-size);
 }
 
 .tiles-table .tile.selected {
