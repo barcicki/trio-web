@@ -1,0 +1,20 @@
+.campaign--label {
+    display: flex;
+    font-size: 2em;
+    margin-bottom: .5em;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    gap: .5em;
+}
+
+.campaign--tiles {
+    width: 3em;
+    height: 1em;
+}
+
+.campaign--missions {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+}

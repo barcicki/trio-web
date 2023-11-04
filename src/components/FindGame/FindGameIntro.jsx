@@ -6,7 +6,7 @@ import { format } from '@/utils/time.js';
 import { Details } from '@/components/Details.jsx';
 import { getTotalFoundTrios } from '@/game/trio/player.js';
 
-export function GameIntro() {
+export function FindGameIntro() {
   const savedGame = useLoaderData();
 
   return (

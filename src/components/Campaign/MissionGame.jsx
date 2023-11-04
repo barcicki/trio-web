@@ -6,7 +6,7 @@ import { LocalGame } from '@/components/Game/LocalGame.jsx';
 import { useMissionGame } from '@/hooks/useMissionGame.js';
 import { getTheme } from '@/components/TileThemes/themes.js';
 
-export function CampaignMission() {
+export function MissionGame() {
   const missionId = useLoaderData();
   const missions = useMissions();
   const mission = missions[missionId];

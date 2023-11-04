@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Intro } from '@/components/Intro.jsx';
 import { IntroTile } from '@/components/IntroTile.jsx';
-import { PracticeGoal } from '@/components/PracticeGoal.jsx';
+import { PracticeGoal } from '@/components/PracticeGame/PracticeGoal.jsx';
 
 export function PracticeIntro() {
   return (

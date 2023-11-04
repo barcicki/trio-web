@@ -1,0 +1,13 @@
+.campaigns {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    gap: 2em;
+    margin: 0 auto;
+}
+
+.campaigns--actions {
+    display: flex;
+    gap: .5em;
+    font-size: .8em;
+}

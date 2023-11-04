@@ -6,7 +6,7 @@ import { useTheme } from '@/hooks/useTheme.js';
 import { useLocalGame } from '@/hooks/useLocalGame.js';
 import { usePlayer } from '@/reducers/player.js';
 
-export function Game() {
+export function FindGame() {
   const seed = useLoaderData();
 
   const config = {

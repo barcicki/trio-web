@@ -6,7 +6,7 @@ import { useLocalGame } from '@/hooks/useLocalGame.js';
 import { GameModes, GameTypes, TargetTypes } from '@/game/trio';
 import { LocalGame } from '@/components/Game/LocalGame.jsx';
 
-export function Puzzle() {
+export function PuzzleGame() {
   const seed = useLoaderData();
 
   const config = {

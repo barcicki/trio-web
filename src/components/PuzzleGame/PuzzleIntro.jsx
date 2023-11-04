@@ -1,5 +1,5 @@
 import { Link, useLoaderData } from 'react-router-dom';
-import { PuzzleGoal } from '@/components/PuzzleGoal.jsx';
+import { PuzzleGoal } from '@/components/PuzzleGame/PuzzleGoal.jsx';
 import { IntroTile } from '@/components/IntroTile.jsx';
 import { Intro } from '@/components/Intro.jsx';
 import { format } from '@/utils/time.js';

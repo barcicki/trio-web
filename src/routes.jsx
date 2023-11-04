@@ -1,17 +1,17 @@
 import { redirect } from 'react-router-dom';
-import { Error } from '@/views/Error.jsx';
-import { Home } from '@/views/Home.jsx';
-import { Game } from '@/views/Game.jsx';
-import { GameIntro } from '@/views/GameIntro.jsx';
-import { Puzzle } from '@/views/Puzzle.jsx';
-import { PuzzleIntro } from '@/views/PuzzleIntro.jsx';
-import { PracticeIntro } from '@/views/PracticeIntro.jsx';
-import { Rules } from '@/views/Rules.jsx';
-import { Practice } from '@/views/Practice.jsx';
-import { OnlineIntro } from '@/views/OnlineIntro.jsx';
-import { OnlineGame } from '@/views/OnlineGame.jsx';
-import { Campaigns } from '@/views/Campaigns.jsx';
-import { CampaignMission } from '@/views/CampaignMission.jsx';
+import { Error } from '@/components/Error.jsx';
+import { Home } from '@/components/Home.jsx';
+import { FindGame } from '@/components/FindGame/FindGame.jsx';
+import { FindGameIntro } from '@/components/FindGame/FindGameIntro.jsx';
+import { PuzzleGame } from '@/components/PuzzleGame/PuzzleGame.jsx';
+import { PuzzleIntro } from '@/components/PuzzleGame/PuzzleIntro.jsx';
+import { PracticeIntro } from '@/components/PracticeGame/PracticeIntro.jsx';
+import { Rules } from '@/components/Rules.jsx';
+import { Practice } from '@/components/PracticeGame/Practice.jsx';
+import { OnlineIntro } from '@/components/Online/OnlineIntro.jsx';
+import { OnlineGame } from '@/components/Online/OnlineGame.jsx';
+import { CampaignList } from '@/components/Campaign/CampaignList.jsx';
+import { MissionGame } from '@/components/Campaign/MissionGame.jsx';
 
 import { GameModes } from '@/game/trio';
 import { generateId } from '@/game/utils';
@@ -36,11 +36,11 @@ export const routes = [
     children: [
       {
         path: '',
-        element: <Campaigns/>
+        element: <CampaignList/>
       },
       {
         path: ':key',
-        element: <CampaignMission/>,
+        element: <MissionGame/>,
         loader({ params }) {
           const state = store.getState();
           const mission = missionSelector(state, params.key);
@@ -64,7 +64,7 @@ export const routes = [
     children: [
       {
         path: '',
-        element: <GameIntro/>,
+        element: <FindGameIntro/>,
         loader() {
           return gamesSelector(store.getState(), GameModes.SINGLE) || null;
         }
@@ -92,7 +92,7 @@ export const routes = [
         loader({ params }) {
           return params.seed;
         },
-        element: <Game/>
+        element: <FindGame/>
       }
     ]
   },
@@ -129,7 +129,7 @@ export const routes = [
         loader({ params }) {
           return params.seed;
         },
-        element: <Puzzle/>
+        element: <PuzzleGame/>
       }
     ]
   },
