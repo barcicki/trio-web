@@ -79,7 +79,7 @@ export function increaseFound(player, tiles) {
 }
 
 export function getTotalFoundTrios(state) {
-  return state.players.reduce((sum, p) => sum + p.found?.length ?? 0, 0);
+  return state.players.reduce((sum, p) => sum + (p.found?.length ?? 0), 0);
 }
 
 export function hasAnyPlayerFound(state, tiles) {
