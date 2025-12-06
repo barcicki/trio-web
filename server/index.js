@@ -11,8 +11,8 @@ export function startServer(dir, port) {
   createTrioSocketServer(server);
 
   app.use(compression());
-  app.use(express.static(path.join(process.cwd(), dir)));
-  app.get('*', (req, res) => res.sendFile(path.resolve(process.cwd(), `${dir}/index.html`)));
+  app.use(express.static(path.join(__dirname, dir)));
+  app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, `${dir}/index.html`)));
 
   server.listen(port);
 }
