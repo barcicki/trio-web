@@ -12,7 +12,7 @@ export const store = configureStore({
     player: playerReducer,
     story: storyReducer
   },
-  middleware: [
+  middleware: () => [
     createSynchronizerMiddleware([
       themeSynchronizer,
       playerSynchronizer,
